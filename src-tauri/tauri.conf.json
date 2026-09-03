@@ -1,44 +1,22 @@
 {
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DotaAssist",
+  "version": "1.0.0",
+  "identifier": "com.dotaassist.desktop",
+  "mainBinaryName": "dota-assist",
   "build": {
     "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "DotaAssist",
-    "version": "1.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "window": {
-        "all": true,
-        "setAlwaysOnTop": true,
-        "setIgnoreCursorEvents": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.dotaassist.app",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
+  "app": {
     "security": {
       "csp": null
     },
     "windows": [
       {
+        "label": "main",
         "title": "DotaAssist Overlay & Strategy Assistant",
         "width": 1280,
         "height": 840,
@@ -50,6 +28,17 @@
         "decorations": true,
         "alwaysOnTop": false
       }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
     ]
   }
 }

@@ -15,7 +15,7 @@ However, traditional desktop assistants built on Electron consume hundreds of me
 The user participated in an interactive alignment interview and selected three core preferences:
 1. **In-Game Overlay & Real-Time Assistant**: Real-time HUD overlay on top of Dota 2 game window.
 2. **Tauri (Rust + React/TypeScript)**: Ultra-low resource usage, minimal RAM footprint, and clean transparent window support.
-3. **Hybrid Architecture**: Official Dota 2 Game State Integration (GSI) on local machine paired with Stratz/OpenDota APIs for meta insights and timing alerts.
+3. **Hybrid Architecture**: Official Dota 2 Game State Integration (GSI) on local machine paired with the OpenDota API for meta insights and timing alerts.
 
 ## Decision
 
@@ -32,7 +32,7 @@ We will implement DotaAssist using the following architectural stack and pattern
    - **Web Audio API**: Synthesizes melodic alert tones for Wisdom, Power, Bounty runes, Roshan, and Tormentor directly in software without requiring external MP3/WAV assets.
 4. **Data Sourcing**:
    - **Local Dota 2 GSI**: Fully compliant with Valve's official API, 100% VAC-safe.
-   - **Stratz & OpenDota REST APIs**: Query hero matchup win rates, counter-picks, and item builds, backed by an offline heuristic cache for network resilience.
+   - **OpenDota REST API**: Query ranked hero win rates, matchup records, and item-popularity buckets. Failed requests are represented as unavailable; no inferred statistics or replacement builds are generated.
 
 ## Consequences
 
@@ -40,8 +40,9 @@ We will implement DotaAssist using the following architectural stack and pattern
 - **100% VAC Safe**: Valve's Game State Integration is officially provided by Valve for streamers, coaches, and tournaments. No DLL injection or memory tampering.
 - **Ultra Low Overhead**: Consumes negligible CPU and memory, ensuring zero FPS impact in game.
 - **Immediate Value**: 20-30s advance audio and visual cues provide tactical map rotation advantages.
-- **Offline Resilience**: Pre-seeded hero and item databases allow the app to function even if internet connection fluctuates.
+- **Stable Lookup Metadata**: Bundled hero identities and item details let the UI resolve OpenDota IDs without presenting bundled values as current statistics.
 
 ### Negative / Trade-offs
 - Requires user to place `gamestate_integration_dotaassist.cfg` into their Dota 2 cfg directory once during setup (guided by the in-app Settings modal).
 - GSI updates only when the player's Dota 2 client sends them (typically on tick/event throttle between 0.1s to 1s).
+- Meta and item panels intentionally show an unavailable state during OpenDota outages.

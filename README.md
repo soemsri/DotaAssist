@@ -1,6 +1,6 @@
 # DotaAssist — Real-Time In-Game Overlay & Assistant
 
-> **DotaAssist** คือแอปพลิเคชัน Desktop Assistant และ In-game Overlay สำหรับ Dota 2 ที่พัฒนาด้วย **Tauri (Rust + React/TypeScript)** ออกแบบมาให้กินทรัพยากรเครื่องน้อยมาก (RAM ~10-25 MB) ไม่ดึง FPS ในเกม ปลอดภัยต่อบัญชี 100% (VAC-Safe) ด้วยการใช้ **Dota 2 Game State Integration (GSI)** ทางการของ Valve ควบคู่กับข้อมูลสถิติ Meta / Counter-Picks จาก **OpenDota / Stratz API**
+> **DotaAssist** คือแอปพลิเคชัน Desktop Assistant และ In-game Overlay สำหรับ Dota 2 ที่พัฒนาด้วย **Tauri (Rust + React/TypeScript)** ออกแบบมาให้กินทรัพยากรเครื่องน้อยมาก (RAM ~10-25 MB) ไม่ดึง FPS ในเกม ปลอดภัยต่อบัญชี 100% (VAC-Safe) ด้วยการใช้ **Dota 2 Game State Integration (GSI)** ทางการของ Valve ควบคู่กับข้อมูลสถิติ Meta / Counter-Picks จาก **OpenDota API**
 
 ---
 
@@ -19,10 +19,11 @@
    - **Roshan & Aegis Tracker**: นับเวลา Aegis หมดอายุ (5 นาที) และช่วงหน้าต่างสุ่มเกิดของ Roshan (8 - 11 นาที) พร้อมคำนวณตำแหน่งถ้ำ (กลางวัน = Radiant / กลางคืน = Dire)
    - **Web Audio API Synthesizer**: สังเคราะห์เสียงเตือนเฉพาะของแต่ละรูน โดยไม่ต้องโหลดไฟล์เสียงหนักๆ
 3. **Draft Advisor & Counter-Pick Matrix**:
-   - แนะนำฮีโร่แก้ทาง (Counter-picks) พร้อมคำนวณอัตราความได้เปรียบ (% Advantage) จากข้อมูลสถิติการเล่น
+   - แสดงฮีโร่แก้ทางจากอัตราชนะเมื่อเจอฮีโร่เป้าหมาย และแสดงส่วนต่างจากฐาน 50% ที่คำนวณจาก matchup records
    - ตรวจจับฮีโร่ที่ฝ่ายตรงข้ามเลือกผ่าน GSI Draft Payload
-4. **Dynamic Item Build & Situational Counters**:
-   - แนะนำไอเทมแก้ทางสถานการณ์เฉพาะ เช่น แนะนำ Monkey King Bar เมื่อเจอฮีโร่ที่มี Evasion (เช่น Phantom Assassin), Spirit Vessel เมื่อเจอฮีโร่รีเจนเลือดสูง, Black King Bar เมื่อเจอสกิลเวท Burst หรือ Disable หนัก
+4. **OpenDota Item Popularity**:
+   - แสดงไอเทมที่มีการซื้อจริงในแต่ละช่วงเกมจาก endpoint `itemPopularity` ของ OpenDota พร้อมจำนวนครั้งที่พบในข้อมูล
+   - หาก OpenDota ใช้งานไม่ได้ หน้าจอจะแจ้งว่าไม่มีข้อมูลและจะไม่สร้างรายการทดแทนขึ้นมาเอง
 
 ---
 
@@ -30,7 +31,8 @@
 
 - **Backend**: Rust + `tiny_http` รัน Local HTTP Server ที่ `http://127.0.0.1:3000/gsi` เพื่อรับข้อมูล GSI จาก Dota 2 Client แล้วส่งต่อเข้า Frontend ผ่าน Tauri Event IPC
 - **Frontend**: React 18 + TypeScript + Tailwind CSS + Lucide Icons
-- **Data Integration**: Valve Dota 2 GSI + OpenDota / Stratz API (พร้อม Offline Fallback Cache)
+- **Data Integration**: Valve Dota 2 GSI + OpenDota API; local catalog ใช้เฉพาะชื่อ/ID/role และรายละเอียด item สำหรับ lookup เท่านั้น
+- **Data Integrity**: ไม่มี simulation feed และไม่มีตัวเลขสถิติหรือ item recommendation ที่สร้างขึ้นเมื่อ API ใช้งานไม่ได้
 
 ---
 
@@ -50,7 +52,7 @@
 # ติดตั้ง dependencies
 npm install
 
-# รัน Vite Web Dev Server (พร้อม Mock Simulation Feed)
+# รัน Vite Web Dev Server
 npm run dev
 
 # หรือรันผ่าน Tauri Desktop App

@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { TimingEventAlert, RecommendedItem } from '../types/meta';
+import { TimingEventAlert, PopularItem } from '../types/meta';
 import { GSIPayload } from '../types/gsi';
-import { Bell, Minimize2, Maximize2, ShieldAlert, X, Settings } from 'lucide-react';
+import { Bell, Minimize2, Maximize2, Package, X, Settings } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 
 interface Props {
   payload: GSIPayload | null;
+  isConnected: boolean;
   alerts: TimingEventAlert[];
-  items: RecommendedItem[];
+  items: PopularItem[];
   onOpenSettings: () => void;
   onExitOverlay: () => void;
 }
 
 export const OverlayHUD: React.FC<Props> = ({
   payload,
+  isConnected,
   alerts,
   items,
   onOpenSettings,
@@ -23,9 +25,9 @@ export const OverlayHUD: React.FC<Props> = ({
   const [opacity, setOpacity] = useState(85); // percentage
 
   const clockTime = payload?.map?.clock_time ?? 0;
-  const formattedTime = timingEngine.formatTime(clockTime);
+  const formattedTime = isConnected ? timingEngine.formatTime(clockTime) : '--:--';
   const mostUrgentAlert = alerts[0];
-  const situationalItem = items.find((i) => i.counterAgainst);
+  const popularItem = items.find((item) => item.tier === 'core') ?? items[0];
 
   return (
     <div
@@ -38,7 +40,11 @@ export const OverlayHUD: React.FC<Props> = ({
           onClick={() => setCollapsed(false)}
           className="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 px-3 py-1.5 rounded-full shadow-2xl backdrop-blur text-xs hover:border-amber-400 transition"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+            }`}
+          />
           <span className="font-mono font-bold text-amber-400">{formattedTime}</span>
           {mostUrgentAlert && (
             <span className="text-slate-300">
@@ -53,7 +59,11 @@ export const OverlayHUD: React.FC<Props> = ({
           {/* Header */}
           <div className="flex items-center justify-between pb-2 border-b border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                }`}
+              />
               <span className="text-xs font-black tracking-wider uppercase text-amber-400">
                 DotaAssist HUD
               </span>
@@ -96,7 +106,7 @@ export const OverlayHUD: React.FC<Props> = ({
 
             {alerts.length === 0 ? (
               <div className="text-center py-2 text-[11px] text-slate-500">
-                No active objectives
+                {isConnected ? 'No active objectives' : 'Waiting for Dota 2 GSI'}
               </div>
             ) : (
               alerts.slice(0, 3).map((a) => (
@@ -121,20 +131,22 @@ export const OverlayHUD: React.FC<Props> = ({
             )}
           </div>
 
-          {/* Situational Counter Recommendation */}
-          {situationalItem && (
+          {/* Popular item from the current OpenDota response */}
+          {popularItem && (
             <div className="mt-2.5 pt-2 border-t border-slate-800/80">
               <div className="text-[11px] font-semibold text-amber-400 flex items-center gap-1 mb-1">
-                <ShieldAlert className="w-3 h-3" />
-                <span>Situational Counter Item</span>
+                <Package className="w-3 h-3" />
+                <span>OpenDota Popular Item</span>
               </div>
               <div className="bg-amber-950/20 border border-amber-500/30 rounded-lg p-2 text-xs">
                 <div className="flex justify-between font-bold text-slate-200">
-                  <span>{situationalItem.displayName}</span>
-                  <span className="text-amber-400 font-mono">{situationalItem.cost}g</span>
+                  <span>{popularItem.displayName}</span>
+                  <span className="text-amber-400 font-mono">
+                    {popularItem.cost === null ? 'Price unavailable' : `${popularItem.cost}g`}
+                  </span>
                 </div>
                 <div className="text-[11px] text-slate-400 mt-0.5">
-                  {situationalItem.reason}
+                  {popularItem.reason}
                 </div>
               </div>
             </div>

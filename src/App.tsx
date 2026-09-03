@@ -1,71 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import { GSIPayload } from './types/gsi';
-import { gsiService } from './services/gsiService';
-import { timingEngine } from './services/timingEngine';
-import { apiService } from './services/apiService';
-import { TimingEventAlert, RecommendedItem } from './types/meta';
-import { GSIStatusBadge } from './components/GSIStatusBadge';
-import { TimingAlerts } from './components/TimingAlerts';
-import { DraftAdvisor } from './components/DraftAdvisor';
-import { ItemGuide } from './components/ItemGuide';
-import { OverlayHUD } from './components/OverlayHUD';
-import { SettingsModal } from './components/SettingsModal';
-import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { GSIPayload } from "./types/gsi";
+import { gsiService } from "./services/gsiService";
+import { timingEngine } from "./services/timingEngine";
+import { apiService } from "./services/apiService";
+import { TimingEventAlert, PopularItem } from "./types/meta";
+import { GSIStatusBadge } from "./components/GSIStatusBadge";
+import { TimingAlerts } from "./components/TimingAlerts";
+import { DraftAdvisor } from "./components/DraftAdvisor";
+import { ItemGuide } from "./components/ItemGuide";
+import { OverlayHUD } from "./components/OverlayHUD";
+import { SettingsModal } from "./components/SettingsModal";
+import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles } from "lucide-react";
 
 export const App: React.FC = () => {
   const [payload, setPayload] = useState<GSIPayload | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [overlayMode, setOverlayMode] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'timers' | 'draft' | 'items'>('timers');
+  const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
+  const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
 
   useEffect(() => {
-    // Initial data load
+    // Initial data load for heroes and live stats
     apiService.initData();
 
-    // Subscribe to GSI events
+    // Subscribe to genuine GSI events from Dota 2
     const unsubscribe = gsiService.subscribe((data) => {
       setPayload(data);
       setIsConnected(true);
     });
 
+    const connectionMonitor = window.setInterval(() => {
+      setIsConnected(gsiService.getIsConnected());
+    }, 1000);
+
     return () => {
       unsubscribe();
+      window.clearInterval(connectionMonitor);
     };
   }, []);
 
-  const clockTime = payload?.map?.clock_time ?? 0;
-  const isPreGame = payload?.map?.game_state === 'DOTA_GAMERULES_STATE_PRE_GAME';
-  const alerts: TimingEventAlert[] = timingEngine.calculateAlerts(clockTime, isPreGame);
+  const livePayload = isConnected ? payload : null;
+  const clockTime = livePayload?.map?.clock_time ?? 0;
+  const isPreGame = livePayload?.map?.game_state === "DOTA_GAMERULES_STATE_PRE_GAME";
+  const alerts: TimingEventAlert[] = livePayload?.map
+    ? timingEngine.calculateAlerts(clockTime, isPreGame)
+    : [];
+  const heroName = livePayload?.hero?.name;
 
-  const heroName = payload?.hero?.name || 'npc_dota_hero_antimage';
-  const enemyPicks: string[] = [];
-  if (payload?.draft?.team3) {
-    if (payload.draft.team3.pick0_class) enemyPicks.push(payload.draft.team3.pick0_class);
-    if (payload.draft.team3.pick1_class) enemyPicks.push(payload.draft.team3.pick1_class);
-    if (payload.draft.team3.pick2_class) enemyPicks.push(payload.draft.team3.pick2_class);
-  }
-  const recommendedItems: RecommendedItem[] = apiService.getRecommendedItems(heroName, enemyPicks);
+  useEffect(() => {
+    let cancelled = false;
+    const hero = heroName ? apiService.getHeroByName(heroName) : undefined;
 
-  const handleToggleSimulation = () => {
-    if (isSimulating) {
-      gsiService.stopSimulation();
-      setIsSimulating(false);
-    } else {
-      gsiService.startSimulation();
-      setIsSimulating(true);
+    if (!hero) {
+      setPopularItems([]);
+      return;
     }
-  };
 
-  // If in overlay mode, render ONLY the floating compact HUD
+    setPopularItems([]);
+    apiService
+      .getPopularItemsForHero(hero.id)
+      .then((items) => {
+        if (!cancelled) setPopularItems(items);
+      })
+      .catch(() => {
+        if (!cancelled) setPopularItems([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [heroName]);
+
+  // If in overlay mode, render compact transparent HUD
   if (overlayMode) {
     return (
       <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative">
         <OverlayHUD
-          payload={payload}
+          payload={livePayload}
+          isConnected={isConnected}
           alerts={alerts}
-          items={recommendedItems}
+          items={popularItems}
           onOpenSettings={() => setSettingsOpen(true)}
           onExitOverlay={() => setOverlayMode(false)}
         />
@@ -74,7 +89,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // Dashboard / Strategy Prep Mode
+  // Dashboard / Strategy Mode
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased">
       {/* Top Header */}
@@ -124,20 +139,18 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-5 space-y-5">
         {/* Live GSI Status Bar */}
         <GSIStatusBadge
-          payload={payload}
+          payload={livePayload}
           isConnected={isConnected}
-          isSimulating={isSimulating}
-          onToggleSimulation={handleToggleSimulation}
         />
 
         {/* Tab Navigation */}
         <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
           <button
-            onClick={() => setActiveTab('timers')}
+            onClick={() => setActiveTab("timers")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
-              activeTab === 'timers'
-                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              activeTab === "timers"
+                ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
             }`}
           >
             <Clock className="w-4 h-4" />
@@ -145,11 +158,11 @@ export const App: React.FC = () => {
           </button>
 
           <button
-            onClick={() => setActiveTab('draft')}
+            onClick={() => setActiveTab("draft")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
-              activeTab === 'draft'
-                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              activeTab === "draft"
+                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -157,11 +170,11 @@ export const App: React.FC = () => {
           </button>
 
           <button
-            onClick={() => setActiveTab('items')}
+            onClick={() => setActiveTab("items")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
-              activeTab === 'items'
-                ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              activeTab === "items"
+                ? "bg-sky-500/10 text-sky-400 border border-sky-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
             }`}
           >
             <ShieldCheck className="w-4 h-4" />
@@ -171,32 +184,30 @@ export const App: React.FC = () => {
 
         {/* Active Tab View */}
         <div className="space-y-5">
-          {activeTab === 'timers' && (
+          {activeTab === "timers" && (
             <div className="space-y-5">
               <TimingAlerts alerts={alerts} clockTime={clockTime} />
               <ItemGuide
-                heroName={payload?.hero?.name}
-                enemyHeroNames={enemyPicks}
-                currentGold={payload?.player?.gold}
+                heroName={heroName}
+                currentGold={livePayload?.player?.gold}
               />
             </div>
           )}
 
-          {activeTab === 'draft' && (
+          {activeTab === "draft" && (
             <div className="space-y-5">
-              <DraftAdvisor draft={payload?.draft} currentHeroName={payload?.hero?.name} />
+              <DraftAdvisor draft={livePayload?.draft} />
               <TimingAlerts alerts={alerts} clockTime={clockTime} />
             </div>
           )}
 
-          {activeTab === 'items' && (
+          {activeTab === "items" && (
             <div className="space-y-5">
               <ItemGuide
-                heroName={payload?.hero?.name}
-                enemyHeroNames={enemyPicks}
-                currentGold={payload?.player?.gold}
+                heroName={heroName}
+                currentGold={livePayload?.player?.gold}
               />
-              <DraftAdvisor draft={payload?.draft} currentHeroName={payload?.hero?.name} />
+              <DraftAdvisor draft={livePayload?.draft} />
             </div>
           )}
         </div>

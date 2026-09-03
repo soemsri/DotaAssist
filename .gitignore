@@ -13,6 +13,7 @@ pnpm-debug.log*
 
 # Tauri & Rust
 src-tauri/target/
+src-tauri/gen/
 **/target/
 
 # Environment

@@ -6,11 +6,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use tauri::{AppHandle, Manager, Window};
+use tauri::{AppHandle, Emitter, WebviewWindow};
 use tiny_http::{Response, Server, StatusCode};
 
 #[tauri::command]
-fn toggle_overlay_window(window: Window, overlay: bool) -> Result<(), String> {
+fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), String> {
     if overlay {
         let _ = window.set_always_on_top(true);
         let _ = window.set_decorations(false);
@@ -30,7 +30,10 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                 s
             }
             Err(err) => {
-                eprintln!("[DotaAssist Rust GSI] Failed to bind to {}: {}", address, err);
+                eprintln!(
+                    "[DotaAssist Rust GSI] Failed to bind to {}: {}",
+                    address, err
+                );
                 return;
             }
         };
@@ -52,7 +55,7 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                         if !body_str.trim().is_empty() {
                             match serde_json::from_str::<Value>(&body_str) {
                                 Ok(payload) => {
-                                    let _ = app_handle.emit_all("gsi-update", payload);
+                                    let _ = app_handle.emit("gsi-update", payload);
                                 }
                                 Err(e) => {
                                     eprintln!("[DotaAssist Rust GSI] Error parsing JSON: {}", e);
@@ -63,8 +66,11 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                         let response = Response::from_string("OK")
                             .with_status_code(StatusCode(200))
                             .with_header(
-                                tiny_http::Header::from_bytes(&b"Access-Control-Allow-Origin"[..], &b"*"[..])
-                                    .unwrap(),
+                                tiny_http::Header::from_bytes(
+                                    &b"Access-Control-Allow-Origin"[..],
+                                    &b"*"[..],
+                                )
+                                .unwrap(),
                             );
                         let _ = request.respond(response);
                     } else {
@@ -89,12 +95,12 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![toggle_overlay_window])
         .setup(move |app| {
-            let app_handle = app.handle();
+            let app_handle = app.handle().clone();
             start_gsi_http_server(app_handle, running_clone);
             Ok(())
         })
-        .on_window_event(move |event| {
-            if let tauri::WindowEvent::Destroyed = event.event() {
+        .on_window_event(move |_window, event| {
+            if let tauri::WindowEvent::Destroyed = event {
                 // Trigger shutdown of GSI background listener
                 running.store(false, Ordering::Relaxed);
             }

@@ -18,7 +18,7 @@
    - Built-in embedded Rust HTTP server (`tiny_http`) for receiving Dota 2 GSI payloads directly at localhost with zero latency.
 3. **Hybrid Data Flow: Local GSI + Public Meta APIs**:
    - **Local Dota 2 GSI (Game State Integration)**: High-speed local HTTP POST feed emitted by the Dota 2 game client on port `3000/gsi` containing clock time, hero status, inventory, gold, health, mana, and live draft.
-   - **Stratz / OpenDota API**: Public cloud APIs for global hero win rates, matchup matrices (+% advantage counters), and popular meta builds, paired with an offline fallback cache.
+   - **OpenDota API**: Public cloud API for ranked hero win rates, matchup records, and per-hero item-popularity buckets. If a request fails, the UI exposes the unavailable state and does not synthesize replacement values.
 
 ---
 
@@ -34,7 +34,7 @@
 | **Lotus Pools** | Spawns healing fruit every 3 minutes (3:00, 6:00, 9:00...) in the side lanes. |
 | **Roshan Respawn Window** | When Roshan dies, Aegis of the Immortal expires after 5 minutes (300s). Roshan respawns at a random timestamp between 8 and 11 minutes (480s to 660s) post-slain. |
 | **Day / Night Cycle** | Transitions every 5 minutes (300s). Determines Roshan pit location: Day = Southeast (Radiant), Night = Northwest (Dire). |
-| **Advantage %** | Matchup advantage calculated against target enemy heroes based on thousands of high-bracket matches. |
+| **Counter Edge** | Counter hero win rate against the selected target minus the neutral 50% baseline, calculated from OpenDota `games_played` and target-hero `wins`. |
 
 ---
 
@@ -49,9 +49,9 @@
                                                                Tauri Event IPC ("gsi-update")
                                                                        |
                                                                        v
-+------------------------+      Matchup / Counter Data      +----------------------+
-| OpenDota / Stratz API  | -------------------------------> | React Frontend App   |
-| (With Offline Cache)   |                                  | (Timing / Draft HUD) |
++------------------------+   Matchup / Popular Item Data    +----------------------+
+|    OpenDota API        | -------------------------------> | React Frontend App   |
+| (Live responses only)  |                                  | (Timing / Draft HUD) |
 +------------------------+                                  +----------------------+
 ```
 
@@ -66,14 +66,14 @@
 - `public/gamestate_integration_dotaassist.cfg`: Configuration template for Dota 2 client.
 - `src-tauri/`: Rust backend, embedded GSI HTTP server, window controls.
 - `src/services/`:
-  - `gsiService.ts`: Real-time GSI stream receiver & simulation engine.
+  - `gsiService.ts`: Real-time GSI stream receiver from Tauri IPC / Dota 2 client.
   - `timingEngine.ts`: Objective timing calculations (Bounty, Power, Wisdom, Roshan, Tormentor).
-  - `apiService.ts`: OpenDota & Stratz meta data integration.
+  - `apiService.ts`: OpenDota live statistics and item-popularity integration; bundled catalogs contain lookup metadata only.
   - `audioService.ts`: Web Audio API tone generator.
 - `src/components/`:
   - `OverlayHUD.tsx`: Compact draggable/floating in-game HUD.
   - `TimingAlerts.tsx`: Interactive countdown cards with Roshan tracker.
   - `DraftAdvisor.tsx`: Counter-pick calculator and win-rate analyzer.
-  - `ItemGuide.tsx`: Situational and core build recommendations.
+  - `ItemGuide.tsx`: Popular item phases derived from current OpenDota responses.
   - `GSIStatusBadge.tsx`: Connection health, hero vitality, and game clock.
   - `SettingsModal.tsx`: GSI config generator and audio tester.

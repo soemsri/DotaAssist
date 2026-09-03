@@ -2,7 +2,7 @@ export interface HeroCounter {
   heroId: number;
   heroName: string;
   heroSlug: string;
-  advantage: number; // e.g. +3.5% or -2.1%
+  edgeOverEven: number;
   winRateAgainst: number;
   sampleMatches: number;
 }
@@ -14,14 +14,14 @@ export interface HeroSynergy {
   synergyScore: number;
 }
 
-export interface RecommendedItem {
+export interface PopularItem {
   name: string;
   displayName: string;
-  cost: number;
-  tier: 'early' | 'core' | 'situational' | 'luxury';
+  cost: number | null;
+  tier: 'early' | 'core' | 'luxury';
   reason: string;
-  iconUrl?: string;
-  counterAgainst?: string;
+  popularityCount: number;
+  dataSource: 'OpenDota itemPopularity';
 }
 
 export interface TimingEventAlert {
@@ -42,6 +42,6 @@ export interface HeroMetaInfo {
   primary_attr: 'str' | 'agi' | 'int' | 'all';
   attack_type: 'Melee' | 'Ranged';
   roles: string[];
-  winRate: number;
-  pickRate: number;
+  winRate?: number;
+  statMatches?: number;
 }

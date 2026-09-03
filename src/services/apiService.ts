@@ -1,78 +1,153 @@
-import { HeroCounter, HeroMetaInfo, RecommendedItem } from '../types/meta';
+import rawHeroes from "../data/dotaHeroes.json";
+import rawItems from "../data/dotaItems.json";
+import { HeroCounter, HeroMetaInfo, PopularItem } from "../types/meta";
 
-// Pre-seeded offline hero meta cache for instant loading & network failover
-const FALLBACK_HEROES: HeroMetaInfo[] = [
-  { id: 1, name: 'npc_dota_hero_antimage', localized_name: 'Anti-Mage', primary_attr: 'agi', attack_type: 'Melee', roles: ['Carry', 'Escape'], winRate: 51.4, pickRate: 14.2 },
-  { id: 2, name: 'npc_dota_hero_axe', localized_name: 'Axe', primary_attr: 'str', attack_type: 'Melee', roles: ['Initiator', 'Durable', 'Disabler'], winRate: 52.8, pickRate: 16.5 },
-  { id: 8, name: 'npc_dota_hero_juggernaut', localized_name: 'Juggernaut', primary_attr: 'agi', attack_type: 'Melee', roles: ['Carry', 'Pusher'], winRate: 50.9, pickRate: 18.1 },
-  { id: 14, name: 'npc_dota_hero_pudge', localized_name: 'Pudge', primary_attr: 'str', attack_type: 'Melee', roles: ['Disabler', 'Initiator', 'Durable'], winRate: 50.3, pickRate: 27.8 },
-  { id: 22, name: 'npc_dota_hero_zeus', localized_name: 'Zeus', primary_attr: 'int', attack_type: 'Ranged', roles: ['Nuker', 'Carry'], winRate: 53.1, pickRate: 12.4 },
-  { id: 26, name: 'npc_dota_hero_lion', localized_name: 'Lion', primary_attr: 'int', attack_type: 'Ranged', roles: ['Support', 'Disabler', 'Nuker'], winRate: 48.9, pickRate: 22.0 },
-  { id: 44, name: 'npc_dota_hero_phantom_assassin', localized_name: 'Phantom Assassin', primary_attr: 'agi', attack_type: 'Melee', roles: ['Carry', 'Escape'], winRate: 51.7, pickRate: 20.3 },
-  { id: 74, name: 'npc_dota_hero_invoker', localized_name: 'Invoker', primary_attr: 'all', attack_type: 'Ranged', roles: ['Carry', 'Nuker', 'Disabler'], winRate: 49.5, pickRate: 15.6 },
-  { id: 86, name: 'npc_dota_hero_rubick', localized_name: 'Rubick', primary_attr: 'int', attack_type: 'Ranged', roles: ['Support', 'Disabler', 'Nuker'], winRate: 49.2, pickRate: 17.5 },
-  { id: 104, name: 'npc_dota_hero_legion_commander', localized_name: 'Legion Commander', primary_attr: 'str', attack_type: 'Melee', roles: ['Carry', 'Disabler', 'Initiator'], winRate: 52.1, pickRate: 15.9 },
-  { id: 114, name: 'npc_dota_hero_monkey_king', localized_name: 'Monkey King', primary_attr: 'agi', attack_type: 'Melee', roles: ['Carry', 'Escape', 'Disabler'], winRate: 49.8, pickRate: 11.2 },
-  { id: 129, name: 'npc_dota_hero_mars', localized_name: 'Mars', primary_attr: 'str', attack_type: 'Melee', roles: ['Initiator', 'Durable', 'Disabler'], winRate: 50.6, pickRate: 12.8 },
-  { id: 138, name: 'npc_dota_hero_muerta', localized_name: 'Muerta', primary_attr: 'int', attack_type: 'Ranged', roles: ['Carry', 'Nuker', 'Disabler'], winRate: 50.1, pickRate: 8.5 },
-  { id: 145, name: 'npc_dota_hero_ringmaster', localized_name: 'Ringmaster', primary_attr: 'int', attack_type: 'Ranged', roles: ['Support', 'Disabler', 'Nuker'], winRate: 52.4, pickRate: 14.8 }
-];
+interface DotaItemRecord {
+  id: number;
+  key: string;
+  displayName: string;
+  cost: number | null;
+  img?: string;
+}
 
-export class OpenDotaStratzService {
+interface OpenDotaHeroStats {
+  id: number;
+  name: string;
+  localized_name: string;
+  primary_attr: "str" | "agi" | "int" | "all";
+  attack_type: "Melee" | "Ranged";
+  roles: string[];
+  [key: string]: unknown;
+}
+
+interface OpenDotaMatchup {
+  hero_id: number;
+  games_played: number;
+  wins: number;
+}
+
+interface OpenDotaItemPopularity {
+  start_game_items?: Record<string, number>;
+  early_game_items?: Record<string, number>;
+  mid_game_items?: Record<string, number>;
+  late_game_items?: Record<string, number>;
+}
+
+const ITEMS_MAP = rawItems as unknown as Record<string, DotaItemRecord>;
+const RANK_BRACKETS = ["1", "2", "3", "4", "5", "6", "7", "8"] as const;
+
+function isFiniteNonNegative(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function getRankedTotals(item: OpenDotaHeroStats): { wins: number; picks: number } | null {
+  let wins = 0;
+  let picks = 0;
+
+  for (const bracket of RANK_BRACKETS) {
+    const bracketWins = item[`${bracket}_win`];
+    const bracketPicks = item[`${bracket}_pick`];
+    if (isFiniteNonNegative(bracketWins)) wins += bracketWins;
+    if (isFiniteNonNegative(bracketPicks)) picks += bracketPicks;
+  }
+
+  return picks > 0 && wins <= picks ? { wins, picks } : null;
+}
+
+export class OpenDotaService {
   private heroCache: Map<number, HeroMetaInfo> = new Map();
   private nameToIdMap: Map<string, number> = new Map();
   private matchupsCache: Map<number, HeroCounter[]> = new Map();
+  private popularItemsCache: Map<number, PopularItem[]> = new Map();
+  private heroStatsRequest: Promise<boolean> | null = null;
 
   constructor() {
-    this.seedFallback();
+    this.loadHeroCatalog();
   }
 
-  private seedFallback() {
-    FALLBACK_HEROES.forEach((hero) => {
-      this.heroCache.set(hero.id, hero);
-      this.nameToIdMap.set(hero.name.toLowerCase(), hero.id);
-      this.nameToIdMap.set(hero.localized_name.toLowerCase(), hero.id);
-      // Stripped name (e.g. 'pudge' from 'npc_dota_hero_pudge')
-      const short = hero.name.replace('npc_dota_hero_', '').toLowerCase();
-      this.nameToIdMap.set(short, hero.id);
-    });
+  /**
+   * The bundled catalog contains identity and role metadata only. Runtime
+   * statistics are populated exclusively by successful OpenDota responses.
+   */
+  private loadHeroCatalog() {
+    const heroes = rawHeroes as HeroMetaInfo[];
+    heroes.forEach((hero) => this.storeHero(hero));
   }
 
-  public async initData(): Promise<void> {
+  private storeHero(hero: HeroMetaInfo) {
+    this.heroCache.set(hero.id, hero);
+    this.nameToIdMap.set(hero.name.toLowerCase(), hero.id);
+    this.nameToIdMap.set(hero.localized_name.toLowerCase(), hero.id);
+    this.nameToIdMap.set(
+      hero.name.replace("npc_dota_hero_", "").toLowerCase(),
+      hero.id,
+    );
+  }
+
+  /** Fetch current hero metadata and ranked win statistics from OpenDota. */
+  public async initData(): Promise<boolean> {
+    if (!this.heroStatsRequest) {
+      this.heroStatsRequest = this.fetchHeroStats().finally(() => {
+        this.heroStatsRequest = null;
+      });
+    }
+
+    return this.heroStatsRequest;
+  }
+
+  private async fetchHeroStats(): Promise<boolean> {
     try {
-      const res = await fetch('https://api.opendota.com/api/heroStats');
-      if (!res.ok) throw new Error(`OpenDota API error: ${res.statusText}`);
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        data.forEach((item: { id: number; name: string; localized_name: string; primary_attr: 'str'|'agi'|'int'|'all'; attack_type: 'Melee'|'Ranged'; roles: string[]; pro_win?: number; pro_pick?: number; turbo_wins?: number; turbo_picks?: number }) => {
-          const totalMatches = (item.pro_pick || 0) + (item.turbo_picks || 100);
-          const totalWins = (item.pro_win || 0) + (item.turbo_wins || 50);
-          const winRate = Number(((totalWins / Math.max(1, totalMatches)) * 100).toFixed(1));
-
-          const heroInfo: HeroMetaInfo = {
-            id: item.id,
-            name: item.name,
-            localized_name: item.localized_name,
-            primary_attr: item.primary_attr,
-            attack_type: item.attack_type,
-            roles: item.roles,
-            winRate: isNaN(winRate) ? 50.0 : winRate,
-            pickRate: 10.0,
-          };
-          this.heroCache.set(item.id, heroInfo);
-          this.nameToIdMap.set(item.name.toLowerCase(), item.id);
-          this.nameToIdMap.set(item.localized_name.toLowerCase(), item.id);
-          const short = item.name.replace('npc_dota_hero_', '').toLowerCase();
-          this.nameToIdMap.set(short, item.id);
-        });
+      const res = await fetch("https://api.opendota.com/api/heroStats");
+      if (!res.ok) {
+        throw new Error(`OpenDota heroStats returned HTTP ${res.status}`);
       }
-    } catch {
-      // Fallback is already loaded
+
+      const data: unknown = await res.json();
+      if (!Array.isArray(data)) {
+        throw new Error("OpenDota heroStats returned an invalid payload");
+      }
+
+      data.forEach((rawItem: unknown) => {
+        const item = rawItem as OpenDotaHeroStats;
+        if (
+          !Number.isInteger(item.id) ||
+          typeof item.name !== "string" ||
+          typeof item.localized_name !== "string" ||
+          !Array.isArray(item.roles)
+        ) {
+          return;
+        }
+
+        const totals = getRankedTotals(item);
+        const heroInfo: HeroMetaInfo = {
+          id: item.id,
+          name: item.name,
+          localized_name: item.localized_name,
+          primary_attr: item.primary_attr,
+          attack_type: item.attack_type,
+          roles: item.roles,
+          ...(totals
+            ? {
+                winRate: Number(((totals.wins / totals.picks) * 100).toFixed(1)),
+                statMatches: totals.picks,
+              }
+            : {}),
+        };
+
+        this.storeHero(heroInfo);
+      });
+
+      return true;
+    } catch (error) {
+      console.warn("[OpenDota] Hero statistics unavailable:", error);
+      return false;
     }
   }
 
   public getAllHeroes(): HeroMetaInfo[] {
-    return Array.from(this.heroCache.values());
+    return Array.from(this.heroCache.values()).sort((a, b) =>
+      a.localized_name.localeCompare(b.localized_name),
+    );
   }
 
   public getHeroById(id: number): HeroMetaInfo | undefined {
@@ -80,160 +155,166 @@ export class OpenDotaStratzService {
   }
 
   public getHeroByName(name: string): HeroMetaInfo | undefined {
-    const clean = name.toLowerCase().trim();
-    const id = this.nameToIdMap.get(clean);
-    if (id) return this.heroCache.get(id);
+    if (!name) return undefined;
 
-    // Partial search
-    for (const [key, valId] of this.nameToIdMap.entries()) {
+    const clean = name.toLowerCase().trim();
+    const exactId = this.nameToIdMap.get(clean);
+    if (exactId !== undefined) return this.heroCache.get(exactId);
+
+    for (const [key, heroId] of this.nameToIdMap.entries()) {
       if (clean.includes(key) || key.includes(clean)) {
-        return this.heroCache.get(valId);
+        return this.heroCache.get(heroId);
       }
     }
     return undefined;
   }
 
+  /** Fetch counter win rates directly from OpenDota matchup records. */
   public async getCountersForHero(heroId: number): Promise<HeroCounter[]> {
-    if (this.matchupsCache.has(heroId)) {
-      return this.matchupsCache.get(heroId)!;
+    const cached = this.matchupsCache.get(heroId);
+    if (cached) return cached;
+
+    const res = await fetch(`https://api.opendota.com/api/heroes/${heroId}/matchups`);
+    if (!res.ok) {
+      throw new Error(`OpenDota matchups returned HTTP ${res.status}`);
     }
 
-    try {
-      const res = await fetch(`https://api.opendota.com/api/heroes/${heroId}/matchups`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          // Sort by games played and win rate against
-          const counters: HeroCounter[] = data
-            .filter((m: { games_played: number }) => m.games_played > 20)
-            .map((m: { hero_id: number; games_played: number; wins: number }) => {
-              const enemy = this.getHeroById(m.hero_id);
-              const winRate = (m.wins / m.games_played) * 100;
-              // Advantage: if target hero won only 42% of matches vs this hero, this hero has +8% advantage
-              const advantage = Number((50 - winRate).toFixed(1));
-              return {
-                heroId: m.hero_id,
-                heroName: enemy?.localized_name || `Hero #${m.hero_id}`,
-                heroSlug: enemy?.name || '',
-                advantage,
-                winRateAgainst: Number(winRate.toFixed(1)),
-                sampleMatches: m.games_played,
-              };
-            })
-            .sort((a, b) => b.advantage - a.advantage)
-            .slice(0, 5);
-
-          this.matchupsCache.set(heroId, counters);
-          return counters;
-        }
-      }
-    } catch {
-      // Return synthetic counter heuristic if offline
+    const data: unknown = await res.json();
+    if (!Array.isArray(data)) {
+      throw new Error("OpenDota matchups returned an invalid payload");
     }
 
-    // Dynamic heuristic fallback
-    const target = this.getHeroById(heroId);
-    const mockCounters: HeroCounter[] = [];
-    if (target) {
-      if (target.roles.includes('Carry') && target.primary_attr === 'agi') {
-        mockCounters.push(
-          { heroId: 2, heroName: 'Axe', heroSlug: 'npc_dota_hero_axe', advantage: 4.8, winRateAgainst: 45.2, sampleMatches: 1200 },
-          { heroId: 104, heroName: 'Legion Commander', heroSlug: 'npc_dota_hero_legion_commander', advantage: 3.9, winRateAgainst: 46.1, sampleMatches: 980 }
-        );
-      } else if (target.primary_attr === 'int') {
-        mockCounters.push(
-          { heroId: 1, heroName: 'Anti-Mage', heroSlug: 'npc_dota_hero_antimage', advantage: 6.2, winRateAgainst: 43.8, sampleMatches: 1540 },
-          { heroId: 44, heroName: 'Phantom Assassin', heroSlug: 'npc_dota_hero_phantom_assassin', advantage: 4.1, winRateAgainst: 45.9, sampleMatches: 1100 }
-        );
-      } else {
-        mockCounters.push(
-          { heroId: 26, heroName: 'Lion', heroSlug: 'npc_dota_hero_lion', advantage: 3.5, winRateAgainst: 46.5, sampleMatches: 870 },
-          { heroId: 22, heroName: 'Zeus', heroSlug: 'npc_dota_hero_zeus', advantage: 2.8, winRateAgainst: 47.2, sampleMatches: 950 }
-        );
-      }
-    }
-    return mockCounters;
+    const counters: HeroCounter[] = (data as OpenDotaMatchup[])
+      .filter(
+        (matchup) =>
+          Number.isInteger(matchup.hero_id) &&
+          isFiniteNonNegative(matchup.games_played) &&
+          isFiniteNonNegative(matchup.wins) &&
+          matchup.games_played > 10 &&
+          matchup.wins <= matchup.games_played,
+      )
+      .map((matchup) => {
+        const counterHero = this.getHeroById(matchup.hero_id);
+        const counterWinRate =
+          ((matchup.games_played - matchup.wins) / matchup.games_played) * 100;
+
+        return {
+          heroId: matchup.hero_id,
+          heroName: counterHero?.localized_name ?? `Hero #${matchup.hero_id}`,
+          heroSlug: counterHero?.name ?? "",
+          edgeOverEven: Number((counterWinRate - 50).toFixed(1)),
+          winRateAgainst: Number(counterWinRate.toFixed(1)),
+          sampleMatches: matchup.games_played,
+        };
+      })
+      .sort((a, b) => b.winRateAgainst - a.winRateAgainst)
+      .slice(0, 6);
+
+    this.matchupsCache.set(heroId, counters);
+    return counters;
   }
 
-  public getRecommendedItems(heroName: string, enemyHeroNames: string[] = []): RecommendedItem[] {
-    const items: RecommendedItem[] = [];
-    const heroClean = heroName.toLowerCase();
-    const enemiesStr = enemyHeroNames.join(' ').toLowerCase();
+  /**
+   * Build an item list only from OpenDota's per-hero itemPopularity buckets.
+   * The bundled item catalog is used solely to resolve item IDs to names/costs.
+   */
+  public async getPopularItemsForHero(heroId: number): Promise<PopularItem[]> {
+    const cached = this.popularItemsCache.get(heroId);
+    if (cached) return cached;
 
-    // Universal core items
-    if (heroClean.includes('antimage')) {
-      items.push(
-        { name: 'bfury', displayName: 'Battle Fury', cost: 4100, tier: 'core', reason: 'Essential flash farming and creep clearance' },
-        { name: 'manta', displayName: 'Manta Style', cost: 4600, tier: 'core', reason: 'Purge silences & rapid mana burning with illusions' },
-        { name: 'abyssal_blade', displayName: 'Abyssal Blade', cost: 6250, tier: 'luxury', reason: 'Instant BKB-piercing lockdown stun' }
-      );
-    } else if (heroClean.includes('pudge')) {
-      items.push(
-        { name: 'blink', displayName: 'Blink Dagger', cost: 2250, tier: 'core', reason: 'Repositioning and instant Dismember' },
-        { name: 'aghanims_shard', displayName: "Aghanim's Shard", cost: 1400, tier: 'early', reason: 'Swallow teammates to save them from stuns/burst' },
-        { name: 'heart', displayName: 'Heart of Tarrasque', cost: 5100, tier: 'core', reason: 'Massive HP scaling with Flesh Heap stacks' }
-      );
-    } else if (heroClean.includes('axe')) {
-      items.push(
-        { name: 'blink', displayName: 'Blink Dagger', cost: 2250, tier: 'core', reason: 'Initiation for multi-hero Berserker Call' },
-        { name: 'blade_mail', displayName: 'Blade Mail', cost: 2100, tier: 'core', reason: 'Reflects 100% damage while taunting' },
-        { name: 'black_king_bar', displayName: 'Black King Bar', cost: 4050, tier: 'situational', reason: 'Avoid getting kited or disabled during Call' }
-      );
-    } else {
-      items.push(
-        { name: 'boots', displayName: 'Power Treads / Phase', cost: 1400, tier: 'early', reason: 'Mobility and stat attributes' },
-        { name: 'black_king_bar', displayName: 'Black King Bar', cost: 4050, tier: 'core', reason: 'Debuff immunity in team fights' },
-        { name: 'blink', displayName: 'Blink Dagger', cost: 2250, tier: 'core', reason: 'Repositioning and map initiation' }
-      );
+    const res = await fetch(
+      `https://api.opendota.com/api/heroes/${heroId}/itemPopularity`,
+    );
+    if (!res.ok) {
+      throw new Error(`OpenDota itemPopularity returned HTTP ${res.status}`);
     }
 
-    // Dynamic situational counter recommendations based on enemy lineup
-    if (enemiesStr.includes('phantom_assassin') || enemiesStr.includes('windrunner') || enemiesStr.includes('butterfly')) {
-      items.push({
-        name: 'monkey_king_bar',
-        displayName: 'Monkey King Bar',
-        cost: 4975,
-        tier: 'situational',
-        reason: 'Provides 80% True Strike to pierce enemy Evasion/Blur',
-        counterAgainst: 'Phantom Assassin / Butterfly Evasion'
-      });
+    const data: unknown = await res.json();
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("OpenDota itemPopularity returned an invalid payload");
     }
 
-    if (enemiesStr.includes('bristleback') || enemiesStr.includes('morphling') || enemiesStr.includes('necrophos') || enemiesStr.includes('alchemist')) {
-      items.push({
-        name: 'spirit_vessel',
-        displayName: 'Spirit Vessel',
-        cost: 2980,
-        tier: 'situational',
-        reason: 'Reduces enemy healing/HP regen by 45% and deals % current HP damage',
-        counterAgainst: 'High Regen / Healer Heroes'
-      });
-    }
+    const popularity = data as OpenDotaItemPopularity;
+    const phases: Array<{
+      bucket: Record<string, number> | undefined;
+      tier: PopularItem["tier"];
+      label: string;
+      limit: number;
+    }> = [
+      {
+        bucket: popularity.start_game_items,
+        tier: "early",
+        label: "starting-item",
+        limit: 2,
+      },
+      {
+        bucket: popularity.early_game_items,
+        tier: "early",
+        label: "early-game",
+        limit: 2,
+      },
+      {
+        bucket: popularity.mid_game_items,
+        tier: "core",
+        label: "mid-game",
+        limit: 3,
+      },
+      {
+        bucket: popularity.late_game_items,
+        tier: "luxury",
+        label: "late-game",
+        limit: 3,
+      },
+    ];
 
-    if (enemiesStr.includes('lion') || enemiesStr.includes('shadow_shaman') || enemiesStr.includes('invoker') || enemiesStr.includes('zeus')) {
-      items.push({
-        name: 'black_king_bar',
-        displayName: 'Black King Bar',
-        cost: 4050,
-        tier: 'situational',
-        reason: 'High magic burst & disable threat detected',
-        counterAgainst: 'Heavy Magic / Disablers'
-      });
-    }
+    const seen = new Set<string>();
+    const items: PopularItem[] = [];
 
-    if (enemiesStr.includes('axe') || enemiesStr.includes('legion_commander') || enemiesStr.includes('faceless_void')) {
-      items.push({
-        name: 'aeon_disk',
-        displayName: 'Aeon Disk',
-        cost: 3000,
-        tier: 'situational',
-        reason: 'Combo-breaker shield triggers when taking lethal burst damage',
-        counterAgainst: 'Instant Lock-down Burst'
-      });
-    }
+    phases.forEach(({ bucket, tier, label, limit }) => {
+      if (!bucket || typeof bucket !== "object") return;
 
+      const phaseItems = Object.entries(bucket)
+        .filter(([, count]) => isFiniteNonNegative(count) && count > 0)
+        .sort(([, countA], [, countB]) => countB - countA)
+        .flatMap(([itemId, popularityCount]) => {
+          const details = ITEMS_MAP[itemId];
+          if (
+            !details ||
+            !details.key ||
+            details.key.startsWith("recipe_") ||
+            seen.has(details.key)
+          ) {
+            return [];
+          }
+
+          return [
+            {
+              name: details.key,
+              displayName: details.displayName,
+              cost: details.cost,
+              tier,
+              reason: `OpenDota ${label} popularity: ${popularityCount.toLocaleString()} recorded purchases`,
+              popularityCount,
+              dataSource: "OpenDota itemPopularity" as const,
+            },
+          ];
+        })
+        .slice(0, limit);
+
+      phaseItems.forEach((item) => seen.add(item.name));
+      items.push(...phaseItems);
+    });
+
+    this.popularItemsCache.set(heroId, items);
     return items;
+  }
+
+  public getItemDetails(itemIdOrKey: number | string): DotaItemRecord | undefined {
+    if (typeof itemIdOrKey === "number") {
+      return ITEMS_MAP[itemIdOrKey.toString()];
+    }
+    return Object.values(ITEMS_MAP).find((item) => item.key === itemIdOrKey);
   }
 }
 
-export const apiService = new OpenDotaStratzService();
+export const apiService = new OpenDotaService();

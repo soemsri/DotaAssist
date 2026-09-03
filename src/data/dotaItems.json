@@ -1,0 +1,4511 @@
+{
+  "1": {
+    "id": 1,
+    "key": "blink",
+    "displayName": "Blink Dagger",
+    "cost": 2250,
+    "img": "/apps/dota2/images/dota_react/items/blink.png?t=1593393829403",
+    "lore": "The fabled dagger used by the fastest assassin ever to walk the lands.",
+    "notes": "Self-casting will cause you to teleport in the direction of your team's fountain."
+  },
+  "2": {
+    "id": 2,
+    "key": "blades_of_attack",
+    "displayName": "Blades of Attack",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/blades_of_attack.png?t=1593393829403",
+    "lore": "The damage of these small, concealable blades should not be underestimated.",
+    "notes": ""
+  },
+  "3": {
+    "id": 3,
+    "key": "broadsword",
+    "displayName": "Broadsword",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/broadsword.png?t=1593393829403",
+    "lore": "The classic weapon of choice for knights, this blade is sturdy and reliable for slaying enemies.",
+    "notes": ""
+  },
+  "4": {
+    "id": 4,
+    "key": "chainmail",
+    "displayName": "Chainmail",
+    "cost": 500,
+    "img": "/apps/dota2/images/dota_react/items/chainmail.png?t=1593393829403",
+    "lore": "A medium weave of metal chains.",
+    "notes": ""
+  },
+  "5": {
+    "id": 5,
+    "key": "claymore",
+    "displayName": "Claymore",
+    "cost": 1350,
+    "img": "/apps/dota2/images/dota_react/items/claymore.png?t=1593393829403",
+    "lore": "A sword that can cut through armor, it's a commonly chosen first weapon for budding swordsmen.",
+    "notes": ""
+  },
+  "6": {
+    "id": 6,
+    "key": "helm_of_iron_will",
+    "displayName": "Helm of Iron Will",
+    "cost": 975,
+    "img": "/apps/dota2/images/dota_react/items/helm_of_iron_will.png?t=1593393829403",
+    "lore": "The helmet of a legendary warrior who fell in battle.",
+    "notes": ""
+  },
+  "7": {
+    "id": 7,
+    "key": "javelin",
+    "displayName": "Javelin",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/javelin.png?t=1593393829403",
+    "lore": "A rather typical spear that can sometimes pierce through an enemy's armor when used to attack.",
+    "notes": ""
+  },
+  "8": {
+    "id": 8,
+    "key": "mithril_hammer",
+    "displayName": "Mithril Hammer",
+    "cost": 1600,
+    "img": "/apps/dota2/images/dota_react/items/mithril_hammer.png?t=1593393829403",
+    "lore": "A hammer forged of pure mithril.",
+    "notes": ""
+  },
+  "9": {
+    "id": 9,
+    "key": "platemail",
+    "displayName": "Platemail",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/platemail.png?t=1593393829403",
+    "lore": "Thick metal plates that protect the entire upper body. Avoid dropping on feet.",
+    "notes": ""
+  },
+  "10": {
+    "id": 10,
+    "key": "quarterstaff",
+    "displayName": "Quarterstaff",
+    "cost": 875,
+    "img": "/apps/dota2/images/dota_react/items/quarterstaff.png?t=1593393829403",
+    "lore": "A basic staff that allows you to strike quickly.",
+    "notes": ""
+  },
+  "11": {
+    "id": 11,
+    "key": "quelling_blade",
+    "displayName": "Quelling Blade",
+    "cost": 100,
+    "img": "/apps/dota2/images/dota_react/items/quelling_blade.png?t=1593393829403",
+    "lore": "The axe of a fallen gnome, it allows you to effectively maneuver the forest.",
+    "notes": "Effects of multiple quelling blades do not stack."
+  },
+  "12": {
+    "id": 12,
+    "key": "ring_of_protection",
+    "displayName": "Ring of Protection",
+    "cost": 175,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_protection.png?t=1593393829403",
+    "lore": "A glimmering ring that defends its bearer.",
+    "notes": ""
+  },
+  "13": {
+    "id": 13,
+    "key": "gauntlets",
+    "displayName": "Gauntlets of Strength",
+    "cost": 140,
+    "img": "/apps/dota2/images/dota_react/items/gauntlets.png?t=1593393829403",
+    "lore": "Studded leather gloves that add brute strength.",
+    "notes": ""
+  },
+  "14": {
+    "id": 14,
+    "key": "slippers",
+    "displayName": "Slippers of Agility",
+    "cost": 140,
+    "img": "/apps/dota2/images/dota_react/items/slippers.png?t=1593393829403",
+    "lore": "Light boots made from spider skin that tingles your senses.",
+    "notes": ""
+  },
+  "15": {
+    "id": 15,
+    "key": "mantle",
+    "displayName": "Mantle of Intelligence",
+    "cost": 140,
+    "img": "/apps/dota2/images/dota_react/items/mantle.png?t=1593393829403",
+    "lore": "A beautiful sapphire mantle worn by generations of queens.",
+    "notes": ""
+  },
+  "16": {
+    "id": 16,
+    "key": "branches",
+    "displayName": "Iron Branch",
+    "cost": 55,
+    "img": "/apps/dota2/images/dota_react/items/branches.png?t=1593393829403",
+    "lore": "A seemingly ordinary branch, its ironlike qualities are bestowed upon the bearer.",
+    "notes": ""
+  },
+  "17": {
+    "id": 17,
+    "key": "belt_of_strength",
+    "displayName": "Belt of Strength",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/belt_of_strength.png?t=1593393829403",
+    "lore": "A valued accessory for improving vitality.",
+    "notes": ""
+  },
+  "18": {
+    "id": 18,
+    "key": "boots_of_elves",
+    "displayName": "Band of Elvenskin",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/boots_of_elves.png?t=1593393829403",
+    "lore": "A tensile fabric often used for its light weight and ease of movement.",
+    "notes": ""
+  },
+  "19": {
+    "id": 19,
+    "key": "robe",
+    "displayName": "Robe of the Magi",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/robe.png?t=1593393829403",
+    "lore": "This robe corrupts the soul of the user, but provides wisdom in return.",
+    "notes": ""
+  },
+  "20": {
+    "id": 20,
+    "key": "circlet",
+    "displayName": "Circlet",
+    "cost": 155,
+    "img": "/apps/dota2/images/dota_react/items/circlet.png?t=1593393829403",
+    "lore": "An elegant circlet designed for human princesses.",
+    "notes": ""
+  },
+  "21": {
+    "id": 21,
+    "key": "ogre_axe",
+    "displayName": "Ogre Axe",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/ogre_axe.png?t=1593393829403",
+    "lore": "You grow stronger just by holding it.",
+    "notes": ""
+  },
+  "22": {
+    "id": 22,
+    "key": "blade_of_alacrity",
+    "displayName": "Blade of Alacrity",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/blade_of_alacrity.png?t=1593393829403",
+    "lore": "A long blade imbued with time magic.",
+    "notes": ""
+  },
+  "23": {
+    "id": 23,
+    "key": "staff_of_wizardry",
+    "displayName": "Staff of Wizardry",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/staff_of_wizardry.png?t=1593393829403",
+    "lore": "A staff of magical powers passed down from the eldest mages.",
+    "notes": ""
+  },
+  "24": {
+    "id": 24,
+    "key": "ultimate_orb",
+    "displayName": "Ultimate Orb",
+    "cost": 2800,
+    "img": "/apps/dota2/images/dota_react/items/ultimate_orb.png?t=1593393829403",
+    "lore": "A mystical orb containing the essence of life.",
+    "notes": ""
+  },
+  "25": {
+    "id": 25,
+    "key": "gloves",
+    "displayName": "Gloves of Haste",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/gloves.png?t=1593393829403",
+    "lore": "A pair of magical gloves that seems to render weapons weightless.",
+    "notes": ""
+  },
+  "26": {
+    "id": 26,
+    "key": "lifesteal",
+    "displayName": "Morbid Mask",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/lifesteal.png?t=1593393829403",
+    "lore": "A mask that drains the energy of those caught in its gaze.",
+    "notes": ""
+  },
+  "27": {
+    "id": 27,
+    "key": "ring_of_regen",
+    "displayName": "Ring of Regen",
+    "cost": 175,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_regen.png?t=1593393829403",
+    "lore": "This ring is considered a good luck charm among the Gnomes.",
+    "notes": ""
+  },
+  "28": {
+    "id": 28,
+    "key": "sobi_mask",
+    "displayName": "Sage's Mask",
+    "cost": 175,
+    "img": "/apps/dota2/images/dota_react/items/sobi_mask.png?t=1593393829403",
+    "lore": "A mask commonly used by mages and warlocks for various rituals.",
+    "notes": ""
+  },
+  "29": {
+    "id": 29,
+    "key": "boots",
+    "displayName": "Boots of Speed",
+    "cost": 500,
+    "img": "/apps/dota2/images/dota_react/items/boots.png?t=1593393829403",
+    "lore": "Fleet footwear, increasing movement.",
+    "notes": ""
+  },
+  "30": {
+    "id": 30,
+    "key": "gem",
+    "displayName": "Gem of True Sight",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/gem.png?t=1593393829403",
+    "lore": "Not one thrall creature of the depths,\r\nNor spirit bound in drowning's keep,\r\nNor Maelrawn the Tentacular,\r\nShall rest till seas, gem comes to sleep.",
+    "notes": "Disabled while on a courier."
+  },
+  "31": {
+    "id": 31,
+    "key": "cloak",
+    "displayName": "Cloak",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/cloak.png?t=1593393829403",
+    "lore": "A cloak made of a magical material that works to dispel any magic cast on it.",
+    "notes": "Stacks multiplicatively with other sources of magic resistance."
+  },
+  "32": {
+    "id": 32,
+    "key": "talisman_of_evasion",
+    "displayName": "Talisman of Evasion",
+    "cost": 1300,
+    "img": "/apps/dota2/images/dota_react/items/talisman_of_evasion.png?t=1593393829403",
+    "lore": "A necklace that allows you to anticipate enemy attacks.",
+    "notes": "Stacks diminishingly with other sources of Evasion."
+  },
+  "33": {
+    "id": 33,
+    "key": "cheese",
+    "displayName": "Cheese",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/cheese.png?t=1593393829403",
+    "lore": "Made from the milk of a long lost Furbolg vendor, it restores the vitality of those who taste it.",
+    "notes": "Cheese is shareable."
+  },
+  "34": {
+    "id": 34,
+    "key": "magic_stick",
+    "displayName": "Magic Stick",
+    "cost": 200,
+    "img": "/apps/dota2/images/dota_react/items/magic_stick.png?t=1593393829403",
+    "lore": "A simple wand used to channel magic energies, it is favored by apprentice wizards and great warlocks alike.",
+    "notes": "Gains charges for spells cast by visible enemies in 1200 range.\nCertain abilities and item abilities will not add charges."
+  },
+  "35": {
+    "id": 35,
+    "key": "recipe_magic_wand",
+    "displayName": "Magic Wand Recipe",
+    "cost": 150,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "36": {
+    "id": 36,
+    "key": "magic_wand",
+    "displayName": "Magic Wand",
+    "cost": 460,
+    "img": "/apps/dota2/images/dota_react/items/magic_wand.png?t=1593393829403",
+    "lore": "A simple wand used to channel magic energies, it is favored by apprentice wizards and great warlocks alike.",
+    "notes": "Gains charges for spells cast by visible enemies in 1200 range.\nCertain abilities and item abilities will not add charges."
+  },
+  "37": {
+    "id": 37,
+    "key": "ghost",
+    "displayName": "Ghost Scepter",
+    "cost": 1500,
+    "img": "/apps/dota2/images/dota_react/items/ghost.png?t=1593393829403",
+    "lore": "Imbues the wielder with a ghostly presence, allowing them to evade physical damage.",
+    "notes": "Ends if you become Debuff Immune, and will have no effect if you are already Debuff Immune.\nShares cooldown with all Ghost Scepter upgrades."
+  },
+  "38": {
+    "id": 38,
+    "key": "clarity",
+    "displayName": "Clarity",
+    "cost": 60,
+    "img": "/apps/dota2/images/dota_react/items/clarity.png?t=1593393829403",
+    "lore": "Clear water that enhances the ability to meditate.",
+    "notes": ""
+  },
+  "39": {
+    "id": 39,
+    "key": "flask",
+    "displayName": "Healing Salve",
+    "cost": 100,
+    "img": "/apps/dota2/images/dota_react/items/flask.png?t=1593393829403",
+    "lore": "A magical salve that can quickly mend even the deepest of wounds.",
+    "notes": ""
+  },
+  "40": {
+    "id": 40,
+    "key": "dust",
+    "displayName": "Dust of Appearance",
+    "cost": 80,
+    "img": "/apps/dota2/images/dota_react/items/dust.png?t=1593393829403",
+    "lore": "One may hide visage, but never volume.",
+    "notes": "Places a debuff on enemy units in the area that reveals them when they are invisible."
+  },
+  "41": {
+    "id": 41,
+    "key": "bottle",
+    "displayName": "Bottle",
+    "cost": 675,
+    "img": "/apps/dota2/images/dota_react/items/bottle.png?t=1593393829403",
+    "lore": "An old bottle that survived the ages, the contents placed inside become enchanted.",
+    "notes": "Bottle is shareable. Stored runes cannot be shared.\nUsing a stored Bounty or Water rune fully refills the bottle if the bottle was full when the rune was stored; otherwise, it refills two charges."
+  },
+  "42": {
+    "id": 42,
+    "key": "ward_observer",
+    "displayName": "Observer Ward",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ward_observer.png?t=1593393829403",
+    "lore": "A form of half-sentient plant, often cultivated by apprentice wizards.",
+    "notes": ""
+  },
+  "43": {
+    "id": 43,
+    "key": "ward_sentry",
+    "displayName": "Sentry Ward",
+    "cost": 50,
+    "img": "/apps/dota2/images/dota_react/items/ward_sentry.png?t=1593393829403",
+    "lore": "A form of plant originally grown in the garden of a fearful king.",
+    "notes": ""
+  },
+  "44": {
+    "id": 44,
+    "key": "tango",
+    "displayName": "Tango",
+    "cost": 90,
+    "img": "/apps/dota2/images/dota_react/items/tango.png?t=1593393829403",
+    "lore": "Forage to survive on the battlefield.",
+    "notes": ""
+  },
+  "45": {
+    "id": 45,
+    "key": "courier",
+    "displayName": "Animal Courier",
+    "cost": 50,
+    "img": "/apps/dota2/images/dota_react/items/courier.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "46": {
+    "id": 46,
+    "key": "tpscroll",
+    "displayName": "Town Portal Scroll",
+    "cost": 100,
+    "img": "/apps/dota2/images/dota_react/items/tpscroll.png?t=1593393829403",
+    "lore": "What a hero truly needs.",
+    "notes": "If multiple heroes teleport to the same location in succession, the channeling time will be increased for each successive hero.\nTeleport can be prevented or canceled by Root abilities."
+  },
+  "47": {
+    "id": 47,
+    "key": "recipe_travel_boots",
+    "displayName": "Boots of Travel Recipe",
+    "cost": 2000,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "48": {
+    "id": 48,
+    "key": "travel_boots",
+    "displayName": "Boots of Travel",
+    "cost": 2500,
+    "img": "/apps/dota2/images/dota_react/items/travel_boots.png?t=1593393829403",
+    "lore": "Winged boots that grant omnipresence.",
+    "notes": ""
+  },
+  "50": {
+    "id": 50,
+    "key": "phase_boots",
+    "displayName": "Phase Boots",
+    "cost": 1450,
+    "img": "/apps/dota2/images/dota_react/items/phase_boots.png?t=1593393829403",
+    "lore": "Boots that allow the wearer to travel between the ether.",
+    "notes": ""
+  },
+  "51": {
+    "id": 51,
+    "key": "demon_edge",
+    "displayName": "Demon Edge",
+    "cost": 2200,
+    "img": "/apps/dota2/images/dota_react/items/demon_edge.png?t=1593393829403",
+    "lore": "One of the oldest weapons forged by the Demon-Smith Abzidian, it killed its maker when he tested its edge.",
+    "notes": ""
+  },
+  "52": {
+    "id": 52,
+    "key": "eagle",
+    "displayName": "Eaglesong",
+    "cost": 2800,
+    "img": "/apps/dota2/images/dota_react/items/eagle.png?t=1593393829403",
+    "lore": "Capturing the majestic call of an eagle, this mystical horn brings limitless dexterity to those who hear it.",
+    "notes": ""
+  },
+  "53": {
+    "id": 53,
+    "key": "reaver",
+    "displayName": "Reaver",
+    "cost": 2800,
+    "img": "/apps/dota2/images/dota_react/items/reaver.png?t=1593393829403",
+    "lore": "A massive axe capable of tearing whole mountains down.",
+    "notes": ""
+  },
+  "54": {
+    "id": 54,
+    "key": "relic",
+    "displayName": "Sacred Relic",
+    "cost": 3400,
+    "img": "/apps/dota2/images/dota_react/items/relic.png?t=1593393829403",
+    "lore": "An ancient weapon that often turns the tides of war.",
+    "notes": ""
+  },
+  "55": {
+    "id": 55,
+    "key": "hyperstone",
+    "displayName": "Hyperstone",
+    "cost": 2000,
+    "img": "/apps/dota2/images/dota_react/items/hyperstone.png?t=1593393829403",
+    "lore": "A mystical, carved stone that boosts the fervor of the holder.",
+    "notes": ""
+  },
+  "56": {
+    "id": 56,
+    "key": "ring_of_health",
+    "displayName": "Ring of Health",
+    "cost": 700,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_health.png?t=1593393829403",
+    "lore": "A shiny ring found beneath a fat halfling's corpse.",
+    "notes": ""
+  },
+  "57": {
+    "id": 57,
+    "key": "void_stone",
+    "displayName": "Void Stone",
+    "cost": 700,
+    "img": "/apps/dota2/images/dota_react/items/void_stone.png?t=1593393829403",
+    "lore": "Jewelry that was once used to channel nether realm magic, this ring pulses with energy.",
+    "notes": ""
+  },
+  "58": {
+    "id": 58,
+    "key": "mystic_staff",
+    "displayName": "Mystic Staff",
+    "cost": 2800,
+    "img": "/apps/dota2/images/dota_react/items/mystic_staff.png?t=1593393829403",
+    "lore": "Enigmatic staff made of only the most expensive crystals.",
+    "notes": ""
+  },
+  "59": {
+    "id": 59,
+    "key": "energy_booster",
+    "displayName": "Energy Booster",
+    "cost": 800,
+    "img": "/apps/dota2/images/dota_react/items/energy_booster.png?t=1593393829403",
+    "lore": "This lapis gemstone is commonly added to the collection of wizards seeking to improve their presence in combat.",
+    "notes": ""
+  },
+  "60": {
+    "id": 60,
+    "key": "point_booster",
+    "displayName": "Point Booster",
+    "cost": 1200,
+    "img": "/apps/dota2/images/dota_react/items/point_booster.png?t=1593393829403",
+    "lore": "A perfectly formed amethyst that nourishes body and mind when held.",
+    "notes": ""
+  },
+  "61": {
+    "id": 61,
+    "key": "vitality_booster",
+    "displayName": "Vitality Booster",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/vitality_booster.png?t=1593393829403",
+    "lore": "A ruby gemstone that has been passed down through generations of warrior kin.",
+    "notes": ""
+  },
+  "63": {
+    "id": 63,
+    "key": "power_treads",
+    "displayName": "Power Treads",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/power_treads.png?t=1593393829403",
+    "lore": "A pair of tough-skinned boots that change to meet the demands of the wearer.",
+    "notes": "Power Treads can be built using a Belt of Strength, Band of Elvenskin, or a Robe of the Magi."
+  },
+  "64": {
+    "id": 64,
+    "key": "recipe_hand_of_midas",
+    "displayName": "Hand of Midas Recipe",
+    "cost": 1750,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "65": {
+    "id": 65,
+    "key": "hand_of_midas",
+    "displayName": "Hand of Midas",
+    "cost": 2200,
+    "img": "/apps/dota2/images/dota_react/items/hand_of_midas.png?t=1593393829403",
+    "lore": "Preserved through unknown magical means, the Hand of Midas is a weapon of greed, sacrificing animals to line the owner's pockets.",
+    "notes": "The gold given is unreliable gold (you do not get the normal creep bounty).\nExperience gained by using Transmute is not shared."
+  },
+  "67": {
+    "id": 67,
+    "key": "oblivion_staff",
+    "displayName": "Oblivion Staff",
+    "cost": 1625,
+    "img": "/apps/dota2/images/dota_react/items/oblivion_staff.png?t=1593393829403",
+    "lore": "Deceptively hidden as an ordinary staff, it is actually very powerful, much like the Eldritch who originally possessed it.",
+    "notes": ""
+  },
+  "69": {
+    "id": 69,
+    "key": "pers",
+    "displayName": "Perseverance",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/pers.png?t=1593393829403",
+    "lore": "A gem that grants heart to the bearer.",
+    "notes": ""
+  },
+  "71": {
+    "id": 71,
+    "key": "poor_mans_shield",
+    "displayName": "Poor Man's Shield",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/poor_mans_shield.png?t=1593393829403",
+    "lore": "A busted old shield that seems to block more than it should.",
+    "notes": "Multiple sources of damage block do not stack."
+  },
+  "72": {
+    "id": 72,
+    "key": "recipe_bracer",
+    "displayName": "Bracer Recipe",
+    "cost": 210,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "73": {
+    "id": 73,
+    "key": "bracer",
+    "displayName": "Bracer",
+    "cost": 505,
+    "img": "/apps/dota2/images/dota_react/items/bracer.png?t=1593393829403",
+    "lore": "The bracer is a common choice to toughen up defenses and increase longevity.",
+    "notes": ""
+  },
+  "74": {
+    "id": 74,
+    "key": "recipe_wraith_band",
+    "displayName": "Wraith Band Recipe",
+    "cost": 210,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "75": {
+    "id": 75,
+    "key": "wraith_band",
+    "displayName": "Wraith Band",
+    "cost": 505,
+    "img": "/apps/dota2/images/dota_react/items/wraith_band.png?t=1593393829403",
+    "lore": "A circlet with faint whispers echoing about it.",
+    "notes": ""
+  },
+  "76": {
+    "id": 76,
+    "key": "recipe_null_talisman",
+    "displayName": "Null Talisman Recipe",
+    "cost": 210,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "77": {
+    "id": 77,
+    "key": "null_talisman",
+    "displayName": "Null Talisman",
+    "cost": 505,
+    "img": "/apps/dota2/images/dota_react/items/null_talisman.png?t=1593393829403",
+    "lore": "A small gemstone attached to several chains.",
+    "notes": ""
+  },
+  "78": {
+    "id": 78,
+    "key": "recipe_mekansm",
+    "displayName": "Mekansm Recipe",
+    "cost": 850,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "79": {
+    "id": 79,
+    "key": "mekansm",
+    "displayName": "Mekansm",
+    "cost": 1775,
+    "img": "/apps/dota2/images/dota_react/items/mekansm.png?t=1593393829403",
+    "lore": "A glowing jewel formed out of assorted parts that somehow fit together perfectly.",
+    "notes": "Restore does not affect units that have been affected by Restore or Guardian Greaves Mend within Mekansm's cooldown.\nMultiple instances of Mekansm Aura do not stack."
+  },
+  "81": {
+    "id": 81,
+    "key": "vladmir",
+    "displayName": "Vladmir's Offering",
+    "cost": 2200,
+    "img": "/apps/dota2/images/dota_react/items/vladmir.png?t=1593393829403",
+    "lore": "An eerie mask that is haunted with the malice of a fallen vampire.",
+    "notes": "Lifesteal on attacks against creeps is reduced to 12%."
+  },
+  "85": {
+    "id": 85,
+    "key": "recipe_buckler",
+    "displayName": "Buckler Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "86": {
+    "id": 86,
+    "key": "buckler",
+    "displayName": "Buckler",
+    "cost": 425,
+    "img": "/apps/dota2/images/dota_react/items/buckler.png?t=1593393829403",
+    "lore": "A powerful shield that imbues the bearer with the strength of heroes past, it is capable of protecting entire armies in battle.",
+    "notes": ""
+  },
+  "87": {
+    "id": 87,
+    "key": "recipe_ring_of_basilius",
+    "displayName": "Ring of Basilius Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "88": {
+    "id": 88,
+    "key": "ring_of_basilius",
+    "displayName": "Ring of Basilius",
+    "cost": 425,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_basilius.png?t=1593393829403",
+    "lore": "Ring given as a reward to the greatest mages.",
+    "notes": ""
+  },
+  "89": {
+    "id": 89,
+    "key": "recipe_pipe",
+    "displayName": "Pipe of Insight Recipe",
+    "cost": 675,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "90": {
+    "id": 90,
+    "key": "pipe",
+    "displayName": "Pipe of Insight",
+    "cost": 3725,
+    "img": "/apps/dota2/images/dota_react/items/pipe.png?t=1593393829403",
+    "lore": "A powerful artifact of mysterious origin, it creates barriers against magical forces.",
+    "notes": "Barrier does not affect units that have been affected by Barrier within Pipe of Insight's cooldown.\nStacks multiplicatively with other sources of magic resistance."
+  },
+  "91": {
+    "id": 91,
+    "key": "recipe_urn_of_shadows",
+    "displayName": "Urn of Shadows Recipe",
+    "cost": 320,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "92": {
+    "id": 92,
+    "key": "urn_of_shadows",
+    "displayName": "Urn of Shadows",
+    "cost": 825,
+    "img": "/apps/dota2/images/dota_react/items/urn_of_shadows.png?t=1593393829403",
+    "lore": "Contains the ashes of powerful demons.",
+    "notes": "Empty urns gain 2 charges.\nIf the allied unit is attacked by an enemy hero or Roshan, the effect is lost.\nDoes not trigger spell block or spell reflect."
+  },
+  "93": {
+    "id": 93,
+    "key": "recipe_headdress",
+    "displayName": "Headdress Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "94": {
+    "id": 94,
+    "key": "headdress",
+    "displayName": "Headdress",
+    "cost": 425,
+    "img": "/apps/dota2/images/dota_react/items/headdress.png?t=1593393829403",
+    "lore": "Creates a soothing aura that restores allies in battle.",
+    "notes": ""
+  },
+  "95": {
+    "id": 95,
+    "key": "recipe_sheepstick",
+    "displayName": "Scythe of Vyse Recipe",
+    "cost": 700,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "96": {
+    "id": 96,
+    "key": "sheepstick",
+    "displayName": "Scythe of Vyse",
+    "cost": 5200,
+    "img": "/apps/dota2/images/dota_react/items/sheepstick.png?t=1593393829403",
+    "lore": "The most guarded relic among the cult of Vyse, it is the most coveted weapon among magi.",
+    "notes": "The target will have a base movement speed of 140, but buffs granting maximum movement speed won't be disabled."
+  },
+  "97": {
+    "id": 97,
+    "key": "recipe_orchid",
+    "displayName": "Orchid Malevolence Recipe",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "98": {
+    "id": 98,
+    "key": "orchid",
+    "displayName": "Orchid Malevolence",
+    "cost": 3275,
+    "img": "/apps/dota2/images/dota_react/items/orchid.png?t=1593393829403",
+    "lore": "A garnet rod constructed from the essence of a fire demon.",
+    "notes": ""
+  },
+  "99": {
+    "id": 99,
+    "key": "recipe_cyclone",
+    "displayName": "Eul's Scepter Recipe",
+    "cost": 675,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "100": {
+    "id": 100,
+    "key": "cyclone",
+    "displayName": "Eul's Scepter of Divinity",
+    "cost": 2600,
+    "img": "/apps/dota2/images/dota_react/items/cyclone.png?t=1593393829403",
+    "lore": "A mysterious scepter passed down through the ages, its disruptive winds can be used for good or evil.",
+    "notes": "You cannot cyclone allies.\nCyclones cast on yourself go through spell immunity.\nCyclone can dispel some buffs and debuffs.\nCyclone duration is unaffected by status resistance."
+  },
+  "101": {
+    "id": 101,
+    "key": "recipe_force_staff",
+    "displayName": "Force Staff Recipe",
+    "cost": 950,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "102": {
+    "id": 102,
+    "key": "force_staff",
+    "displayName": "Force Staff",
+    "cost": 2200,
+    "img": "/apps/dota2/images/dota_react/items/force_staff.png?t=1593393829403",
+    "lore": "Allows you to manipulate others, for good or evil.",
+    "notes": "Self-cast will cause you to use Force on yourself.\nForce Staff doesn't interrupt the target's actions.\nWill not work on a unit inside Chronosphere, Duel, or Black Hole.\nForce Staff has 850 cast range when cast on enemies."
+  },
+  "103": {
+    "id": 103,
+    "key": "recipe_dagon",
+    "displayName": "Dagon Recipe",
+    "cost": 1150,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "104": {
+    "id": 104,
+    "key": "dagon",
+    "displayName": "Dagon",
+    "cost": 3050,
+    "img": "/apps/dota2/images/dota_react/items/dagon.png?t=1593393829403",
+    "lore": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+    "notes": "Instantly kills illusions.\nCast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "105": {
+    "id": 105,
+    "key": "recipe_necronomicon",
+    "displayName": "Necronomicon Recipe",
+    "cost": 1250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "106": {
+    "id": 106,
+    "key": "necronomicon",
+    "displayName": "Necronomicon",
+    "cost": 2050,
+    "img": "/apps/dota2/images/dota_react/items/necronomicon.png?t=1593393829403",
+    "lore": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+    "notes": ""
+  },
+  "108": {
+    "id": 108,
+    "key": "ultimate_scepter",
+    "displayName": "Aghanim's Scepter",
+    "cost": 4200,
+    "img": "/apps/dota2/images/dota_react/items/ultimate_scepter.png?t=1593393829403",
+    "lore": "The scepter of a wizard with demigod-like powers.",
+    "notes": ""
+  },
+  "109": {
+    "id": 109,
+    "key": "recipe_refresher",
+    "displayName": "Refresher Orb Recipe",
+    "cost": 1600,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "110": {
+    "id": 110,
+    "key": "refresher",
+    "displayName": "Refresher Orb",
+    "cost": 5000,
+    "img": "/apps/dota2/images/dota_react/items/refresher.png?t=1593393829403",
+    "lore": "A powerful artifact created for wizards.",
+    "notes": ""
+  },
+  "111": {
+    "id": 111,
+    "key": "recipe_assault",
+    "displayName": "Assault Cuirass Recipe",
+    "cost": 1300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "112": {
+    "id": 112,
+    "key": "assault",
+    "displayName": "Assault Cuirass",
+    "cost": 5125,
+    "img": "/apps/dota2/images/dota_react/items/assault.png?t=1593393829403",
+    "lore": "Forged in the depths of the nether reaches, this hellish mail provides an army with increased armor and attack speed.",
+    "notes": ""
+  },
+  "113": {
+    "id": 113,
+    "key": "recipe_heart",
+    "displayName": "Heart of Tarrasque Recipe",
+    "cost": 600,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "114": {
+    "id": 114,
+    "key": "heart",
+    "displayName": "Heart of Tarrasque",
+    "cost": 5100,
+    "img": "/apps/dota2/images/dota_react/items/heart.png?t=1593393829403",
+    "lore": "Preserved heart of an extinct monster, it bolsters the bearer's fortitude.",
+    "notes": "Multiple instances of Behemoth's Blood do not stack."
+  },
+  "115": {
+    "id": 115,
+    "key": "recipe_black_king_bar",
+    "displayName": "Black King Bar Recipe",
+    "cost": 1450,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "116": {
+    "id": 116,
+    "key": "black_king_bar",
+    "displayName": "Black King Bar",
+    "cost": 4050,
+    "img": "/apps/dota2/images/dota_react/items/black_king_bar.png?t=1593393829403",
+    "lore": "A powerful staff imbued with the strength of giants.",
+    "notes": "Purchasing another Black King Bar will not reset its immunity duration."
+  },
+  "117": {
+    "id": 117,
+    "key": "aegis",
+    "displayName": "Aegis of the Immortal",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/aegis.png?t=1593393829403",
+    "lore": "The Immortal was said to own a shield that protected him from death itself.",
+    "notes": "Pronounced as ayy jis."
+  },
+  "118": {
+    "id": 118,
+    "key": "recipe_shivas_guard",
+    "displayName": "Shiva's Guard Recipe",
+    "cost": 1350,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "119": {
+    "id": 119,
+    "key": "shivas_guard",
+    "displayName": "Shiva's Guard",
+    "cost": 4500,
+    "img": "/apps/dota2/images/dota_react/items/shivas_guard.png?t=1593393829403",
+    "lore": "Said to have belonged to a goddess, today it retains much of its former power.",
+    "notes": "The wave extends at a speed of 400 to a max size of 825.\nThe Arctic Blast follows its caster.\nMultiple instances of Freezing Aura do not stack.\nAoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+  },
+  "121": {
+    "id": 121,
+    "key": "bloodstone",
+    "displayName": "Bloodstone",
+    "cost": 4700,
+    "img": "/apps/dota2/images/dota_react/items/bloodstone.png?t=1593393829403",
+    "lore": "The Bloodstone's bright ruby color is unmistakable on the battlefield, as the owner seems to have infinite vitality and spirit.",
+    "notes": "Spell Weakness Aura does not stack with Veil of Discord's Spell Weakness."
+  },
+  "122": {
+    "id": 122,
+    "key": "recipe_sphere",
+    "displayName": "Linken's Sphere Recipe",
+    "cost": 600,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "123": {
+    "id": 123,
+    "key": "sphere",
+    "displayName": "Linken's Sphere",
+    "cost": 4800,
+    "img": "/apps/dota2/images/dota_react/items/sphere.png?t=1593393829403",
+    "lore": "This magical sphere once protected one of the most famous heroes in history.",
+    "notes": "Targeted abilities from neutral items do not trigger Spellblock."
+  },
+  "125": {
+    "id": 125,
+    "key": "vanguard",
+    "displayName": "Vanguard",
+    "cost": 1700,
+    "img": "/apps/dota2/images/dota_react/items/vanguard.png?t=1593393829403",
+    "lore": "A powerful shield that defends its wielder from even the most vicious of attacks.",
+    "notes": "Multiple sources of damage block do not stack."
+  },
+  "126": {
+    "id": 126,
+    "key": "recipe_blade_mail",
+    "displayName": "Blade Mail Recipe",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "127": {
+    "id": 127,
+    "key": "blade_mail",
+    "displayName": "Blade Mail",
+    "cost": 2400,
+    "img": "/apps/dota2/images/dota_react/items/blade_mail.png?t=1593393829403",
+    "lore": "A razor-sharp coat of mail, it is the choice of selfless martyrs in combat.",
+    "notes": "Damage Return is calculated before any kind of reduction.\nReturned damage type is the same as it was received.\nDamage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "129": {
+    "id": 129,
+    "key": "soul_booster",
+    "displayName": "Soul Booster",
+    "cost": 3000,
+    "img": "/apps/dota2/images/dota_react/items/soul_booster.png?t=1593393829403",
+    "lore": "Regain lost courage.",
+    "notes": ""
+  },
+  "131": {
+    "id": 131,
+    "key": "hood_of_defiance",
+    "displayName": "Hood of Defiance",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/hood_of_defiance.png?t=1593393829403",
+    "lore": "A furred, magic resistant headpiece that is feared by wizards.",
+    "notes": "Stacks multiplicatively with other sources of magic resistance."
+  },
+  "133": {
+    "id": 133,
+    "key": "rapier",
+    "displayName": "Divine Rapier",
+    "cost": 5600,
+    "img": "/apps/dota2/images/dota_react/items/rapier.png?t=1593393829403",
+    "lore": "So powerful, it cannot have a single owner.",
+    "notes": "If Divine Rapier is dropped and picked up by an enemy of its original owner, it cannot be dropped again except by death."
+  },
+  "134": {
+    "id": 134,
+    "key": "recipe_monkey_king_bar",
+    "displayName": "Monkey King Bar Recipe",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "135": {
+    "id": 135,
+    "key": "monkey_king_bar",
+    "displayName": "Monkey King Bar",
+    "cost": 5000,
+    "img": "/apps/dota2/images/dota_react/items/monkey_king_bar.png?t=1593393829403",
+    "lore": "A powerful staff used by a master warrior.",
+    "notes": ""
+  },
+  "137": {
+    "id": 137,
+    "key": "radiance",
+    "displayName": "Radiance",
+    "cost": 4700,
+    "img": "/apps/dota2/images/dota_react/items/radiance.png?t=1593393829403",
+    "lore": "A divine weapon that causes damage and a bright burning effect that lays waste to nearby enemies.",
+    "notes": ""
+  },
+  "139": {
+    "id": 139,
+    "key": "butterfly",
+    "displayName": "Butterfly",
+    "cost": 5450,
+    "img": "/apps/dota2/images/dota_react/items/butterfly.png?t=1593393829403",
+    "lore": "Only the mightiest and most experienced of warriors can wield the Butterfly, but it provides incredible dexterity in combat.",
+    "notes": "Stacks diminishingly with other sources of Evasion."
+  },
+  "140": {
+    "id": 140,
+    "key": "recipe_greater_crit",
+    "displayName": "Daedalus Recipe",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "141": {
+    "id": 141,
+    "key": "greater_crit",
+    "displayName": "Daedalus",
+    "cost": 5100,
+    "img": "/apps/dota2/images/dota_react/items/greater_crit.png?t=1593393829403",
+    "lore": "A weapon of incredible power that is difficult for even the strongest of warriors to control.",
+    "notes": "Critical Strike does not work against buildings."
+  },
+  "142": {
+    "id": 142,
+    "key": "recipe_basher",
+    "displayName": "Skull Basher Recipe",
+    "cost": 825,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "143": {
+    "id": 143,
+    "key": "basher",
+    "displayName": "Skull Basher",
+    "cost": 2875,
+    "img": "/apps/dota2/images/dota_react/items/basher.png?t=1593393829403",
+    "lore": "A feared weapon in the right hands, this maul's ability to shatter the defenses of its opponents should not be underestimated.",
+    "notes": "Does not stack with other sources of Bash.\nThe following heroes cannot trigger Bash on this item: Spirit Breaker, Faceless Void, Slardar, and Kez while in Sai mode.\nDoes not grant Bash to Clones and Tempest Doubles."
+  },
+  "144": {
+    "id": 144,
+    "key": "recipe_bfury",
+    "displayName": "Battle Fury Recipe",
+    "cost": 400,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "145": {
+    "id": 145,
+    "key": "bfury",
+    "displayName": "Battle Fury",
+    "cost": 3900,
+    "img": "/apps/dota2/images/dota_react/items/bfury.png?t=1593393829403",
+    "lore": "The bearer of this mighty axe gains the ability to cut down swaths of enemies at once.",
+    "notes": "Cleave damage goes through spell immunity.\nIf multiple sources of Cleave are present, each Cleave's damage is applied separately."
+  },
+  "146": {
+    "id": 146,
+    "key": "recipe_manta",
+    "displayName": "Manta Style Recipe",
+    "cost": 1550,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "147": {
+    "id": 147,
+    "key": "manta",
+    "displayName": "Manta Style",
+    "cost": 4650,
+    "img": "/apps/dota2/images/dota_react/items/manta.png?t=1593393829403",
+    "lore": "An axe made of reflective materials that causes confusion amongst enemy ranks.",
+    "notes": "Has a 0.1 second cast time during which you are invulnerable.\nMany effects are removed upon using Manta.\nYasha based movement speed bonuses from multiple items do not stack."
+  },
+  "148": {
+    "id": 148,
+    "key": "recipe_lesser_crit",
+    "displayName": "Crystalys Recipe",
+    "cost": 200,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "149": {
+    "id": 149,
+    "key": "lesser_crit",
+    "displayName": "Crystalys",
+    "cost": 2000,
+    "img": "/apps/dota2/images/dota_react/items/lesser_crit.png?t=1593393829403",
+    "lore": "A blade forged from rare crystals, it seeks weak points in enemy armor.",
+    "notes": "Critical Strike does not work against buildings."
+  },
+  "150": {
+    "id": 150,
+    "key": "recipe_armlet",
+    "displayName": "Armlet of Mordiggian Recipe",
+    "cost": 625,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "151": {
+    "id": 151,
+    "key": "armlet",
+    "displayName": "Armlet of Mordiggian",
+    "cost": 2500,
+    "img": "/apps/dota2/images/dota_react/items/armlet.png?t=1593393829403",
+    "lore": "Weapon of choice among brutes, the bearer sacrifices his life energy to gain immense strength and power.",
+    "notes": "The strength change will affect both maximum and current HP, but you cannot die from the change.\nThe strength change occurs over 0.6 seconds.\nActivating or deactivating Unholy Strength does not interrupt channeling."
+  },
+  "152": {
+    "id": 152,
+    "key": "invis_sword",
+    "displayName": "Shadow Blade",
+    "cost": 3250,
+    "img": "/apps/dota2/images/dota_react/items/invis_sword.png?t=1593393829403",
+    "lore": "The blade of a fallen king, it allows you to move unseen and strike from the shadows.",
+    "notes": "Has a 0.3 second fade time.\nIf the invisibility ends without attacking, the bonus damage is lost."
+  },
+  "154": {
+    "id": 154,
+    "key": "sange_and_yasha",
+    "displayName": "Sange and Yasha",
+    "cost": 4200,
+    "img": "/apps/dota2/images/dota_react/items/sange_and_yasha.png?t=1593393829403",
+    "lore": "Sange and Yasha, when attuned by the moonlight and used together, become a very powerful combination.",
+    "notes": "Yasha-based movement speed bonuses from multiple items do not stack."
+  },
+  "156": {
+    "id": 156,
+    "key": "satanic",
+    "displayName": "Satanic",
+    "cost": 5050,
+    "img": "/apps/dota2/images/dota_react/items/satanic.png?t=1593393829403",
+    "lore": "Immense power at the cost of your soul.",
+    "notes": ""
+  },
+  "157": {
+    "id": 157,
+    "key": "recipe_mjollnir",
+    "displayName": "Mjollnir Recipe",
+    "cost": 550,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "158": {
+    "id": 158,
+    "key": "mjollnir",
+    "displayName": "Mjollnir",
+    "cost": 5500,
+    "img": "/apps/dota2/images/dota_react/items/mjollnir.png?t=1593393829403",
+    "lore": "Thor's magical hammer, made for him by the dwarves Brok and Eitri.",
+    "notes": "Static Charge cannot trigger more than once per second.\nStatic Charge's shock deals magical damage centered on hero with the Static Charge. Static Charge's targets cannot be more than 900 range away.\nStatic Charge procs will not bounce to heroes that are invisible or hidden by Fog of War."
+  },
+  "160": {
+    "id": 160,
+    "key": "skadi",
+    "displayName": "Eye of Skadi",
+    "cost": 5900,
+    "img": "/apps/dota2/images/dota_react/items/skadi.png?t=1593393829403",
+    "lore": "Extremely rare artifact, guarded by the azure dragons.",
+    "notes": ""
+  },
+  "161": {
+    "id": 161,
+    "key": "recipe_sange",
+    "displayName": "Sange Recipe",
+    "cost": 650,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "162": {
+    "id": 162,
+    "key": "sange",
+    "displayName": "Sange",
+    "cost": 2100,
+    "img": "/apps/dota2/images/dota_react/items/sange.png?t=1593393829403",
+    "lore": "Sange is an unusually accurate weapon, seeking weak points automatically.",
+    "notes": ""
+  },
+  "163": {
+    "id": 163,
+    "key": "recipe_helm_of_the_dominator",
+    "displayName": "Helm of the Dominator Recipe",
+    "cost": 1125,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "164": {
+    "id": 164,
+    "key": "helm_of_the_dominator",
+    "displayName": "Helm of the Dominator",
+    "cost": 2550,
+    "img": "/apps/dota2/images/dota_react/items/helm_of_the_dominator.png?t=1593393829403",
+    "lore": "The powerful headpiece of a dead necromancer.",
+    "notes": "Cannot dominate more than one unit at a time. If a new unit is dominated, the old one will die.\nCan also Dominate enemy lane creeps and summoned units.\nSelling Helm of the Dominator will cause dominated units to die."
+  },
+  "166": {
+    "id": 166,
+    "key": "maelstrom",
+    "displayName": "Maelstrom",
+    "cost": 2950,
+    "img": "/apps/dota2/images/dota_react/items/maelstrom.png?t=1593393829403",
+    "lore": "A hammer forged for the gods themselves, Maelstrom allows its user to harness the power of lightning.",
+    "notes": ""
+  },
+  "168": {
+    "id": 168,
+    "key": "desolator",
+    "displayName": "Desolator",
+    "cost": 3500,
+    "img": "/apps/dota2/images/dota_react/items/desolator.png?t=1593393829403",
+    "lore": "A wicked weapon, used in torturing political criminals.",
+    "notes": "Armor reduction works on buildings."
+  },
+  "169": {
+    "id": 169,
+    "key": "recipe_yasha",
+    "displayName": "Yasha Recipe",
+    "cost": 650,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "170": {
+    "id": 170,
+    "key": "yasha",
+    "displayName": "Yasha",
+    "cost": 2100,
+    "img": "/apps/dota2/images/dota_react/items/yasha.png?t=1593393829403",
+    "lore": "Yasha is regarded as the swiftest weapon ever created.",
+    "notes": "Yasha-based movement speed bonuses from multiple items do not stack."
+  },
+  "172": {
+    "id": 172,
+    "key": "mask_of_madness",
+    "displayName": "Mask of Madness",
+    "cost": 1900,
+    "img": "/apps/dota2/images/dota_react/items/mask_of_madness.png?t=1593393829403",
+    "lore": "Once this mask is worn, its bearer becomes an uncontrollable aggressive force.",
+    "notes": ""
+  },
+  "173": {
+    "id": 173,
+    "key": "recipe_diffusal_blade",
+    "displayName": "Diffusal Blade Recipe",
+    "cost": 1050,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "174": {
+    "id": 174,
+    "key": "diffusal_blade",
+    "displayName": "Diffusal Blade",
+    "cost": 2500,
+    "img": "/apps/dota2/images/dota_react/items/diffusal_blade.png?t=1593393829403",
+    "lore": "An enchanted blade that allows the user to cut straight into the enemy's soul.",
+    "notes": "Does not stack with other diffusal blades."
+  },
+  "175": {
+    "id": 175,
+    "key": "recipe_ethereal_blade",
+    "displayName": "Ethereal Blade Recipe",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "176": {
+    "id": 176,
+    "key": "ethereal_blade",
+    "displayName": "Ethereal Blade",
+    "cost": 5200,
+    "img": "/apps/dota2/images/dota_react/items/ethereal_blade.png?t=1593393829403",
+    "lore": "A flickering blade of a ghastly nature, it is capable of dealing damage in both magical and physical planes.",
+    "notes": "Shares cooldown with Ghost Scepter and its upgrades.\nEthereal units take -30% bonus magic damage."
+  },
+  "177": {
+    "id": 177,
+    "key": "recipe_soul_ring",
+    "displayName": "Soul Ring Recipe",
+    "cost": 350,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "178": {
+    "id": 178,
+    "key": "soul_ring",
+    "displayName": "Soul Ring",
+    "cost": 805,
+    "img": "/apps/dota2/images/dota_react/items/soul_ring.png?t=1593393829403",
+    "lore": "A ring that feeds on the souls of those who wear it.",
+    "notes": "If this mana is not used before the duration ends, the extra mana is lost."
+  },
+  "179": {
+    "id": 179,
+    "key": "recipe_arcane_boots",
+    "displayName": "Arcane Boots Recipe",
+    "cost": 325,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "180": {
+    "id": 180,
+    "key": "arcane_boots",
+    "displayName": "Arcane Boots",
+    "cost": 1500,
+    "img": "/apps/dota2/images/dota_react/items/arcane_boots.png?t=1593393829403",
+    "lore": "Magi equipped with these boots are valued in battle.",
+    "notes": "Does not work on Meepo clones."
+  },
+  "181": {
+    "id": 181,
+    "key": "orb_of_venom",
+    "displayName": "Orb of Venom",
+    "cost": 350,
+    "img": "/apps/dota2/images/dota_react/items/orb_of_venom.png?t=1593393829403",
+    "lore": "Envenoms your veapon with the venom of a venomous viper.",
+    "notes": "Does not stack with its upgrades."
+  },
+  "182": {
+    "id": 182,
+    "key": "stout_shield",
+    "displayName": "Stout Shield",
+    "cost": 100,
+    "img": "/apps/dota2/images/dota_react/items/stout_shield.png?t=1593393829403",
+    "lore": "One man's wine barrel bottom is another man's shield.",
+    "notes": "Multiple sources of damage block do not stack."
+  },
+  "184": {
+    "id": 184,
+    "key": "recipe_ancient_janggo",
+    "displayName": "Drum of Endurance Recipe",
+    "cost": 525,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "185": {
+    "id": 185,
+    "key": "ancient_janggo",
+    "displayName": "Drum of Endurance",
+    "cost": 1625,
+    "img": "/apps/dota2/images/dota_react/items/ancient_janggo.png?t=1593393829403",
+    "lore": "A relic that enchants the bodies of those around it for swifter movement in times of crisis.",
+    "notes": ""
+  },
+  "187": {
+    "id": 187,
+    "key": "medallion_of_courage",
+    "displayName": "Medallion of Courage",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/medallion_of_courage.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "188": {
+    "id": 188,
+    "key": "smoke_of_deceit",
+    "displayName": "Smoke of Deceit",
+    "cost": 50,
+    "img": "/apps/dota2/images/dota_react/items/smoke_of_deceit.png?t=1593393829403",
+    "lore": "The charlatan wizard Myrddin's only true contribution to the arcane arts.",
+    "notes": ""
+  },
+  "189": {
+    "id": 189,
+    "key": "recipe_veil_of_discord",
+    "displayName": "Veil of Discord Recipe",
+    "cost": 350,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "190": {
+    "id": 190,
+    "key": "veil_of_discord",
+    "displayName": "Veil of Discord",
+    "cost": 1700,
+    "img": "/apps/dota2/images/dota_react/items/veil_of_discord.png?t=1593393829403",
+    "lore": "The headwear of corrupt magi.",
+    "notes": "Spell Weakness does not stack with Bloodstone's Spell Weakness Aura."
+  },
+  "193": {
+    "id": 193,
+    "key": "necronomicon_2",
+    "displayName": "Necronomicon",
+    "cost": 3300,
+    "img": "/apps/dota2/images/dota_react/items/necronomicon_2.png?t=1593393829403",
+    "lore": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+    "notes": ""
+  },
+  "194": {
+    "id": 194,
+    "key": "necronomicon_3",
+    "displayName": "Necronomicon",
+    "cost": 4550,
+    "img": "/apps/dota2/images/dota_react/items/necronomicon_3.png?t=1593393829403",
+    "lore": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+    "notes": ""
+  },
+  "196": {
+    "id": 196,
+    "key": "diffusal_blade_2",
+    "displayName": "Diffusal Blade",
+    "cost": 3850,
+    "img": "/apps/dota2/images/dota_react/items/diffusal_blade_2.png?3",
+    "lore": "An enchanted blade that allows the user to cut straight into the enemy's soul.",
+    "notes": "Does not stack with other manabreak abilities."
+  },
+  "201": {
+    "id": 201,
+    "key": "dagon_2",
+    "displayName": "Dagon",
+    "cost": 4200,
+    "img": "/apps/dota2/images/dota_react/items/dagon_2.png?t=1593393829403",
+    "lore": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+    "notes": "Instantly kills illusions.\nCast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "202": {
+    "id": 202,
+    "key": "dagon_3",
+    "displayName": "Dagon",
+    "cost": 5350,
+    "img": "/apps/dota2/images/dota_react/items/dagon_3.png?t=1593393829403",
+    "lore": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+    "notes": "Instantly kills illusions.\nCast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "203": {
+    "id": 203,
+    "key": "dagon_4",
+    "displayName": "Dagon",
+    "cost": 6500,
+    "img": "/apps/dota2/images/dota_react/items/dagon_4.png?t=1593393829403",
+    "lore": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+    "notes": "Instantly kills illusions.\nCast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "204": {
+    "id": 204,
+    "key": "dagon_5",
+    "displayName": "Dagon",
+    "cost": 7650,
+    "img": "/apps/dota2/images/dota_react/items/dagon_5.png?t=1593393829403",
+    "lore": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+    "notes": "Instantly kills illusions.\nCast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "205": {
+    "id": 205,
+    "key": "recipe_rod_of_atos",
+    "displayName": "Rod of Atos Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "206": {
+    "id": 206,
+    "key": "rod_of_atos",
+    "displayName": "Rod of Atos",
+    "cost": 2250,
+    "img": "/apps/dota2/images/dota_react/items/rod_of_atos.png?t=1593393829403",
+    "lore": "Atos, the Lord of Blight, has his essence stored in this deceptively simple wand.",
+    "notes": ""
+  },
+  "207": {
+    "id": 207,
+    "key": "recipe_abyssal_blade",
+    "displayName": "Abyssal Blade Recipe",
+    "cost": 1275,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "208": {
+    "id": 208,
+    "key": "abyssal_blade",
+    "displayName": "Abyssal Blade",
+    "cost": 6250,
+    "img": "/apps/dota2/images/dota_react/items/abyssal_blade.png?t=1593393829403",
+    "lore": "The lost blade of the Commander of the Abyss, this edge cuts into an enemy's soul.",
+    "notes": "The stun is melee range.\nDoes not stack with other bashes, and does not grant bash to Clones and Tempest Doubles.\nMultiple sources of damage block do not stack.\nThe following heroes cannot trigger Bash on this item: Spirit Breaker, Faceless Void, Slardar, and Kez while in Sai mode."
+  },
+  "209": {
+    "id": 209,
+    "key": "recipe_heavens_halberd",
+    "displayName": "Heaven's Halberd Recipe",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "210": {
+    "id": 210,
+    "key": "heavens_halberd",
+    "displayName": "Heaven's Halberd",
+    "cost": 3400,
+    "img": "/apps/dota2/images/dota_react/items/heavens_halberd.png?t=1593393829403",
+    "lore": "This halberd moves with the speed of a smaller weapon, allowing the bearer to win duels that a heavy edge would not.",
+    "notes": ""
+  },
+  "212": {
+    "id": 212,
+    "key": "ring_of_aquila",
+    "displayName": "Ring of Aquila",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_aquila.png?t=1593393829403",
+    "lore": "The ring of the fallen Warlord Aquila continues to support armies in battle.",
+    "notes": "Multiple instances of Aquila Aura do not stack."
+  },
+  "214": {
+    "id": 214,
+    "key": "tranquil_boots",
+    "displayName": "Tranquil Boots",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/tranquil_boots.png?t=1593393829403",
+    "lore": "While they increase the longevity of the wearer, this boot is not particularly reliable.",
+    "notes": ""
+  },
+  "215": {
+    "id": 215,
+    "key": "shadow_amulet",
+    "displayName": "Shadow Amulet",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/shadow_amulet.png?t=1593393829403",
+    "lore": "A small talisman that clouds the senses of one's enemies when held perfectly still.",
+    "notes": "Takes 1.25s of the 3.5s for the hero to fully fade into invisibility."
+  },
+  "216": {
+    "id": 216,
+    "key": "enchanted_mango",
+    "displayName": "Enchanted Mango",
+    "cost": 65,
+    "img": "/apps/dota2/images/dota_react/items/enchanted_mango.png?t=1593393829403",
+    "lore": "The bittersweet flavors of Jidi Isle are irresistible to amphibians.",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "218": {
+    "id": 218,
+    "key": "ward_dispenser",
+    "displayName": "Observer and Sentry Wards",
+    "cost": 50,
+    "img": "/apps/dota2/images/dota_react/items/ward_dispenser.png?t=1593393829403",
+    "lore": "Advancements in stacking efficiency have made wards easier to carry than ever.",
+    "notes": "Hold Control to give one ward to an allied hero."
+  },
+  "220": {
+    "id": 220,
+    "key": "travel_boots_2",
+    "displayName": "Boots of Travel 2",
+    "cost": 4500,
+    "img": "/apps/dota2/images/dota_react/items/travel_boots_2.png?t=1593393829403",
+    "lore": "Winged boots that grant omnipresence.",
+    "notes": ""
+  },
+  "221": {
+    "id": 221,
+    "key": "recipe_lotus_orb",
+    "displayName": "Lotus Orb Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "222": {
+    "id": 222,
+    "key": "recipe_meteor_hammer",
+    "displayName": "Meteor Hammer Recipe",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "223": {
+    "id": 223,
+    "key": "meteor_hammer",
+    "displayName": "Meteor Hammer",
+    "cost": 2850,
+    "img": "/apps/dota2/images/dota_react/items/meteor_hammer.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "225": {
+    "id": 225,
+    "key": "nullifier",
+    "displayName": "Nullifier",
+    "cost": 4350,
+    "img": "/apps/dota2/images/dota_react/items/nullifier.png?t=1593393829403",
+    "lore": "",
+    "notes": "Can be cast on invulnerable units."
+  },
+  "226": {
+    "id": 226,
+    "key": "lotus_orb",
+    "displayName": "Lotus Orb",
+    "cost": 3850,
+    "img": "/apps/dota2/images/dota_react/items/lotus_orb.png?t=1593393829403",
+    "lore": "The jewel at its center still reflects a pale image of its creator.",
+    "notes": "Targeted abilities from neutral items do not trigger Echo Shell."
+  },
+  "227": {
+    "id": 227,
+    "key": "recipe_solar_crest",
+    "displayName": "Solar Crest Recipe",
+    "cost": 500,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "228": {
+    "id": 228,
+    "key": "recipe_octarine_core",
+    "displayName": "Octarine Core Recipe",
+    "cost": 200,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "229": {
+    "id": 229,
+    "key": "solar_crest",
+    "displayName": "Solar Crest",
+    "cost": 2575,
+    "img": "/apps/dota2/images/dota_react/items/solar_crest.png?t=1593393829403",
+    "lore": "A talisman forged to honor the daytime sky.",
+    "notes": "Shares cooldown with Pavise."
+  },
+  "230": {
+    "id": 230,
+    "key": "recipe_guardian_greaves",
+    "displayName": "Guardian Greaves Recipe",
+    "cost": 1175,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "231": {
+    "id": 231,
+    "key": "guardian_greaves",
+    "displayName": "Guardian Greaves",
+    "cost": 4450,
+    "img": "/apps/dota2/images/dota_react/items/guardian_greaves.png?t=1593393829403",
+    "lore": "One of many holy instruments constructed to honor the Omniscience.",
+    "notes": "Mend does not affect units that have been affected by Mend or Mekansm Restore within Guardian Greaves' cooldown."
+  },
+  "232": {
+    "id": 232,
+    "key": "aether_lens",
+    "displayName": "Aether Lens",
+    "cost": 2275,
+    "img": "/apps/dota2/images/dota_react/items/aether_lens.png?t=1593393829403",
+    "lore": "Polished with the incantation of his final breath, the gift of a dying mage to his sickly son.",
+    "notes": "Cast Range bonuses from Aether Lens and Dagon do not stack."
+  },
+  "233": {
+    "id": 233,
+    "key": "recipe_aether_lens",
+    "displayName": "Aether Lens Recipe",
+    "cost": 775,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "234": {
+    "id": 234,
+    "key": "recipe_dragon_lance",
+    "displayName": "Dragon Lance Recipe",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "235": {
+    "id": 235,
+    "key": "octarine_core",
+    "displayName": "Octarine Core",
+    "cost": 4900,
+    "img": "/apps/dota2/images/dota_react/items/octarine_core.png?t=1593393829403",
+    "lore": "At the core of spellcraft are spectrums only the very gifted can sense.",
+    "notes": ""
+  },
+  "236": {
+    "id": 236,
+    "key": "dragon_lance",
+    "displayName": "Dragon Lance",
+    "cost": 1900,
+    "img": "/apps/dota2/images/dota_react/items/dragon_lance.png?t=1593393829403",
+    "lore": "The forward charge of the wyvern host grants no quarter.",
+    "notes": "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+  },
+  "237": {
+    "id": 237,
+    "key": "faerie_fire",
+    "displayName": "Faerie Fire",
+    "cost": 65,
+    "img": "/apps/dota2/images/dota_react/items/faerie_fire.png?t=1593393829403",
+    "lore": "The ethereal flames from the ever-burning ruins of Kindertree ignite across realities.",
+    "notes": ""
+  },
+  "238": {
+    "id": 238,
+    "key": "recipe_iron_talon",
+    "displayName": "Iron Talon Recipe",
+    "cost": 125,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?3",
+    "lore": "",
+    "notes": ""
+  },
+  "239": {
+    "id": 239,
+    "key": "iron_talon",
+    "displayName": "Iron Talon",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/iron_talon.png?t=1593393829403",
+    "lore": "A simple but effective weapon devised to quell a great Hellbear uprising.",
+    "notes": "Has a 4 second cooldown on Trees."
+  },
+  "240": {
+    "id": 240,
+    "key": "blight_stone",
+    "displayName": "Orb of Blight",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/blight_stone.png?t=1593393829403",
+    "lore": "An unnerving stone unearthed beneath the Fields of Endless Carnage.",
+    "notes": "Does not stack with its upgrades, Desolator, or Stygian Desolator."
+  },
+  "241": {
+    "id": 241,
+    "key": "tango_single",
+    "displayName": "Tango (Shared)",
+    "cost": 30,
+    "img": "/apps/dota2/images/dota_react/items/tango_single.png?t=1593393829403",
+    "lore": "Om nom nom.",
+    "notes": ""
+  },
+  "242": {
+    "id": 242,
+    "key": "crimson_guard",
+    "displayName": "Crimson Guard",
+    "cost": 3725,
+    "img": "/apps/dota2/images/dota_react/items/crimson_guard.png?t=1593393829403",
+    "lore": "A cuirass originally built to protect against the dreaded Year Beast.",
+    "notes": "Multiple sources of damage block do not stack.\nWhen the Guard buff is applied to ranged heroes, Guard blocks 25 less damage.\nGuard does not affect units that have been affected by Guard within Crimson Guard's cooldown."
+  },
+  "243": {
+    "id": 243,
+    "key": "recipe_crimson_guard",
+    "displayName": "Crimson Guard Recipe",
+    "cost": 1050,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "244": {
+    "id": 244,
+    "key": "wind_lace",
+    "displayName": "Wind Lace",
+    "cost": 225,
+    "img": "/apps/dota2/images/dota_react/items/wind_lace.png?t=1593393829403",
+    "lore": "Hasten to battle on wind-touched heels.",
+    "notes": ""
+  },
+  "245": {
+    "id": 245,
+    "key": "recipe_bloodthorn",
+    "displayName": "Bloodthorn Recipe",
+    "cost": 600,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "247": {
+    "id": 247,
+    "key": "moon_shard",
+    "displayName": "Moon Shard",
+    "cost": 4000,
+    "img": "/apps/dota2/images/dota_react/items/moon_shard.png?t=1593393829403",
+    "lore": "Said to be a tear from the lunar goddess Selemene.",
+    "notes": ""
+  },
+  "248": {
+    "id": 248,
+    "key": "recipe_silver_edge",
+    "displayName": "Silver Edge Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "249": {
+    "id": 249,
+    "key": "silver_edge",
+    "displayName": "Silver Edge",
+    "cost": 5700,
+    "img": "/apps/dota2/images/dota_react/items/silver_edge.png?t=1593393829403",
+    "lore": "Once used to slay an unjust king, only to have the kingdom erupt into civil war in the aftermath.",
+    "notes": ""
+  },
+  "250": {
+    "id": 250,
+    "key": "bloodthorn",
+    "displayName": "Bloodthorn",
+    "cost": 6400,
+    "img": "/apps/dota2/images/dota_react/items/bloodthorn.png?t=1593393829403",
+    "lore": "A reviled blade that bites deeper with each wriggle of its victim's final throes.",
+    "notes": ""
+  },
+  "252": {
+    "id": 252,
+    "key": "echo_sabre",
+    "displayName": "Echo Sabre",
+    "cost": 2700,
+    "img": "/apps/dota2/images/dota_react/items/echo_sabre.png?t=1593393829403",
+    "lore": "A deceptively swift blade imbued with resonant magic.",
+    "notes": ""
+  },
+  "253": {
+    "id": 253,
+    "key": "recipe_glimmer_cape",
+    "displayName": "Glimmer Cape Recipe",
+    "cost": 800,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "254": {
+    "id": 254,
+    "key": "glimmer_cape",
+    "displayName": "Glimmer Cape",
+    "cost": 2150,
+    "img": "/apps/dota2/images/dota_react/items/glimmer_cape.png?t=1593393829403",
+    "lore": "The stolen cape of a master illusionist.",
+    "notes": ""
+  },
+  "255": {
+    "id": 255,
+    "key": "recipe_aeon_disk",
+    "displayName": "Aeon Disk Recipe",
+    "cost": 1200,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "256": {
+    "id": 256,
+    "key": "aeon_disk",
+    "displayName": "Aeon Disk",
+    "cost": 3000,
+    "img": "/apps/dota2/images/dota_react/items/aeon_disk.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "257": {
+    "id": 257,
+    "key": "tome_of_knowledge",
+    "displayName": "Tome of Knowledge",
+    "cost": 75,
+    "img": "/apps/dota2/images/dota_react/items/tome_of_knowledge.png?t=1593393829403",
+    "lore": "That which raises beast to man and man to god.",
+    "notes": ""
+  },
+  "258": {
+    "id": 258,
+    "key": "recipe_kaya",
+    "displayName": "Kaya Recipe",
+    "cost": 650,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "259": {
+    "id": 259,
+    "key": "kaya",
+    "displayName": "Kaya",
+    "cost": 2100,
+    "img": "/apps/dota2/images/dota_react/items/kaya.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "260": {
+    "id": 260,
+    "key": "refresher_shard",
+    "displayName": "Refresher Shard",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/refresher_shard.png?t=1593393829403",
+    "lore": "",
+    "notes": "Refresher Shard is shareable."
+  },
+  "261": {
+    "id": 261,
+    "key": "crown",
+    "displayName": "Crown",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/crown.png?t=1593393829403",
+    "lore": "A stately crown created to ensure a well-meaning but ungifted heir could fend off usurpers and govern with a strong hand.",
+    "notes": ""
+  },
+  "262": {
+    "id": 262,
+    "key": "recipe_hurricane_pike",
+    "displayName": "Hurricane Pike Recipe",
+    "cost": 350,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "263": {
+    "id": 263,
+    "key": "hurricane_pike",
+    "displayName": "Hurricane Pike",
+    "cost": 4450,
+    "img": "/apps/dota2/images/dota_react/items/hurricane_pike.png?t=1593393829403",
+    "lore": "A legendary pike once held as royal sigil of the ancient wyvern riders.",
+    "notes": "Self-cast will use Hurricane Pike on yourself.\nHurricane Pike doesn't interrupt the target's actions.\nWill not work on a unit inside Chronosphere, Duel, or Black Hole.\nAttack Range bonuses from Dragon Lance and its upgrades do not stack."
+  },
+  "265": {
+    "id": 265,
+    "key": "infused_raindrop",
+    "displayName": "Infused Raindrops",
+    "cost": 225,
+    "img": "/apps/dota2/images/dota_react/items/infused_raindrop.png?t=1593393829403",
+    "lore": "Elemental protection from magical assaults.",
+    "notes": "Uses at most one charge per damage instance."
+  },
+  "266": {
+    "id": 266,
+    "key": "recipe_spirit_vessel",
+    "displayName": "Spirit Vessel Recipe",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "267": {
+    "id": 267,
+    "key": "spirit_vessel",
+    "displayName": "Spirit Vessel",
+    "cost": 2725,
+    "img": "/apps/dota2/images/dota_react/items/spirit_vessel.png?t=1593393829403",
+    "lore": "",
+    "notes": "Empty vessels gain 2 charges.\nOnly the closest Spirit Vessel to the dying hero will gain a charge.\nIf the allied unit is attacked by an enemy hero or Roshan, the effect is lost.\nDoes not trigger spell block or spell reflect."
+  },
+  "268": {
+    "id": 268,
+    "key": "recipe_holy_locket",
+    "displayName": "Holy Locket Recipe",
+    "cost": 1340,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "269": {
+    "id": 269,
+    "key": "holy_locket",
+    "displayName": "Holy Locket",
+    "cost": 2250,
+    "img": "/apps/dota2/images/dota_react/items/holy_locket.png?t=1593393829403",
+    "lore": "A prized relic long thought lost forever in a failed crusade.",
+    "notes": ""
+  },
+  "270": {
+    "id": 270,
+    "key": "recipe_ultimate_scepter_2",
+    "displayName": "Aghanim's Blessing Recipe",
+    "cost": 1600,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "271": {
+    "id": 271,
+    "key": "ultimate_scepter_2",
+    "displayName": "Aghanim's Blessing",
+    "cost": 5800,
+    "img": "/apps/dota2/images/dota_react/items/ultimate_scepter_2.png?t=1593393829403",
+    "lore": "The scepter of a wizard with demigod-like powers.",
+    "notes": ""
+  },
+  "273": {
+    "id": 273,
+    "key": "kaya_and_sange",
+    "displayName": "Kaya and Sange",
+    "cost": 4200,
+    "img": "/apps/dota2/images/dota_react/items/kaya_and_sange.png?t=1593393829403",
+    "lore": "Two of three known items of unimaginable power that many believe were crafted at the same enchanter's forge.",
+    "notes": ""
+  },
+  "275": {
+    "id": 275,
+    "key": "recipe_trident",
+    "displayName": "Trident Recipe",
+    "cost": 1,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "277": {
+    "id": 277,
+    "key": "yasha_and_kaya",
+    "displayName": "Yasha and Kaya",
+    "cost": 4200,
+    "img": "/apps/dota2/images/dota_react/items/yasha_and_kaya.png?t=1593393829403",
+    "lore": "Yasha and Kaya when paired together share a natural resonance.",
+    "notes": ""
+  },
+  "279": {
+    "id": 279,
+    "key": "ring_of_tarrasque",
+    "displayName": "Ring of Tarrasque",
+    "cost": 1700,
+    "img": "/apps/dota2/images/dota_react/items/ring_of_tarrasque.png?t=1593393829403",
+    "lore": "An ageless ring forged with an otherwise simple blood magic amplified by the presumed source of its key component.",
+    "notes": ""
+  },
+  "286": {
+    "id": 286,
+    "key": "flying_courier",
+    "displayName": "Flying Courier",
+    "cost": 100,
+    "img": "/apps/dota2/images/dota_react/items/flying_courier.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "287": {
+    "id": 287,
+    "key": "keen_optic",
+    "displayName": "Keen Optic",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/keen_optic.png?t=1593393829403",
+    "lore": "Stolen from a tinker's shop ages ago, this handy lens has seen service to many owners.",
+    "notes": ""
+  },
+  "288": {
+    "id": 288,
+    "key": "grove_bow",
+    "displayName": "Grove Bow",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/grove_bow.png?t=1593393829403",
+    "lore": "A gift from the moon goddess to one of her prized disciples many memories ago.",
+    "notes": ""
+  },
+  "289": {
+    "id": 289,
+    "key": "quickening_charm",
+    "displayName": "Quickening Charm",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/quickening_charm.png?t=1593393829403",
+    "lore": "An evergreen amulet of druidic origins.",
+    "notes": ""
+  },
+  "290": {
+    "id": 290,
+    "key": "philosophers_stone",
+    "displayName": "Philosopher's Stone",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/philosophers_stone.png?t=1593393829403",
+    "lore": "A weightless charm created by an enchanter with a powerful scorn for brute force.",
+    "notes": ""
+  },
+  "291": {
+    "id": 291,
+    "key": "force_boots",
+    "displayName": "Force Boots",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/force_boots.png?t=1593393829403",
+    "lore": "Elusive marvels never successfully studied for proper classification in the archives.",
+    "notes": "Does not trigger spell block or spell reflect."
+  },
+  "292": {
+    "id": 292,
+    "key": "desolator_2",
+    "displayName": "Stygian Desolator",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/desolator_2.png?t=1593393829403",
+    "lore": "The original demonic favorite that served as basis for the beloved mortal design.",
+    "notes": "Armor reduction works on buildings."
+  },
+  "293": {
+    "id": 293,
+    "key": "phoenix_ash",
+    "displayName": "Phoenix Ash",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/phoenix_ash.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "294": {
+    "id": 294,
+    "key": "seer_stone",
+    "displayName": "Seer Stone",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/seer_stone.png?t=1593393829403",
+    "lore": "The curious creation of a wizard who professed to hail from another time.",
+    "notes": ""
+  },
+  "295": {
+    "id": 295,
+    "key": "greater_mango",
+    "displayName": "greater_mango",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/greater_mango.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "297": {
+    "id": 297,
+    "key": "vampire_fangs",
+    "displayName": "Vampire Fangs",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/vampire_fangs.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "298": {
+    "id": 298,
+    "key": "craggy_coat",
+    "displayName": "Craggy Coat",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/craggy_coat.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "299": {
+    "id": 299,
+    "key": "greater_faerie_fire",
+    "displayName": "Greater Faerie Fire",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/greater_faerie_fire.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "300": {
+    "id": 300,
+    "key": "timeless_relic",
+    "displayName": "Timeless Relic",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/timeless_relic.png?t=1593393829403",
+    "lore": "An unmarred discovery from the excavated ruins of an ancient wizard's academy.",
+    "notes": ""
+  },
+  "301": {
+    "id": 301,
+    "key": "mirror_shield",
+    "displayName": "Mirror Shield",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mirror_shield.png?t=1593393829403",
+    "lore": "The shield that long ago robbed the old one of his first memories.",
+    "notes": ""
+  },
+  "302": {
+    "id": 302,
+    "key": "elixer",
+    "displayName": "Elixir",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/elixer.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "304": {
+    "id": 304,
+    "key": "ironwood_tree",
+    "displayName": "Ironwood Tree",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ironwood_tree.png?t=1593393829403",
+    "lore": "Precious. And hearty as a weed.",
+    "notes": ""
+  },
+  "305": {
+    "id": 305,
+    "key": "royal_jelly",
+    "displayName": "Royal Jelly",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/royal_jelly.png?t=1593393829403",
+    "lore": "To those who harvest olgru jelly, success serves more than mere profit--it's often the means to survival--for only the jelly itself can cure the ravages that follow a sting from the vigilant denizens of the giant hives.",
+    "notes": ""
+  },
+  "306": {
+    "id": 306,
+    "key": "pupils_gift",
+    "displayName": "Pupil's Gift",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/pupils_gift.png?t=1593393829403",
+    "lore": "An astounding plate of ever-replenishing, fortifying fruit.",
+    "notes": "Grants two-thirds value to each attribute for Universal Heroes"
+  },
+  "307": {
+    "id": 307,
+    "key": "tome_of_aghanim",
+    "displayName": "Tome of Aghanim",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/tome_of_aghanim.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "308": {
+    "id": 308,
+    "key": "repair_kit",
+    "displayName": "Repair Kit",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/repair_kit.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "309": {
+    "id": 309,
+    "key": "mind_breaker",
+    "displayName": "Mind Breaker",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mind_breaker.png?t=1593393829403",
+    "lore": "A bewitching blade of indeterminate form capable of piercing the psyche of even the most willful foe.",
+    "notes": ""
+  },
+  "310": {
+    "id": 310,
+    "key": "third_eye",
+    "displayName": "Third Eye",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/third_eye.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "311": {
+    "id": 311,
+    "key": "spell_prism",
+    "displayName": "Spell Prism",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/spell_prism.png?t=1593393829403",
+    "lore": "Even the slightest flaw in the components of a spell prism can result in the death of its user.",
+    "notes": ""
+  },
+  "312": {
+    "id": 312,
+    "key": "horizon",
+    "displayName": "horizon",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/horizon.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "313": {
+    "id": 313,
+    "key": "fusion_rune",
+    "displayName": "Fusion Rune",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/fusion_rune.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "325": {
+    "id": 325,
+    "key": "princes_knife",
+    "displayName": "Prince's Knife",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/princes_knife.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "326": {
+    "id": 326,
+    "key": "spider_legs",
+    "displayName": "Spider Legs",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/spider_legs.png?t=1593393829403",
+    "lore": "A horrifying yet useful mixture of necromancy and artificing.",
+    "notes": ""
+  },
+  "327": {
+    "id": 327,
+    "key": "helm_of_the_undying",
+    "displayName": "Helm of the Undying",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/helm_of_the_undying.png?t=1593393829403",
+    "lore": "The price for wearing it is paid in the afterlife.",
+    "notes": ""
+  },
+  "328": {
+    "id": 328,
+    "key": "mango_tree",
+    "displayName": "Mango Tree",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/mango_tree.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "330": {
+    "id": 330,
+    "key": "witless_shako",
+    "displayName": "Witless Shako",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/witless_shako.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "331": {
+    "id": 331,
+    "key": "vambrace",
+    "displayName": "Vambrace",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/vambrace.png?t=1593393829403",
+    "lore": "The coveted treasure that divided the heirs of Queen Raiya upon her death, resulting in the eventual downfall of her kingdom.",
+    "notes": ""
+  },
+  "334": {
+    "id": 334,
+    "key": "imp_claw",
+    "displayName": "Imp Claw",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/imp_claw.png?t=1593393829403",
+    "lore": "Though their tasks are largely thankless, demon hunters can often turn a profit bartering parts in Weeping Rose.",
+    "notes": ""
+  },
+  "335": {
+    "id": 335,
+    "key": "flicker",
+    "displayName": "Flicker",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/flicker.png?t=1593393829403",
+    "lore": "The technically-true-to-his-word 'teleportation device' crafted by a notorious fae trickster.",
+    "notes": ""
+  },
+  "336": {
+    "id": 336,
+    "key": "spy_gadget",
+    "displayName": "Telescope",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/spy_gadget.png?t=1593393829403",
+    "lore": "A handy tool that manages to make close what once was far.",
+    "notes": ""
+  },
+  "349": {
+    "id": 349,
+    "key": "arcane_ring",
+    "displayName": "Arcane Ring",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/arcane_ring.png?t=1593393829403",
+    "lore": "Once a prized heirloom of a minor lord's house.",
+    "notes": ""
+  },
+  "354": {
+    "id": 354,
+    "key": "ocean_heart",
+    "displayName": "Ocean Heart",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ocean_heart.png?t=1593393829403",
+    "lore": "A charm blessed by the Council of the Brine.",
+    "notes": ""
+  },
+  "355": {
+    "id": 355,
+    "key": "broom_handle",
+    "displayName": "Broom Handle",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/broom_handle.png?t=1593393829403",
+    "lore": "The surprisingly dangerous creation of an apprentice sorcerer with a strange fondness for brooms.",
+    "notes": ""
+  },
+  "356": {
+    "id": 356,
+    "key": "trusty_shovel",
+    "displayName": "Trusty Shovel",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/trusty_shovel.png?t=1593393829403",
+    "lore": "Former plaything of a young deity, received as a gift from his uncle.",
+    "notes": "16% chance for a Bounty Rune.\n28% chance each for a Flask, an Enchanted Mango, or a kobold.\nThe same Trusty Shovel cannot find the same reward twice in a row."
+  },
+  "357": {
+    "id": 357,
+    "key": "nether_shawl",
+    "displayName": "Nether Shawl",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/nether_shawl.png?t=1593393829403",
+    "lore": "An otherworldly garment tethered to our plane by unknown means.",
+    "notes": ""
+  },
+  "358": {
+    "id": 358,
+    "key": "dragon_scale",
+    "displayName": "Dragon Scale",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/dragon_scale.png?t=1593393829403",
+    "lore": "The remains of a dragon always outvalue the wealth of even the most prodigious hoard.",
+    "notes": ""
+  },
+  "359": {
+    "id": 359,
+    "key": "essence_ring",
+    "displayName": "Essence Ring",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/essence_ring.png?t=1593393829403",
+    "lore": "An ancient bauble blessed by the breath of Verodicia.",
+    "notes": ""
+  },
+  "360": {
+    "id": 360,
+    "key": "clumsy_net",
+    "displayName": "Clumsy Net",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/clumsy_net.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "361": {
+    "id": 361,
+    "key": "enchanted_quiver",
+    "displayName": "Enchanted Quiver",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enchanted_quiver.png?t=1593393829403",
+    "lore": "A graceful gift blessed by the goddess of the hunt.",
+    "notes": ""
+  },
+  "362": {
+    "id": 362,
+    "key": "ninja_gear",
+    "displayName": "Ninja Gear",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ninja_gear.png?t=1593393829403",
+    "lore": "Valuable equipment recovered by a young explorer sifting through the flotsam and detritus drifting in the void.",
+    "notes": ""
+  },
+  "363": {
+    "id": 363,
+    "key": "illusionsts_cape",
+    "displayName": "Illusionist's Cape",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/illusionsts_cape.png?t=1593393829403",
+    "lore": "A dashing cape whose creator insists on calling 'Cloak of Apparition' as opposed to his assistant's 'Illusion' drivel.",
+    "notes": ""
+  },
+  "364": {
+    "id": 364,
+    "key": "havoc_hammer",
+    "displayName": "Havoc Hammer",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/havoc_hammer.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "365": {
+    "id": 365,
+    "key": "panic_button",
+    "displayName": "Magic Lamp",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/panic_button.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "366": {
+    "id": 366,
+    "key": "apex",
+    "displayName": "Apex",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/apex.png?t=1593393829403",
+    "lore": "Three orbs of remarkable power bound within a single scepter.",
+    "notes": "Grants +24 to each attribute for Universal Heroes."
+  },
+  "367": {
+    "id": 367,
+    "key": "ballista",
+    "displayName": "Ballista",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ballista.png?t=1593393829403",
+    "lore": "A simple design much improved by a master smith's loving hand.",
+    "notes": ""
+  },
+  "368": {
+    "id": 368,
+    "key": "woodland_striders",
+    "displayName": "Woodland Striders",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/woodland_striders.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "369": {
+    "id": 369,
+    "key": "trident",
+    "displayName": "Trident",
+    "cost": 6301,
+    "img": "/apps/dota2/images/dota_react/items/trident.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "370": {
+    "id": 370,
+    "key": "demonicon",
+    "displayName": "Book of the Dead",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/demonicon.png?t=1593393829403",
+    "lore": "A record of the final reckoning. With one page torn out.",
+    "notes": "The Demonic Warrior has 1600 Health, 4 Armor, 40% Magic Resistance, 380 Movement Speed, 134 Attack Damage, 50 Mana Burn on Hit, 800 Damage on Death, and 1000 True Sight Radius.\nThe Demonic Archer has 1300 Health, 4 Armor, 40% Magic Resistance, 425 Movement Speed, 131 Attack Damage, a basic dispel ability with a slow on a 15s Cooldown, and a 9% Bonus Movement Speed Aura."
+  },
+  "371": {
+    "id": 371,
+    "key": "fallen_sky",
+    "displayName": "Fallen Sky",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/fallen_sky.png?t=1593393829403",
+    "lore": "One of the few surviving creations of the acolytes of the Wyrmforge.",
+    "notes": ""
+  },
+  "372": {
+    "id": 372,
+    "key": "pirate_hat",
+    "displayName": "Pirate Hat",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/pirate_hat.png?t=1593393829403",
+    "lore": "A salty skulltopper cursed with endless good fortune.",
+    "notes": ""
+  },
+  "374": {
+    "id": 374,
+    "key": "ex_machina",
+    "displayName": "Ex Machina",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ex_machina.png?t=1593393829403",
+    "lore": "The remains of an ancient universe, preserved within a single sphere.",
+    "notes": ""
+  },
+  "375": {
+    "id": 375,
+    "key": "faded_broach",
+    "displayName": "Faded Broach",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/faded_broach.png?t=1593393829403",
+    "lore": "A life-saving jewel bestowed upon a young queen by a kindly vizier. ",
+    "notes": ""
+  },
+  "376": {
+    "id": 376,
+    "key": "paladin_sword",
+    "displayName": "Paladin Sword",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/paladin_sword.png?t=1593393829403",
+    "lore": "The sigil blade of the legendary Brother Yhols of Gausra, stripped from its scabbard on the day of his controversial excommunication.",
+    "notes": ""
+  },
+  "377": {
+    "id": 377,
+    "key": "minotaur_horn",
+    "displayName": "Minotaur Horn",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/minotaur_horn.png?t=1593393829403",
+    "lore": "The trophy from a mighty beast ambushed and slain in the recesses of its own home.",
+    "notes": ""
+  },
+  "378": {
+    "id": 378,
+    "key": "orb_of_destruction",
+    "displayName": "Orb of Destruction",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/orb_of_destruction.png?t=1593393829403",
+    "lore": "An ingot of chaos suspended in wizard's ether, housed within an arcanist's orb.",
+    "notes": ""
+  },
+  "379": {
+    "id": 379,
+    "key": "the_leveller",
+    "displayName": "The Leveller",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/the_leveller.png?t=1593393829403",
+    "lore": "A demonic blade that struck the final blow to crack the gates of the Sanctum of Solanas.",
+    "notes": ""
+  },
+  "381": {
+    "id": 381,
+    "key": "titan_sliver",
+    "displayName": "Titan Sliver",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/titan_sliver.png?t=1593393829403",
+    "lore": "Though many desire this brilliant shard for its obvious qualities, a school of study exists to determine the true size and purpose of its incomprehensible whole.",
+    "notes": ""
+  },
+  "473": {
+    "id": 473,
+    "key": "voodoo_mask",
+    "displayName": "Voodoo Mask",
+    "cost": 650,
+    "img": "/apps/dota2/images/dota_react/items/voodoo_mask.png?t=1593393829403",
+    "lore": "A mask tuned to sip the arcane bindings that pass between caster and foe.",
+    "notes": "Does not heal from Pure or Reflected damage."
+  },
+  "485": {
+    "id": 485,
+    "key": "blitz_knuckles",
+    "displayName": "Blitz Knuckles",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/blitz_knuckles.png?t=1593393829403",
+    "lore": "An underground arcanist's update of a back-alley classic.",
+    "notes": ""
+  },
+  "533": {
+    "id": 533,
+    "key": "recipe_witch_blade",
+    "displayName": "Witch Blade Recipe",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "534": {
+    "id": 534,
+    "key": "witch_blade",
+    "displayName": "Witch Blade",
+    "cost": 2775,
+    "img": "/apps/dota2/images/dota_react/items/witch_blade.png?t=1593393829403",
+    "lore": "A spiteful blade inadvertently possessed by the soul of its incautious creator.",
+    "notes": ""
+  },
+  "565": {
+    "id": 565,
+    "key": "chipped_vest",
+    "displayName": "Chipped Vest",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/chipped_vest.png?t=1593393829403",
+    "lore": "It doesn't look like much, but it's oddly comfy.",
+    "notes": "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "569": {
+    "id": 569,
+    "key": "orb_of_corrosion",
+    "displayName": "Orb of Corrosion",
+    "cost": 1050,
+    "img": "/apps/dota2/images/dota_react/items/orb_of_corrosion.png?t=1593393829403",
+    "lore": "Seepage from the wounds of a warrior deity, sealed in an arcanist's orb following a campaign of vicious slaughter.",
+    "notes": "Armor reduction does not stack with its components, Desolator, or Stygian Desolator."
+  },
+  "571": {
+    "id": 571,
+    "key": "trickster_cloak",
+    "displayName": "Trickster Cloak",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/trickster_cloak.png?t=1593393829403",
+    "lore": "A fantastic garment immediately misplaced by its creator upon completion.",
+    "notes": ""
+  },
+  "573": {
+    "id": 573,
+    "key": "elven_tunic",
+    "displayName": "Elven Tunic",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/elven_tunic.png?t=1593393829403",
+    "lore": "Even simple items of elven make seem imbued with inexplicable efficacy.",
+    "notes": ""
+  },
+  "574": {
+    "id": 574,
+    "key": "cloak_of_flames",
+    "displayName": "Cloak of Flames",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/cloak_of_flames.png?t=1593393829403",
+    "lore": "A very fine cloak that plays host to an overly-protective living flame.",
+    "notes": ""
+  },
+  "577": {
+    "id": 577,
+    "key": "possessed_mask",
+    "displayName": "Possessed Mask",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/possessed_mask.png?t=1593393829403",
+    "lore": "Even when discarded with specific purpose and great care, this frightening mask always finds its way onto the face of a new owner.",
+    "notes": "Grants 1/3rd of the value to each attribute for Universal Heroes."
+  },
+  "585": {
+    "id": 585,
+    "key": "stormcrafter",
+    "displayName": "Stormcrafter",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/stormcrafter.png?t=1593393829403",
+    "lore": "The accidental byproduct of a spell conjured to entrap a lesser god.",
+    "notes": ""
+  },
+  "589": {
+    "id": 589,
+    "key": "mysterious_hat",
+    "displayName": "Fairy's Trinket",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mysterious_hat.png?t=1593393829403",
+    "lore": "A small token imbued with the fortune of the fae in recognition of an intriguing display of mortal kindness.",
+    "notes": ""
+  },
+  "593": {
+    "id": 593,
+    "key": "fluffy_hat",
+    "displayName": "Fluffy Hat",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/fluffy_hat.png?t=1593393829403",
+    "lore": "Fine and functional foppery for the fashion-forward fighter.",
+    "notes": ""
+  },
+  "596": {
+    "id": 596,
+    "key": "falcon_blade",
+    "displayName": "Falcon Blade",
+    "cost": 1125,
+    "img": "/apps/dota2/images/dota_react/items/falcon_blade.png?t=1593393829403",
+    "lore": "An enchanted blade that long ago raised a hopeless urchin from pauper to king.",
+    "notes": ""
+  },
+  "598": {
+    "id": 598,
+    "key": "mage_slayer",
+    "displayName": "Mage Slayer",
+    "cost": 3100,
+    "img": "/apps/dota2/images/dota_react/items/mage_slayer.png?t=1593393829403",
+    "lore": "Forged by a secret order in The Third Age of Praxa'cia to fell the False King.",
+    "notes": ""
+  },
+  "599": {
+    "id": 599,
+    "key": "recipe_falcon_blade",
+    "displayName": "Falcon Blade Recipe",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "600": {
+    "id": 600,
+    "key": "overwhelming_blink",
+    "displayName": "Overwhelming Blink",
+    "cost": 6800,
+    "img": "/apps/dota2/images/dota_react/items/overwhelming_blink.png?t=1593393829403",
+    "lore": "A horrifying dagger forged in the chaos maw and nigh untouchable by mortal hands.",
+    "notes": "Self-casting will cause you to teleport in the direction of your team's fountain."
+  },
+  "603": {
+    "id": 603,
+    "key": "swift_blink",
+    "displayName": "Swift Blink",
+    "cost": 6800,
+    "img": "/apps/dota2/images/dota_react/items/swift_blink.png?t=1593393829403",
+    "lore": "A cunning blade able to anticipate and enable its bearer's movements.",
+    "notes": "Self-casting will cause you to teleport in the direction of your team's fountain."
+  },
+  "604": {
+    "id": 604,
+    "key": "arcane_blink",
+    "displayName": "Arcane Blink",
+    "cost": 6800,
+    "img": "/apps/dota2/images/dota_react/items/arcane_blink.png?t=1593393829403",
+    "lore": "A revitalizing tool to help bear the weight of arcane expenditure.",
+    "notes": "Self-casting will cause you to teleport in the direction of your team's fountain."
+  },
+  "606": {
+    "id": 606,
+    "key": "recipe_arcane_blink",
+    "displayName": "Arcane Blink Recipe",
+    "cost": 1750,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "607": {
+    "id": 607,
+    "key": "recipe_swift_blink",
+    "displayName": "Swift Blink Recipe",
+    "cost": 1750,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "608": {
+    "id": 608,
+    "key": "recipe_overwhelming_blink",
+    "displayName": "Overwhelming Blink Recipe",
+    "cost": 1750,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "609": {
+    "id": 609,
+    "key": "aghanims_shard",
+    "displayName": "Aghanim's Shard",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/aghanims_shard.png?t=1593393829403",
+    "lore": "With origins known only to a single wizard, fragments of this impossible crystal are nearly as coveted as the renowned scepter itself.",
+    "notes": ""
+  },
+  "610": {
+    "id": 610,
+    "key": "wind_waker",
+    "displayName": "Wind Waker",
+    "cost": 6800,
+    "img": "/apps/dota2/images/dota_react/items/wind_waker.png?t=1593393829403",
+    "lore": "Proof enough to some that unseen forces manipulate the happenings of the material plane.",
+    "notes": "Cyclone can dispel some buffs and debuffs.\nWhen cast on yourself, the cyclone can be moved anywhere at a speed of 360.\nCyclone duration is unaffected by status resistance."
+  },
+  "612": {
+    "id": 612,
+    "key": "recipe_wind_waker",
+    "displayName": "Wind Waker Recipe",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "633": {
+    "id": 633,
+    "key": "recipe_helm_of_the_overlord",
+    "displayName": "Helm of the Overlord Recipe",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "635": {
+    "id": 635,
+    "key": "helm_of_the_overlord",
+    "displayName": "Helm of the Overlord",
+    "cost": 5650,
+    "img": "/apps/dota2/images/dota_react/items/helm_of_the_overlord.png?t=1593393829403",
+    "lore": "The powerful headpiece of an undead necromancer.",
+    "notes": "Can also Dominate enemy lane creeps and summoned units.\nSelling will cause dominated units to die."
+  },
+  "638": {
+    "id": 638,
+    "key": "penta_edged_sword",
+    "displayName": "Penta-Edged Sword",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/penta_edged_sword.png?t=1593393829403",
+    "lore": "The final, twisted work of a severely pious blacksmith, completed immediately before the taking of his own life. ",
+    "notes": ""
+  },
+  "675": {
+    "id": 675,
+    "key": "psychic_headband",
+    "displayName": "Psychic Headband",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/psychic_headband.png?t=1593393829403",
+    "lore": "A failed experiment in finer telekinetic control, still fit for other ends.",
+    "notes": "Does not trigger spell block or spell reflect."
+  },
+  "676": {
+    "id": 676,
+    "key": "ceremonial_robe",
+    "displayName": "Ceremonial Robe",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ceremonial_robe.png?t=1593393829403",
+    "lore": "One of many items lost in the looting of Zelenwyr's sacred reliquary.",
+    "notes": ""
+  },
+  "677": {
+    "id": 677,
+    "key": "book_of_shadows",
+    "displayName": "Book of Shadows",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/book_of_shadows.png?t=1593393829403",
+    "lore": "An impossible tome filled with unreadable prose of unknowable thoughts.",
+    "notes": "Does not trigger spell block or spell reflect."
+  },
+  "678": {
+    "id": 678,
+    "key": "giants_ring",
+    "displayName": "Giant's Ring",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/giants_ring.png?t=1593393829403",
+    "lore": "Prized procurement of an otherwise unremarkable ruler of Elze who abdicated his position and vanished.",
+    "notes": ""
+  },
+  "680": {
+    "id": 680,
+    "key": "bullwhip",
+    "displayName": "Bullwhip",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/bullwhip.png?t=1593393829403",
+    "lore": "Once the favored lash of an infamous broker of pit fighters and other live trade.",
+    "notes": "Does not trigger spell block or spell reflect."
+  },
+  "686": {
+    "id": 686,
+    "key": "quicksilver_amulet",
+    "displayName": "Quicksilver Amulet",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/quicksilver_amulet.png?t=1593393829403",
+    "lore": "An enchanted talisman brimming with a mysterious substance.",
+    "notes": ""
+  },
+  "691": {
+    "id": 691,
+    "key": "recipe_eternal_shroud",
+    "displayName": "Eternal Shroud Recipe",
+    "cost": 900,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "692": {
+    "id": 692,
+    "key": "eternal_shroud",
+    "displayName": "Eternal Shroud",
+    "cost": 3900,
+    "img": "/apps/dota2/images/dota_react/items/eternal_shroud.png?t=1593393829403",
+    "lore": "A pristine hood that feeds upon strife to empower its owner.",
+    "notes": ""
+  },
+  "725": {
+    "id": 725,
+    "key": "aghanims_shard_roshan",
+    "displayName": "Aghanim's Shard - Consumable",
+    "cost": 1400,
+    "img": "/apps/dota2/images/dota_react/items/aghanims_shard_roshan.png?t=1593393829403",
+    "lore": "With origins known only to a single wizard, fragments of this impossible crystal are nearly as coveted as the renowned scepter itself.",
+    "notes": ""
+  },
+  "727": {
+    "id": 727,
+    "key": "ultimate_scepter_roshan",
+    "displayName": "Aghanim's Blessing - Roshan",
+    "cost": 5800,
+    "img": "/apps/dota2/images/dota_react/items/ultimate_scepter_roshan.png?t=1593393829403",
+    "lore": "The scepter of a wizard with demigod-like powers.",
+    "notes": ""
+  },
+  "825": {
+    "id": 825,
+    "key": "ascetic_cap",
+    "displayName": "Ascetic's Cap",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ascetic_cap.png?t=1593393829403",
+    "lore": "An austere hat thought to be of Turstarkuri origin.",
+    "notes": ""
+  },
+  "828": {
+    "id": 828,
+    "key": "misericorde",
+    "displayName": "Brigand's Blade",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/misericorde.png?t=1593393829403",
+    "lore": "An infamous assassin's blade stolen and smuggled out of White Spire after its owner's mysterious demise.",
+    "notes": ""
+  },
+  "829": {
+    "id": 829,
+    "key": "force_field",
+    "displayName": "Arcanist's Armor",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/force_field.png?t=1593393829403",
+    "lore": "An exquisite piece commissioned by a paranoid monarch who choked on a piece of fruit long before the item saw its intended use.",
+    "notes": "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "834": {
+    "id": 834,
+    "key": "black_powder_bag",
+    "displayName": "Blast Rig",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/black_powder_bag.png?t=1593393829403",
+    "lore": "One of a set of custom rigs once worn by infamous road agents in the Outlands, its siblings have been lost to misfires and the various tides of time.",
+    "notes": ""
+  },
+  "835": {
+    "id": 835,
+    "key": "paintball",
+    "displayName": "Fae Grenade",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/paintball.png?t=1593393829403",
+    "lore": "Those marked for death by the fae shine brightly to all manner of creatures in the shadow realm.",
+    "notes": "Does not trigger spell block or spell reflect."
+  },
+  "837": {
+    "id": 837,
+    "key": "heavy_blade",
+    "displayName": "Witchbane",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/heavy_blade.png?t=1593393829403",
+    "lore": "With ready access to test subjects, untold cruelties have been dreamed up and loosed upon the world from within the walls of the Tyler Estate.",
+    "notes": ""
+  },
+  "838": {
+    "id": 838,
+    "key": "unstable_wand",
+    "displayName": "Pig Pole",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/unstable_wand.png?t=1593393829403",
+    "lore": "A makeshift charm misplaced by a peace-loving, addlebrained enchanter.",
+    "notes": ""
+  },
+  "840": {
+    "id": 840,
+    "key": "pogo_stick",
+    "displayName": "Tumbler's Toy",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/pogo_stick.png?t=1593393829403",
+    "lore": "An antique plaything found in the ruins of an Ozenja circus bazaar.",
+    "notes": ""
+  },
+  "849": {
+    "id": 849,
+    "key": "mechanical_arm",
+    "displayName": "mechanical_arm",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mechanical_arm.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "907": {
+    "id": 907,
+    "key": "recipe_wraith_pact",
+    "displayName": "recipe_wraith_pact",
+    "cost": 400,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "908": {
+    "id": 908,
+    "key": "wraith_pact",
+    "displayName": "Wraith Pact",
+    "cost": 3800,
+    "img": "/apps/dota2/images/dota_react/items/wraith_pact.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "910": {
+    "id": 910,
+    "key": "recipe_revenants_brooch",
+    "displayName": "Revenant's Brooch Recipe",
+    "cost": 650,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "911": {
+    "id": 911,
+    "key": "revenants_brooch",
+    "displayName": "Revenant's Brooch",
+    "cost": 3300,
+    "img": "/apps/dota2/images/dota_react/items/revenants_brooch.png?t=1593393829403",
+    "lore": "The cursed brooch of a fallen guardian who stalks forever between the veil of life and death.",
+    "notes": "Counts as a Critical Strike for purposes of stacking with other sources of Critical Strike.\nPhantom Critical does not work against buildings."
+  },
+  "931": {
+    "id": 931,
+    "key": "boots_of_bearing",
+    "displayName": "Boots of Bearing",
+    "cost": 4225,
+    "img": "/apps/dota2/images/dota_react/items/boots_of_bearing.png?t=1593393829403",
+    "lore": "Resplendent footwear fashioned for the ancient herald that first dared spread the glory of Stonehall beyond the original borders of its nascent claim.",
+    "notes": ""
+  },
+  "939": {
+    "id": 939,
+    "key": "harpoon",
+    "displayName": "Harpoon",
+    "cost": 4700,
+    "img": "/apps/dota2/images/dota_react/items/harpoon.png?t=1593393829403",
+    "lore": "A perfect solution for the flight of foes.",
+    "notes": ""
+  },
+  "945": {
+    "id": 945,
+    "key": "seeds_of_serenity",
+    "displayName": "Seeds of Serenity",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/seeds_of_serenity.png?t=1593393829403",
+    "lore": "An evergreen sprout treasured by the woodkin and highly coveted by interlopers and their like.",
+    "notes": ""
+  },
+  "946": {
+    "id": 946,
+    "key": "lance_of_pursuit",
+    "displayName": "Lance of Pursuit",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/lance_of_pursuit.png?t=1593393829403",
+    "lore": "The gleaming weapon of a tarnished knight haunted by his duties to an unworthy king.",
+    "notes": ""
+  },
+  "947": {
+    "id": 947,
+    "key": "occult_bracelet",
+    "displayName": "Occult Bracelet",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/occult_bracelet.png?t=1593393829403",
+    "lore": "A band that bears effigy of the dark goddess Eloshar's unsleeping eye.",
+    "notes": ""
+  },
+  "949": {
+    "id": 949,
+    "key": "ogre_seal_totem",
+    "displayName": "Ogre Seal Totem",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ogre_seal_totem.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "950": {
+    "id": 950,
+    "key": "defiant_shell",
+    "displayName": "Defiant Shell",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/defiant_shell.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "990": {
+    "id": 990,
+    "key": "eye_of_the_vizier",
+    "displayName": "Eye of the Vizier",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/eye_of_the_vizier.png?t=1593393829403",
+    "lore": "The ring of a cunning court mage who imprisoned a cadre of enemies to serve as his personal mana reserve.",
+    "notes": ""
+  },
+  "1000": {
+    "id": 1000,
+    "key": "bottomless_chalice",
+    "displayName": "bottomless_chalice",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/bottomless_chalice.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1021": {
+    "id": 1021,
+    "key": "river_painter",
+    "displayName": "River Vial: Chrome",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1022": {
+    "id": 1022,
+    "key": "river_painter2",
+    "displayName": "River Vial: Dry",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter2.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1023": {
+    "id": 1023,
+    "key": "river_painter3",
+    "displayName": "River Vial: Slime",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter3.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1024": {
+    "id": 1024,
+    "key": "river_painter4",
+    "displayName": "River Vial: Oil",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter4.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1025": {
+    "id": 1025,
+    "key": "river_painter5",
+    "displayName": "River Vial: Electrified",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter5.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1026": {
+    "id": 1026,
+    "key": "river_painter6",
+    "displayName": "River Vial: Potion",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter6.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1027": {
+    "id": 1027,
+    "key": "river_painter7",
+    "displayName": "River Vial: Blood",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/river_painter7.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1028": {
+    "id": 1028,
+    "key": "mutation_tombstone",
+    "displayName": "Tombstone",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mutation_tombstone.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1029": {
+    "id": 1029,
+    "key": "super_blink",
+    "displayName": "super_blink",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/super_blink.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1030": {
+    "id": 1030,
+    "key": "pocket_tower",
+    "displayName": "Pocket Tower",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/pocket_tower.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1032": {
+    "id": 1032,
+    "key": "pocket_roshan",
+    "displayName": "Pocket Roshan",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/pocket_roshan.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1076": {
+    "id": 1076,
+    "key": "specialists_array",
+    "displayName": "Specialist's Array",
+    "cost": 2550,
+    "img": "/apps/dota2/images/dota_react/items/specialists_array.png?t=1593393829403",
+    "lore": "An impressive kit of trigger enhancements born in an aging assassin's idle mind.",
+    "notes": ""
+  },
+  "1077": {
+    "id": 1077,
+    "key": "dagger_of_ristul",
+    "displayName": "Dagger of Ristul",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/dagger_of_ristul.png?t=1593393829403",
+    "lore": "A sinister shiv that grants favor to those willing to stain its blade with a sacrifice of their own blood.",
+    "notes": ""
+  },
+  "1090": {
+    "id": 1090,
+    "key": "muertas_gun",
+    "displayName": "Mercy & Grace",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/muertas_gun.png?t=1593393829403",
+    "lore": "One to deliver the body, the other to claim the soul.",
+    "notes": "Feared enemies are phased and unslowable.\nThe ricochet will travel 1x Dead Shot's cast range."
+  },
+  "1096": {
+    "id": 1096,
+    "key": "recipe_disperser",
+    "displayName": "Disperser Recipe",
+    "cost": 800,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1097": {
+    "id": 1097,
+    "key": "disperser",
+    "displayName": "Disperser",
+    "cost": 6100,
+    "img": "/apps/dota2/images/dota_react/items/disperser.png?t=1593393829403",
+    "lore": "Once entrusted to an Apostle General of the Rumusque Faithful's expeditionary force.",
+    "notes": ""
+  },
+  "1101": {
+    "id": 1101,
+    "key": "recipe_harpoon",
+    "displayName": "Harpoon Recipe",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1106": {
+    "id": 1106,
+    "key": "recipe_phylactery",
+    "displayName": "Phylactery Recipe",
+    "cost": 200,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1107": {
+    "id": 1107,
+    "key": "phylactery",
+    "displayName": "Phylactery",
+    "cost": 2600,
+    "img": "/apps/dota2/images/dota_react/items/phylactery.png?t=1593393829403",
+    "lore": "An amulet overflowing with powerful magics.",
+    "notes": ""
+  },
+  "1122": {
+    "id": 1122,
+    "key": "diadem",
+    "displayName": "Diadem",
+    "cost": 1000,
+    "img": "/apps/dota2/images/dota_react/items/diadem.png?t=1593393829403",
+    "lore": "A crown that can never be removed.",
+    "notes": ""
+  },
+  "1123": {
+    "id": 1123,
+    "key": "blood_grenade",
+    "displayName": "Blood Grenade",
+    "cost": 50,
+    "img": "/apps/dota2/images/dota_react/items/blood_grenade.png?t=1593393829403",
+    "lore": "Both the hunter and the hunted must pay the blood price.",
+    "notes": ""
+  },
+  "1124": {
+    "id": 1124,
+    "key": "spark_of_courage",
+    "displayName": "Spark of Courage",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/spark_of_courage.png?t=1593393829403",
+    "lore": "A common battle charm in the armies that served the Children of Light.",
+    "notes": ""
+  },
+  "1125": {
+    "id": 1125,
+    "key": "cornucopia",
+    "displayName": "Cornucopia",
+    "cost": 1200,
+    "img": "/apps/dota2/images/dota_react/items/cornucopia.png?t=1593393829403",
+    "lore": "A source of spiritual and physical nourishment.",
+    "notes": ""
+  },
+  "1127": {
+    "id": 1127,
+    "key": "recipe_pavise",
+    "displayName": "Pavise Recipe",
+    "cost": 675,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1128": {
+    "id": 1128,
+    "key": "pavise",
+    "displayName": "Pavise",
+    "cost": 1350,
+    "img": "/apps/dota2/images/dota_react/items/pavise.png?t=1593393829403",
+    "lore": "Devised by a wizard who made one too many enemies.",
+    "notes": ""
+  },
+  "1154": {
+    "id": 1154,
+    "key": "royale_with_cheese",
+    "displayName": "Block of Cheese",
+    "cost": 2,
+    "img": "/apps/dota2/images/dota_react/items/royale_with_cheese.png?t=1593393829403",
+    "lore": "First there was the Belt of Strength. Then there were the Boots of Travel. Now, at long last, the Block of Cheese.",
+    "notes": ""
+  },
+  "1156": {
+    "id": 1156,
+    "key": "ancient_guardian",
+    "displayName": "Ancient Guardian",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ancient_guardian.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1157": {
+    "id": 1157,
+    "key": "safety_bubble",
+    "displayName": "Safety Bubble",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/safety_bubble.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1158": {
+    "id": 1158,
+    "key": "whisper_of_the_dread",
+    "displayName": "Whisper of the Dread",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/whisper_of_the_dread.png?t=1593393829403",
+    "lore": "The air that passes through this amulet makes a dreadful sound.",
+    "notes": ""
+  },
+  "1159": {
+    "id": 1159,
+    "key": "nemesis_curse",
+    "displayName": "Nemesis Curse",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/nemesis_curse.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1160": {
+    "id": 1160,
+    "key": "avianas_feather",
+    "displayName": "Aviana's Feather",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/avianas_feather.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1161": {
+    "id": 1161,
+    "key": "unwavering_condition",
+    "displayName": "Unwavering Condition",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/unwavering_condition.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1167": {
+    "id": 1167,
+    "key": "light_collector",
+    "displayName": "Light Collector",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/light_collector.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1168": {
+    "id": 1168,
+    "key": "rattlecage",
+    "displayName": "Rattlecage",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/rattlecage.png?t=1593393829403",
+    "lore": "",
+    "notes": "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "1440": {
+    "id": 1440,
+    "key": "black_grimoire",
+    "displayName": "Black Grimoire\\n(Warlock)",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/black_grimoire.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1441": {
+    "id": 1441,
+    "key": "grisgris",
+    "displayName": "Gris-Gris",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/grisgris.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1466": {
+    "id": 1466,
+    "key": "gungir",
+    "displayName": "Gleipnir",
+    "cost": 4650,
+    "img": "/apps/dota2/images/dota_react/items/gungir.png?t=1593393829403",
+    "lore": "Bindings forged by impossible means to leash an ancient evil.",
+    "notes": "AoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+  },
+  "1565": {
+    "id": 1565,
+    "key": "recipe_gungir",
+    "displayName": "Gleipnir Recipe",
+    "cost": 400,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1575": {
+    "id": 1575,
+    "key": "orb_of_frost",
+    "displayName": "Orb of Frost",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/orb_of_frost.png?t=1593393829403",
+    "lore": "Slowly growing since the universe began, it will envelop everything when it ends.",
+    "notes": ""
+  },
+  "1576": {
+    "id": 1576,
+    "key": "enhancement_vast",
+    "displayName": "Vast",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_vast.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1577": {
+    "id": 1577,
+    "key": "enhancement_quickened",
+    "displayName": "Quickened",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_quickened.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1581": {
+    "id": 1581,
+    "key": "enhancement_audacious",
+    "displayName": "Audacious",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_audacious.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1583": {
+    "id": 1583,
+    "key": "enhancement_mystical",
+    "displayName": "Mystical",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_mystical.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1584": {
+    "id": 1584,
+    "key": "enhancement_alert",
+    "displayName": "Alert",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_alert.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1585": {
+    "id": 1585,
+    "key": "enhancement_brawny",
+    "displayName": "Brawny",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_brawny.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1586": {
+    "id": 1586,
+    "key": "enhancement_tough",
+    "displayName": "Tough",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_tough.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1587": {
+    "id": 1587,
+    "key": "enhancement_feverish",
+    "displayName": "Feverish",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_feverish.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1588": {
+    "id": 1588,
+    "key": "enhancement_fleetfooted",
+    "displayName": "Fleetfooted",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_fleetfooted.png?t=1593393829403",
+    "lore": "",
+    "notes": "Does not stack with Movement Speed bonuses from boots"
+  },
+  "1589": {
+    "id": 1589,
+    "key": "enhancement_crude",
+    "displayName": "Crude",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_crude.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1590": {
+    "id": 1590,
+    "key": "enhancement_boundless",
+    "displayName": "Boundless",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_boundless.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1591": {
+    "id": 1591,
+    "key": "enhancement_wise",
+    "displayName": "Wise",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_wise.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1592": {
+    "id": 1592,
+    "key": "enhancement_timeless",
+    "displayName": "Timeless",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_timeless.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1593": {
+    "id": 1593,
+    "key": "enhancement_greedy",
+    "displayName": "Greedy",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_greedy.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1594": {
+    "id": 1594,
+    "key": "enhancement_vampiric",
+    "displayName": "Vampiric",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_vampiric.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1595": {
+    "id": 1595,
+    "key": "enhancement_keen_eyed",
+    "displayName": "Keen-eyed",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_keen_eyed.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1596": {
+    "id": 1596,
+    "key": "enhancement_evolved",
+    "displayName": "Evolved",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_evolved.png?t=1593393829403",
+    "lore": "",
+    "notes": "Grants +24 to each attribute for Universal Heroes."
+  },
+  "1597": {
+    "id": 1597,
+    "key": "enhancement_titanic",
+    "displayName": "Titanic",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_titanic.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1598": {
+    "id": 1598,
+    "key": "unrelenting_eye",
+    "displayName": "Unrelenting Eye",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/unrelenting_eye.png?t=1593393829403",
+    "lore": "A serpent's eye the size of a melon (and just as moist).",
+    "notes": ""
+  },
+  "1599": {
+    "id": 1599,
+    "key": "mana_draught",
+    "displayName": "Mana Draught",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/mana_draught.png?t=1593393829403",
+    "lore": "A refreshing drink best shared with friends.",
+    "notes": ""
+  },
+  "1600": {
+    "id": 1600,
+    "key": "rippers_lash",
+    "displayName": "Ripper's Lash",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/rippers_lash.png?t=1593393829403",
+    "lore": "The Fae horticulturists of Revtel are known to push the boundaries of both cross pollination and safety.",
+    "notes": ""
+  },
+  "1601": {
+    "id": 1601,
+    "key": "crippling_crossbow",
+    "displayName": "Crippling Crossbow",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/crippling_crossbow.png?t=1593393829403",
+    "lore": "The ever-weeping woodgrain of this crossbow coats every bolt in a potent but short-lived narcotic sap.",
+    "notes": ""
+  },
+  "1602": {
+    "id": 1602,
+    "key": "gale_guard",
+    "displayName": "Gale Guard",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/gale_guard.png?t=1593393829403",
+    "lore": "If one truly listens, they can always rely upon the wind to make its will known.",
+    "notes": ""
+  },
+  "1603": {
+    "id": 1603,
+    "key": "gunpowder_gauntlets",
+    "displayName": "Gunpowder Gauntlet",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/gunpowder_gauntlets.png?t=1593393829403",
+    "lore": "A 'harmless' prank that went entirely too far.",
+    "notes": ""
+  },
+  "1604": {
+    "id": 1604,
+    "key": "searing_signet",
+    "displayName": "Searing Signet",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/searing_signet.png?t=1593393829403",
+    "lore": "To torture a magic user, one must devise means far beyond the mundane.",
+    "notes": "Will not ignite enemies that are more than 2000 range away."
+  },
+  "1605": {
+    "id": 1605,
+    "key": "serrated_shiv",
+    "displayName": "Serrated Shiv",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/serrated_shiv.png?t=1593393829403",
+    "lore": "Too dangerous for taskwork, this blade's only purpose is vile murder.",
+    "notes": ""
+  },
+  "1606": {
+    "id": 1606,
+    "key": "polliwog_charm",
+    "displayName": "Pollywog Charm",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/polliwog_charm.png?t=1593393829403",
+    "lore": "A tiny trinket that wriggles when wet.",
+    "notes": ""
+  },
+  "1607": {
+    "id": 1607,
+    "key": "magnifying_monocle",
+    "displayName": "Magnifying Monocle",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/magnifying_monocle.png?t=1593393829403",
+    "lore": "Deadly refinement.",
+    "notes": ""
+  },
+  "1608": {
+    "id": 1608,
+    "key": "pyrrhic_cloak",
+    "displayName": "Pyrrhic Cloak",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/pyrrhic_cloak.png?t=1593393829403",
+    "lore": "There are generals that care far less about the survival of their troops than the destruction of their enemies.",
+    "notes": "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "1609": {
+    "id": 1609,
+    "key": "madstone_bundle",
+    "displayName": "Madstone Bundle",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/madstone_bundle.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1610": {
+    "id": 1610,
+    "key": "miniboss_minion_summoner",
+    "displayName": "miniboss_minion_summoner",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/miniboss_minion_summoner.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1637": {
+    "id": 1637,
+    "key": "kobold_cup",
+    "displayName": "Kobold Cup",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/kobold_cup.png?t=1593393829403",
+    "lore": "The Kobold King will sip when he damn well pleases.",
+    "notes": ""
+  },
+  "1638": {
+    "id": 1638,
+    "key": "dormant_curio",
+    "displayName": "Dormant Curio",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/dormant_curio.png?t=1593393829403",
+    "lore": "Everyone has an idea, but no one has a clue.",
+    "notes": "Certain stats on the next artifact will be amplified. Will not amplify cooldown, mana cost, or cast range."
+  },
+  "1639": {
+    "id": 1639,
+    "key": "sisters_shroud",
+    "displayName": "Sister's Shroud",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/sisters_shroud.png?t=1593393829403",
+    "lore": "A pall that draped the sarcophagus of the First Sister.",
+    "notes": "Does not trigger from damage by non-player controlled creeps"
+  },
+  "1640": {
+    "id": 1640,
+    "key": "jidi_pollen_bag",
+    "displayName": "Jidi Pollen Bag",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/jidi_pollen_bag.png?t=1593393829403",
+    "lore": "Very dangerous. Very difficult to obtain more.",
+    "notes": "Damage is non-lethal and classified as HP Loss."
+  },
+  "1641": {
+    "id": 1641,
+    "key": "outworld_staff",
+    "displayName": "Outworld Staff",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/outworld_staff.png?t=1593393829403",
+    "lore": "Proof that the lone sentinel was not always so.",
+    "notes": "Damage taken when returning is non-lethal and disables Blink Dagger and other items that are muted upon taking damage."
+  },
+  "1642": {
+    "id": 1642,
+    "key": "dezun_bloodrite",
+    "displayName": "Dezun Bloodrite",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/dezun_bloodrite.png?t=1593393829403",
+    "lore": "The gateway to a lost lineage of power, unlocked only with blood.",
+    "notes": ""
+  },
+  "1643": {
+    "id": 1643,
+    "key": "giant_maul",
+    "displayName": "Giant's Maul",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/giant_maul.png?t=1593393829403",
+    "lore": "Crude but smashingly effective.",
+    "notes": ""
+  },
+  "1644": {
+    "id": 1644,
+    "key": "divine_regalia",
+    "displayName": "Divine Regalia",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/divine_regalia.png?t=1593393829403",
+    "lore": "So magnificent, it cannot abide failure.",
+    "notes": ""
+  },
+  "1645": {
+    "id": 1645,
+    "key": "divine_regalia_broken",
+    "displayName": "Disgraced Regalia",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/divine_regalia_broken.png?t=1593393829403",
+    "lore": "It cannot abide failure.",
+    "notes": ""
+  },
+  "1647": {
+    "id": 1647,
+    "key": "enhancement_fierce",
+    "displayName": "Fierce",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_fierce.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1648": {
+    "id": 1648,
+    "key": "enhancement_dominant",
+    "displayName": "Dominant",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_dominant.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1649": {
+    "id": 1649,
+    "key": "enhancement_restorative",
+    "displayName": "Restorative",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_restorative.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1650": {
+    "id": 1650,
+    "key": "enhancement_thick",
+    "displayName": "Thick",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_thick.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1651": {
+    "id": 1651,
+    "key": "enhancement_curious",
+    "displayName": "Unleashed",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_curious.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1652": {
+    "id": 1652,
+    "key": "furion_gold_bag",
+    "displayName": "Bag of Gold",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/furion_gold_bag.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1715": {
+    "id": 1715,
+    "key": "recipe_specialists_array",
+    "displayName": "recipe_specialists_array",
+    "cost": 550,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1716": {
+    "id": 1716,
+    "key": "weighted_dice",
+    "displayName": "Weighted Dice",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/weighted_dice.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1717": {
+    "id": 1717,
+    "key": "ash_legion_shield",
+    "displayName": "Ash Legion Shield",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ash_legion_shield.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1718": {
+    "id": 1718,
+    "key": "riftshadow_prism",
+    "displayName": "Riftshadow Prism",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/riftshadow_prism.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1719": {
+    "id": 1719,
+    "key": "metamorphic_mandible",
+    "displayName": "Metamorphic Mandible",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/metamorphic_mandible.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1720": {
+    "id": 1720,
+    "key": "idol_of_screeauk",
+    "displayName": "Idol of Scree'auk",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/idol_of_screeauk.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1721": {
+    "id": 1721,
+    "key": "flayers_bota",
+    "displayName": "Flayer's Bota",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/flayers_bota.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1801": {
+    "id": 1801,
+    "key": "caster_rapier",
+    "displayName": "caster_rapier",
+    "cost": 5600,
+    "img": "/apps/dota2/images/dota_react/items/caster_rapier.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1802": {
+    "id": 1802,
+    "key": "tiara_of_selemene",
+    "displayName": "Tiara of Selemene",
+    "cost": 1700,
+    "img": "/apps/dota2/images/dota_react/items/tiara_of_selemene.png?t=1593393829403",
+    "lore": "A symbol of favor bestowed upon the high priestess of Selemene.",
+    "notes": ""
+  },
+  "1803": {
+    "id": 1803,
+    "key": "doubloon",
+    "displayName": "Doubloon",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/doubloon.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1804": {
+    "id": 1804,
+    "key": "roshans_banner",
+    "displayName": "Roshan's Banner",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/roshans_banner.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1805": {
+    "id": 1805,
+    "key": "recipe_devastator",
+    "displayName": "Parasma Recipe",
+    "cost": 400,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1806": {
+    "id": 1806,
+    "key": "devastator",
+    "displayName": "Parasma",
+    "cost": 5975,
+    "img": "/apps/dota2/images/dota_react/items/devastator.png?t=1593393829403",
+    "lore": "Warning: There is no antidote if picked up by the wrong end.",
+    "notes": ""
+  },
+  "1808": {
+    "id": 1808,
+    "key": "angels_demise",
+    "displayName": "Khanda",
+    "cost": 5600,
+    "img": "/apps/dota2/images/dota_react/items/angels_demise.png?t=1593393829403",
+    "lore": "A blade sharp enough to slice through magic itself.",
+    "notes": "The slow debuff is dispellable.\nThe break debuff is not dispellable."
+  },
+  "1847": {
+    "id": 1847,
+    "key": "splintmail",
+    "displayName": "Splintmail",
+    "cost": 950,
+    "img": "/apps/dota2/images/dota_react/items/splintmail.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1848": {
+    "id": 1848,
+    "key": "shawl",
+    "displayName": "Shawl",
+    "cost": 450,
+    "img": "/apps/dota2/images/dota_react/items/shawl.png?t=1593393829403",
+    "lore": "",
+    "notes": "Stacks multiplicatively with other sources of magic resistance."
+  },
+  "1849": {
+    "id": 1849,
+    "key": "wizard_hat",
+    "displayName": "Wizard Hat",
+    "cost": 250,
+    "img": "/apps/dota2/images/dota_react/items/wizard_hat.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1850": {
+    "id": 1850,
+    "key": "eldwurms_edda",
+    "displayName": "Eldwurm's Edda",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/eldwurms_edda.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1851": {
+    "id": 1851,
+    "key": "recipe_essence_distiller",
+    "displayName": "Essence Distiller Recipe",
+    "cost": 200,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1852": {
+    "id": 1852,
+    "key": "essence_distiller",
+    "displayName": "Essence Distiller",
+    "cost": 1775,
+    "img": "/apps/dota2/images/dota_react/items/essence_distiller.png?t=1593393829403",
+    "lore": "",
+    "notes": "Empty distillers gain 2 charges.\nOnly the closest Essence Distiller to the dying hero will gain a charge.\nIf the allied unit is attacked by an enemy hero or Roshan, the effect is lost.\nDoes not trigger spell block or spell reflect.\nWhile dormant, provides vision in 400 radius. Vision lingers for 0.5s after latching."
+  },
+  "1853": {
+    "id": 1853,
+    "key": "recipe_consecrated_wraps",
+    "displayName": "Consecrated Wraps Recipe",
+    "cost": 700,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1854": {
+    "id": 1854,
+    "key": "consecrated_wraps",
+    "displayName": "Consecrated Wraps",
+    "cost": 2600,
+    "img": "/apps/dota2/images/dota_react/items/consecrated_wraps.png?t=1593393829403",
+    "lore": "",
+    "notes": "Stacks cannot be gained for 3s after you take damage from a player-controlled unit or Roshan.\nSelf-damage and HP Loss damage cannot remove stacks.\nMovement speed buff does not stack.\nMovement speed buff is only provided if you have reached maximum stacks at least once while the item is equipped."
+  },
+  "1855": {
+    "id": 1855,
+    "key": "recipe_crellas_crozier",
+    "displayName": "Crella's Crozier Recipe",
+    "cost": 300,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1856": {
+    "id": 1856,
+    "key": "crellas_crozier",
+    "displayName": "Crella's Crozier",
+    "cost": 4800,
+    "img": "/apps/dota2/images/dota_react/items/crellas_crozier.png?t=1593393829403",
+    "lore": "",
+    "notes": "Ghost form ends if you become Debuff Immune and will have no effect if you are already Debuff Immune.\nShares cooldown with Ghost Scepter and its upgrades.\nPutrefaction Aura does not redirect Health Restoration from enemy heroes that are at full health."
+  },
+  "1857": {
+    "id": 1857,
+    "key": "recipe_hydras_breath",
+    "displayName": "recipe_hydras_breath",
+    "cost": 1100,
+    "img": "/apps/dota2/images/dota_react/items/recipe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1858": {
+    "id": 1858,
+    "key": "hydras_breath",
+    "displayName": "Hydra's Breath",
+    "cost": 5900,
+    "img": "/apps/dota2/images/dota_react/items/hydras_breath.png?t=1593393829403",
+    "lore": "",
+    "notes": "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+  },
+  "1859": {
+    "id": 1859,
+    "key": "spellslinger",
+    "displayName": "Spellslinger",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/spellslinger.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1860": {
+    "id": 1860,
+    "key": "prophets_pendulum",
+    "displayName": "Prophet's Pendulum",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/prophets_pendulum.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1861": {
+    "id": 1861,
+    "key": "stonefeather_satchel",
+    "displayName": "Stonefeather Satchel",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/stonefeather_satchel.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1862": {
+    "id": 1862,
+    "key": "enchanters_bauble",
+    "displayName": "Enchanter's Bauble",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enchanters_bauble.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1863": {
+    "id": 1863,
+    "key": "harmonizer",
+    "displayName": "Harmonizer",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/harmonizer.png?t=1593393829403",
+    "lore": "",
+    "notes": "Only considers abilities that are visible and have a cooldown"
+  },
+  "1864": {
+    "id": 1864,
+    "key": "conjurers_catalyst",
+    "displayName": "Conjurer's Catalyst",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/conjurers_catalyst.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1865": {
+    "id": 1865,
+    "key": "enhancement_vital",
+    "displayName": "Vital",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_vital.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1866": {
+    "id": 1866,
+    "key": "enhancement_hulking",
+    "displayName": "Hulking",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_hulking.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1867": {
+    "id": 1867,
+    "key": "enhancement_manic",
+    "displayName": "Manic",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_manic.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1868": {
+    "id": 1868,
+    "key": "foragers_kit",
+    "displayName": "Forager's Kit",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/foragers_kit.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1869": {
+    "id": 1869,
+    "key": "foragers_health",
+    "displayName": "Vital Toadstool",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/foragers_health.png?t=1593393829403",
+    "lore": "",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "1870": {
+    "id": 1870,
+    "key": "foragers_stats",
+    "displayName": "Ironwood Nut",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/foragers_stats.png?t=1593393829403",
+    "lore": "",
+    "notes": "Universal heroes get 0.4 bonus to all attributes."
+  },
+  "1871": {
+    "id": 1871,
+    "key": "foragers_mana",
+    "displayName": "Tomo'kan Ringcap",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/foragers_mana.png?t=1593393829403",
+    "lore": "",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "1872": {
+    "id": 1872,
+    "key": "chasm_stone",
+    "displayName": "Chasm Stone",
+    "cost": 800,
+    "img": "/apps/dota2/images/dota_react/items/chasm_stone.png?t=1593393829403",
+    "lore": "",
+    "notes": "AoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+  },
+  "1873": {
+    "id": 1873,
+    "key": "partisans_brand",
+    "displayName": "Partisan's Brand",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/partisans_brand.png?t=1593393829403",
+    "lore": "",
+    "notes": "Player controlled units includes heroes and any creep summoned or converted by them."
+  },
+  "1874": {
+    "id": 1874,
+    "key": "enhancement_nimble",
+    "displayName": "Nimble",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/enhancement_nimble.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "1875": {
+    "id": 1875,
+    "key": "tidehunter_fish",
+    "displayName": "Leviathan's Fish",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/tidehunter_fish.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2091": {
+    "id": 2091,
+    "key": "tier1_token",
+    "displayName": "Tier 1 Token",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/tier1_token.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2092": {
+    "id": 2092,
+    "key": "tier2_token",
+    "displayName": "Tier 2 Token",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/tier2_token.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2093": {
+    "id": 2093,
+    "key": "tier3_token",
+    "displayName": "Tier 3 Token",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/tier3_token.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2094": {
+    "id": 2094,
+    "key": "tier4_token",
+    "displayName": "Tier 4 Token",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/tier4_token.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2095": {
+    "id": 2095,
+    "key": "tier5_token",
+    "displayName": "Tier 5 Token",
+    "cost": null,
+    "img": "/apps/dota2/images/dota_react/items/tier5_token.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2096": {
+    "id": 2096,
+    "key": "vindicators_axe",
+    "displayName": "Vindicator's Axe",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/vindicators_axe.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2097": {
+    "id": 2097,
+    "key": "duelist_gloves",
+    "displayName": "Duelist Gloves",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/duelist_gloves.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2190": {
+    "id": 2190,
+    "key": "dandelion_amulet",
+    "displayName": "Dandelion Amulet",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/dandelion_amulet.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "2192": {
+    "id": 2192,
+    "key": "martyrs_plate",
+    "displayName": "Martyr's Plate",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/martyrs_plate.png?t=1593393829403",
+    "lore": "",
+    "notes": "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+  },
+  "2193": {
+    "id": 2193,
+    "key": "gossamer_cape",
+    "displayName": "Gossamer Cape",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/gossamer_cape.png?t=1593393829403",
+    "lore": "",
+    "notes": ""
+  },
+  "4204": {
+    "id": 4204,
+    "key": "famango",
+    "displayName": "Healing Lotus",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/famango.png?t=1593393829403",
+    "lore": "",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "4205": {
+    "id": 4205,
+    "key": "great_famango",
+    "displayName": "Great Healing Lotus",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/great_famango.png?t=1593393829403",
+    "lore": "",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "4206": {
+    "id": 4206,
+    "key": "greater_famango",
+    "displayName": "Greater Healing Lotus",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/greater_famango.png?t=1593393829403",
+    "lore": "",
+    "notes": "Hold Control to use on a nearby allied hero."
+  },
+  "4300": {
+    "id": 4300,
+    "key": "ofrenda",
+    "displayName": "Beloved Memory",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ofrenda.png?t=1593393829403",
+    "lore": "Take joy in remembering those beloved who've passed now beyond the veil.",
+    "notes": ""
+  },
+  "4301": {
+    "id": 4301,
+    "key": "ofrenda_shovel",
+    "displayName": "Scrying Shovel",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ofrenda_shovel.png?t=1593393829403",
+    "lore": "You don't know where it came from, but it knows where you need to go. All you need to do is dig.",
+    "notes": ""
+  },
+  "4302": {
+    "id": 4302,
+    "key": "ofrenda_pledge",
+    "displayName": "Forebearer's Fortune",
+    "cost": 0,
+    "img": "/apps/dota2/images/dota_react/items/ofrenda_pledge.png?t=1593393829403",
+    "lore": "This item seems unstable. Like it might just disappear.",
+    "notes": ""
+  }
+}

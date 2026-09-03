@@ -12,7 +12,7 @@ Date: 2026-09-03T09:23:48.350247
 2. **เทคโนโลยีและเฟรมเวิร์ก (Technology Stack)**:
    - **Tauri (Rust + React/TypeScript)**: สถาปัตยกรรมเนทีฟขนาดเบาพิเศษ ใช้ RAM เพียง ~10–25 MB (ไม่กินสเปกและไม่ดึง FPS เหมือน Electron) รองรับ Transparent Window และรัน Embedded HTTP Listener สำหรับ GSI ในฝั่ง Rust โดยตรง
 3. **แหล่งข้อมูลและการแจ้งเตือน (Data Pipeline & Objectives)**:
-   - **Hybrid Architecture (Local GSI + Stratz/OpenDota API)**: รับ Event และ Game Clock เรียลไทม์ผ่าน Dota 2 Game State Integration (GSI) ภายในเครื่อง (100% VAC-Safe) พร้อมดึงสถิติ Counter Picks, Win Rates, และ Item Builds ผ่าน Public API เสริมด้วย Web Audio API สังเคราะห์เสียงเตือนไทม์มิ่ง (Wisdom/Power/Bounty Runes, Tormentor, Roshan & Aegis)
+   - **Hybrid Architecture (Local GSI + OpenDota API)**: รับ Event และ Game Clock เรียลไทม์ผ่าน Dota 2 Game State Integration (GSI) ภายในเครื่อง พร้อมดึงสถิติ Counter Picks, Win Rates และ Item Popularity จาก API จริง
 
 ---
 
@@ -35,12 +35,12 @@ Date: 2026-09-03T09:23:48.350247
   - **Tormentor** (เกิดที่นาทีที่ 20:00 และเกิดใหม่ทุก 10 นาที)
   - **Roshan & Aegis Tracker** (Aegis 5 นาที, หน้าต่างสุ่มเกิด 8–11 นาที, และถ้ำ Roshan สลับตามกลางวัน/กลางคืน)
 - [`src/services/audioService.ts`](file:///root/Desktop/DotaAssist/src/services/audioService.ts): ระบบสังเคราะห์เสียงแจ้งเตือนด้วย Web Audio API โดยไม่ต้องพึ่งพาไฟล์เสียงภายนอก
-- [`src/services/apiService.ts`](file:///root/Desktop/DotaAssist/src/services/apiService.ts): เชื่อมต่อ OpenDota & Stratz API ดึง Win Rates, Matchup Advantages (+% ได้เปรียบ), พร้อม Offline Heuristic Cache
-- [`src/services/gsiService.ts`](file:///root/Desktop/DotaAssist/src/services/gsiService.ts): จัดการรับข้อมูล GSI และมีระบบ Mock Simulation Feed สำหรับทดสอบโดยไม่ต้องเปิดเกม
+- [`src/services/apiService.ts`](file:///root/Desktop/DotaAssist/src/services/apiService.ts): เชื่อมต่อ OpenDota API และแสดงสถานะ unavailable โดยไม่สร้างสถิติหรือคำแนะนำทดแทน
+- [`src/services/gsiService.ts`](file:///root/Desktop/DotaAssist/src/services/gsiService.ts): จัดการรับข้อมูล GSI จริงจาก Tauri IPC เท่านั้น
 - [`src/components/OverlayHUD.tsx`](file:///root/Desktop/DotaAssist/src/components/OverlayHUD.tsx): หน้าต่าง In-game HUD ลอย ย่อ/ขยายได้ ปรับความโปร่งแสงได้ ไม่บดบังจอเกม
 - [`src/components/TimingAlerts.tsx`](file:///root/Desktop/DotaAssist/src/components/TimingAlerts.tsx): การ์ดแสดงผลเคานต์ดาวน์ไทม์มิ่ง พร้อมปุ่มบันทึก Roshan Slain และสวิตช์เปิด/ปิดเสียง
 - [`src/components/DraftAdvisor.tsx`](file:///root/Desktop/DotaAssist/src/components/DraftAdvisor.tsx): ระบบวิเคราะห์และแนะนำ Counter-Pick ตามสถิติความได้เปรียบ
-- [`src/components/ItemGuide.tsx`](file:///root/Desktop/DotaAssist/src/components/ItemGuide.tsx): ระบบแนะนำไอเทมหลักและไอเทมแก้ทางตามสถานการณ์ (เช่น MKB สู้ Evasion, Spirit Vessel สู้ตัวรีเจน, BKB สู้เวท/สตั้น)
+- [`src/components/ItemGuide.tsx`](file:///root/Desktop/DotaAssist/src/components/ItemGuide.tsx): แสดงไอเทมยอดนิยมตามช่วงเกมจาก OpenDota itemPopularity
 - [`src/components/GSIStatusBadge.tsx`](file:///root/Desktop/DotaAssist/src/components/GSIStatusBadge.tsx): แถบแสดงสถานะเชื่อมต่อ GSI, หลอด HP/Mana, เงิน และ Net Worth
 - [`src/components/SettingsModal.tsx`](file:///root/Desktop/DotaAssist/src/components/SettingsModal.tsx): คำแนะนำการติดตั้งไฟล์ GSI ในแต่ละ OS (Windows, Linux, macOS) และพาเนลทดสอบเสียง
 - [`src/App.tsx`](file:///root/Desktop/DotaAssist/src/App.tsx): ตัวควบคุมโหมดหน้าจอ (สลับระหว่าง Overlay HUD และ Full Strategy Dashboard)
