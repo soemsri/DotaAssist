@@ -37,8 +37,9 @@ export const OverlayHUD: React.FC<Props> = ({
       {collapsed ? (
         /* Collapsed minimal badge */
         <button
+          data-tauri-drag-region
           onClick={() => setCollapsed(false)}
-          className="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 px-3 py-1.5 rounded-full shadow-2xl backdrop-blur text-xs hover:border-amber-400 transition"
+          className="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 px-3 py-1.5 rounded-full shadow-2xl backdrop-blur text-xs hover:border-amber-400 transition cursor-move"
         >
           <span
             className={`w-2 h-2 rounded-full ${
@@ -57,8 +58,8 @@ export const OverlayHUD: React.FC<Props> = ({
         /* Full Compact Overlay Widget */
         <div className="w-80 bg-slate-950/90 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur p-3 text-slate-100">
           {/* Header */}
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <div className="flex items-center gap-2">
+          <div data-tauri-drag-region className="flex items-center justify-between pb-2 border-b border-slate-800 cursor-move">
+            <div data-tauri-drag-region className="flex items-center gap-2">
               <span
                 className={`w-2 h-2 rounded-full ${
                   isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'

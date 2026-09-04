@@ -6,7 +6,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use tauri::{AppHandle, Emitter, WebviewWindow};
+use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use tiny_http::{Response, Server, StatusCode};
 
 #[tauri::command]
@@ -15,9 +15,10 @@ fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), Str
         let _ = window.set_always_on_top(true);
         let _ = window.set_decorations(false);
     } else {
-        let _ = window.set_always_on_top(false);
+        let _ = window.set_always_on_top(true);
         let _ = window.set_decorations(true);
     }
+    let _ = window.set_focus();
     Ok(())
 }
 
@@ -97,6 +98,13 @@ fn main() {
         .setup(move |app| {
             let app_handle = app.handle().clone();
             start_gsi_http_server(app_handle, running_clone);
+
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+                let _ = window.set_always_on_top(true);
+            }
+
             Ok(())
         })
         .on_window_event(move |_window, event| {

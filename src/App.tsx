@@ -10,7 +10,7 @@ import { DraftAdvisor } from "./components/DraftAdvisor";
 import { ItemGuide } from "./components/ItemGuide";
 import { OverlayHUD } from "./components/OverlayHUD";
 import { SettingsModal } from "./components/SettingsModal";
-import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles } from "lucide-react";
+import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X } from "lucide-react";
 
 export const App: React.FC = () => {
   const [payload, setPayload] = useState<GSIPayload | null>(null);
@@ -19,6 +19,15 @@ export const App: React.FC = () => {
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
+
+  // Sync window Always-on-top and decorations with Tauri backend
+  useEffect(() => {
+    if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
+      import("@tauri-apps/api/core").then(({ invoke }) => {
+        invoke("toggle_overlay_window", { overlay: overlayMode }).catch(console.error);
+      });
+    }
+  }, [overlayMode]);
 
   useEffect(() => {
     // Initial data load for heroes and live stats
@@ -92,10 +101,13 @@ export const App: React.FC = () => {
   // Dashboard / Strategy Mode
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased">
-      {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-30 px-6 py-3.5">
+      {/* Top Header with Drag Region and Controls */}
+      <header
+        data-tauri-drag-region
+        className="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-30 px-6 py-3 cursor-move select-none"
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div data-tauri-drag-region className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 via-amber-600 to-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/20">
               <Swords className="w-5 h-5 text-slate-950 font-bold" />
             </div>
@@ -114,8 +126,8 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-2.5">
+          {/* Action & Window Controls */}
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setOverlayMode(true)}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95"
@@ -126,10 +138,36 @@ export const App: React.FC = () => {
 
             <button
               onClick={() => setSettingsOpen(true)}
-              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
               title="GSI Setup & Configuration"
             >
               <SlidersHorizontal className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={async () => {
+                if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
+                  const { getCurrentWindow } = await import("@tauri-apps/api/window");
+                  getCurrentWindow().minimize();
+                }
+              }}
+              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+              title="Minimize"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={async () => {
+                if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
+                  const { getCurrentWindow } = await import("@tauri-apps/api/window");
+                  getCurrentWindow().close();
+                }
+              }}
+              className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-300 border border-slate-700 transition"
+              title="Close Application"
+            >
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>

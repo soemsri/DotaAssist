@@ -4,7 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "start": "start src-tauri/target/release/dota-assist.exe",
+    "app": "start src-tauri/target/release/dota-assist.exe",
+    "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-desktop-shortcut.ps1",
+    "dev:web": "node scripts/start-app.cjs",
     "dev": "vite",
+    "gsi-bridge": "node scripts/gsi-bridge.cjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"

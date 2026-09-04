@@ -7,6 +7,7 @@ class GSIService {
   private lastPayload: GSIPayload | null = null;
   private isConnected: boolean = false;
   private unlistenTauri: (() => void) | null = null;
+  private eventSource: EventSource | null = null;
   private lastHeartbeatTime: number = 0;
 
   constructor() {
@@ -22,9 +23,32 @@ class GSIService {
           this.handlePayload(event.payload);
         });
         console.info("[GSIService] Tauri GSI event listener active");
+        return;
       }
     } catch (err) {
       console.warn("[GSIService] Tauri API not available:", err);
+    }
+
+    // Web/browser fallback when running via dev server
+    this.initWebFallback();
+  }
+
+  private initWebFallback() {
+    try {
+      if (typeof window === "undefined" || !("EventSource" in window)) return;
+      const es = new EventSource("http://127.0.0.1:3000/events");
+      es.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          this.handlePayload(data);
+        } catch {
+          // ignore malformed frame
+        }
+      };
+      this.eventSource = es;
+      console.info("[GSIService] Web SSE fallback listener active on :3000/events");
+    } catch (err) {
+      console.warn("[GSIService] Web fallback error:", err);
     }
   }
 
@@ -61,6 +85,10 @@ class GSIService {
     if (this.unlistenTauri) {
       this.unlistenTauri();
       this.unlistenTauri = null;
+    }
+    if (this.eventSource) {
+      this.eventSource.close();
+      this.eventSource = null;
     }
   }
 }
