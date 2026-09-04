@@ -3,14 +3,21 @@ $WshShell = New-Object -ComObject WScript.Shell
 $DesktopPath = [System.Environment]::GetFolderPath('Desktop')
 $ProjectDir = Split-Path -Parent $PSScriptRoot
 
-$TargetExe = Join-Path $ProjectDir "src-tauri\target\release\dota-assist.exe"
+$ReleaseExe = Join-Path $ProjectDir "src-tauri\target\release\dota-assist.exe"
+$BatFile = Join-Path $ProjectDir "DotaAssist.bat"
 $IconFile = Join-Path $ProjectDir "src-tauri\icons\icon.ico"
 $ShortcutPath = Join-Path $DesktopPath "DotaAssist.lnk"
 
 $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-$Shortcut.TargetPath = $TargetExe
+if (Test-Path $ReleaseExe) {
+    $Shortcut.TargetPath = $ReleaseExe
+} else {
+    $Shortcut.TargetPath = $BatFile
+}
 $Shortcut.WorkingDirectory = $ProjectDir
-$Shortcut.IconLocation = "$IconFile,0"
+if (Test-Path $IconFile) {
+    $Shortcut.IconLocation = "$IconFile,0"
+}
 $Shortcut.Description = "DotaAssist - Overlay & Strategy Assistant"
 $Shortcut.Save()
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Copy, Check, Volume2, Shield, FolderOpen } from 'lucide-react';
+import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe } from 'lucide-react';
 import { audioService } from '../services/audioService';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 
 const GSI_CFG_CONTENT = `"Dota 2 Integration Configuration"
 {
-    "uri"           "http://127.0.0.1:3000/gsi"
+    "uri"           "http://127.0.0.1:3001/gsi"
     "timeout"       "5.0"
     "buffer"        "0.1"
     "throttle"      "0.1"
@@ -29,7 +29,11 @@ const GSI_CFG_CONTENT = `"Dota 2 Integration Configuration"
 
 export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false);
-  const [volume, setVolume] = useState(60);
+  const currentSettings = audioService.getSettings();
+  const [volume, setVolume] = useState(Math.round(currentSettings.masterVolume * 100));
+  const [sfxEnabled, setSfxEnabled] = useState(currentSettings.sfxEnabled);
+  const [voiceEnabled, setVoiceEnabled] = useState(currentSettings.voiceEnabled);
+  const [voiceLang, setVoiceLang] = useState<'en-US' | 'th-TH'>(currentSettings.voiceLanguage);
 
   if (!isOpen) return null;
 
@@ -42,120 +46,214 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = Number(e.target.value);
     setVolume(v);
-    audioService.setVolume(v / 100);
+    audioService.setMasterVolume(v / 100);
+  };
+
+  const handleToggleSfx = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setSfxEnabled(next);
+    audioService.setSfxEnabled(next);
+  };
+
+  const handleToggleVoice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setVoiceEnabled(next);
+    audioService.setVoiceEnabled(next);
+  };
+
+  const handleLangChange = (lang: 'en-US' | 'th-TH') => {
+    setVoiceLang(lang);
+    audioService.setVoiceLanguage(lang);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 text-slate-100 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-          <div className="flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-slate-100 max-h-[90vh] overflow-y-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div className="flex items-center gap-2.5">
             <FolderOpen className="w-5 h-5 text-amber-400" />
             <h2 className="text-base font-bold text-slate-100">
-              DotaAssist Configuration & Setup
+              DotaAssist Configuration &amp; Setup Guide
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* GSI Setup Guide */}
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              1. Dota 2 Game State Integration (GSI) Setup
-            </h3>
-            <p className="text-xs text-slate-300 mb-2 leading-relaxed">
-              To allow DotaAssist to receive live game state (clock, runes, inventory, draft), save the following file as:
-            </p>
-            <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-amber-300 break-all mb-2">
-              .../dota 2 beta/game/dota/cfg/gamestate_integration/gamestate_integration_dotaassist.cfg
+        {/* Section 1: Important Dota 2 Video Settings */}
+        <div className="bg-amber-950/30 border border-amber-500/40 rounded-xl p-4 space-y-2">
+          <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wide">
+            <Monitor className="w-4 h-4 text-amber-400" />
+            <span>CRITICAL: Dota 2 Display Mode Requirement</span>
+          </div>
+          <p className="text-xs text-slate-200 leading-relaxed">
+            To allow the overlay window to float on top of Dota 2 while playing, Dota 2 must run in <strong className="text-amber-300">Borderless Window</strong> mode (Exclusive Fullscreen blocks all desktop windows).
+          </p>
+          <div className="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-300 font-mono">
+            Dota 2 Settings ➜ Video ➜ Display Mode: <span className="text-emerald-400 font-bold">Borderless Window</span> (or Launch Option: <span className="text-amber-300">-windowed -noborder</span>)
+          </div>
+        </div>
+
+        {/* Section 2: Audio & Voice Announcer Settings */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <Volume2 className="w-4 h-4 text-sky-400" />
+            <span>Voice Announcer &amp; Audio Notifications</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            {/* Master Volume */}
+            <div className="space-y-1">
+              <span className="text-[11px] text-slate-400">Master Volume:</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="flex-1 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                />
+                <span className="text-xs font-mono text-amber-400 w-8">{volume}%</span>
+              </div>
             </div>
 
-            <div className="relative bg-slate-950 rounded-lg p-3 border border-slate-800 text-xs font-mono text-slate-300 max-h-36 overflow-y-auto">
-              <pre>{GSI_CFG_CONTENT}</pre>
-              <button
-                onClick={handleCopy}
-                className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700 transition"
+            {/* Voice Speech Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={voiceEnabled}
+                  onChange={handleToggleVoice}
+                  className="accent-amber-500 rounded"
+                />
+                <Mic className="w-3.5 h-3.5 text-amber-400" />
+                <span>Spoken Voice</span>
+              </label>
+            </div>
+
+            {/* SFX Chimes Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={sfxEnabled}
+                  onChange={handleToggleSfx}
+                  className="accent-amber-500 rounded"
+                />
+                <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+                <span>Sound Chimes</span>
+              </label>
+            </div>
+
+            {/* Voice Language */}
+            <div className="flex items-center justify-between gap-1.5 bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
+              <div className="flex items-center gap-1 text-slate-300">
+                <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Voice:</span>
+              </div>
+              <select
+                value={voiceLang}
+                onChange={(e) => handleLangChange(e.target.value as 'en-US' | 'th-TH')}
+                className="bg-slate-800 text-amber-400 text-xs rounded border border-slate-700 px-1 py-0.5 outline-none"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied!' : 'Copy Config'}</span>
-              </button>
+                <option value="en-US">English</option>
+                <option value="th-TH">Thai</option>
+              </select>
             </div>
           </div>
 
-          {/* Sound settings and testing */}
+          {/* Audio Test Panel */}
           <div>
-            <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Volume2 className="w-4 h-4 text-sky-400" />
-              2. Audio Cue Synthesizer & Volume
-            </h3>
-            <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800 mb-3">
-              <span className="text-xs text-slate-400">Master Volume:</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={volume}
-                onChange={handleVolumeChange}
-                className="flex-1 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-              />
-              <span className="text-xs font-mono text-amber-400 w-8">{volume}%</span>
+            <div className="text-[11px] font-semibold text-slate-400 mb-1.5">
+              Click to Test Sound &amp; Voice Output:
             </div>
-
-            <div className="text-[11px] text-slate-400 mb-1.5">Test Audio Notifications:</div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <button
                 onClick={() => audioService.playWisdomRuneAlert()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-purple-300 transition"
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-purple-300 font-semibold transition text-left"
               >
-                Wisdom Rune (7m)
+                🔮 Wisdom Rune (7m)
               </button>
               <button
                 onClick={() => audioService.playPowerRuneAlert()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-sky-300 transition"
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-sky-300 font-semibold transition text-left"
               >
-                Power Rune (2m)
+                ⚡ Power Rune (2m)
               </button>
               <button
                 onClick={() => audioService.playBountyRuneAlert()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 transition"
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
-                Bounty Rune (3m)
+                💰 Bounty Rune (3m)
               </button>
               <button
                 onClick={() => audioService.playTormentorAlert()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-blue-300 transition"
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-blue-300 font-semibold transition text-left"
               >
-                Tormentor (20m)
+                🛡️ Tormentor (20m)
               </button>
               <button
-                onClick={() => audioService.playRoshanAlert()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-rose-300 transition"
+                onClick={() => audioService.playRoshanAlert('Roshan respawn window is active')}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-rose-300 font-semibold transition text-left"
               >
-                Roshan Warning
+                🐉 Roshan Warning
               </button>
               <button
-                onClick={() => audioService.playWarningBeep()}
-                className="px-2 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 transition"
+                onClick={() => audioService.playAegisExpiringAlert()}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
-                Urgent Beep
+                ⏳ Aegis Expiring
               </button>
             </div>
           </div>
         </div>
 
-        <div className="mt-5 pt-3 border-t border-slate-800 flex justify-end">
+        {/* Section 3: GSI Configuration Guide */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <Shield className="w-4 h-4 text-emerald-400" />
+            <span>Dota 2 Game State Integration (GSI) File</span>
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            Ensure the following file exists in your Steam Dota 2 directory so the game sends live game clock and event data to DotaAssist:
+          </p>
+
+          <div className="space-y-1.5">
+            <div className="text-[11px] text-slate-400">Windows File Path:</div>
+            <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-[11px] font-mono text-amber-300 break-all select-all">
+              C:\Program Files (x86)\Steam\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration\gamestate_integration_dotaassist.cfg
+            </div>
+            <div className="text-[11px] text-slate-400 mt-1">Linux File Path:</div>
+            <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-[11px] font-mono text-amber-300 break-all select-all">
+              ~/.steam/steam/steamapps/common/dota 2 beta/game/dota/cfg/gamestate_integration/gamestate_integration_dotaassist.cfg
+            </div>
+          </div>
+
+          <div className="relative bg-slate-950 rounded-lg p-3 border border-slate-800 text-xs font-mono text-slate-300 max-h-36 overflow-y-auto">
+            <pre>{GSI_CFG_CONTENT}</pre>
+            <button
+              onClick={handleCopy}
+              className="absolute top-2 right-2 flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700 transition"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copied ? 'Copied!' : 'Copy Config'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="pt-3 border-t border-slate-800 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs transition"
+            className="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-amber-500/20 transition"
           >
-            Done
+            Save &amp; Close
           </button>
         </div>
       </div>

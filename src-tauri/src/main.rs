@@ -14,9 +14,12 @@ fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), Str
     if overlay {
         let _ = window.set_always_on_top(true);
         let _ = window.set_decorations(false);
+        let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize::new(360.0, 520.0)));
     } else {
         let _ = window.set_always_on_top(true);
         let _ = window.set_decorations(true);
+        let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize::new(1280.0, 840.0)));
+        let _ = window.center();
     }
     let _ = window.set_focus();
     Ok(())
@@ -24,7 +27,7 @@ fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), Str
 
 fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
     thread::spawn(move || {
-        let address = "127.0.0.1:3000";
+        let address = "127.0.0.1:3001";
         let server = match Server::http(address) {
             Ok(s) => {
                 println!("[DotaAssist Rust GSI] Listening on http://{}", address);

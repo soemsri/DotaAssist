@@ -36,7 +36,7 @@ class GSIService {
   private initWebFallback() {
     try {
       if (typeof window === "undefined" || !("EventSource" in window)) return;
-      const es = new EventSource("http://127.0.0.1:3000/events");
+      const es = new EventSource("http://127.0.0.1:3001/events");
       es.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -46,7 +46,7 @@ class GSIService {
         }
       };
       this.eventSource = es;
-      console.info("[GSIService] Web SSE fallback listener active on :3000/events");
+      console.info("[GSIService] Web SSE fallback listener active on :3001/events");
     } catch (err) {
       console.warn("[GSIService] Web fallback error:", err);
     }

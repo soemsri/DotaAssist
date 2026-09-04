@@ -16,7 +16,8 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
   const handleToggleSound = () => {
     const next = !soundEnabled;
     setSoundEnabled(next);
-    audioService.setEnabled(next);
+    audioService.setSfxEnabled(next);
+    audioService.setVoiceEnabled(next);
   };
 
   const handleRecordRoshan = () => {
@@ -83,7 +84,7 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
                 ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
                 : 'bg-slate-800 border-slate-700 text-slate-400'
             }`}
-            title={soundEnabled ? 'Mute Alerts' : 'Unmute Alerts'}
+            title={soundEnabled ? 'Mute Voice & Audio' : 'Unmute Voice & Audio'}
           >
             {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
           </button>

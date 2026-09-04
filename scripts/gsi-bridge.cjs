@@ -2,7 +2,7 @@
 // Allows running DotaAssist in browser/dev mode without compiling Tauri Rust binary.
 const http = require('http');
 
-const PORT = 3000;
+const PORT = 3001;
 const sseClients = new Set();
 
 const server = http.createServer((req, res) => {

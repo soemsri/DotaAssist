@@ -3,6 +3,7 @@ import { GSIPayload } from "./types/gsi";
 import { gsiService } from "./services/gsiService";
 import { timingEngine } from "./services/timingEngine";
 import { apiService } from "./services/apiService";
+import { audioService } from "./services/audioService";
 import { TimingEventAlert, PopularItem } from "./types/meta";
 import { GSIStatusBadge } from "./components/GSIStatusBadge";
 import { TimingAlerts } from "./components/TimingAlerts";
@@ -10,7 +11,7 @@ import { DraftAdvisor } from "./components/DraftAdvisor";
 import { ItemGuide } from "./components/ItemGuide";
 import { OverlayHUD } from "./components/OverlayHUD";
 import { SettingsModal } from "./components/SettingsModal";
-import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X } from "lucide-react";
+import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink } from "lucide-react";
 
 export const App: React.FC = () => {
   const [payload, setPayload] = useState<GSIPayload | null>(null);
@@ -19,19 +20,28 @@ export const App: React.FC = () => {
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
+  const [isTauri, setIsTauri] = useState<boolean>(false);
 
-  // Sync window Always-on-top and decorations with Tauri backend
   useEffect(() => {
-    if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
+    const hasTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+    setIsTauri(hasTauri);
+  }, []);
+
+  // Sync window Always-on-top, size, and decorations with Tauri backend
+  useEffect(() => {
+    if (isTauri) {
       import("@tauri-apps/api/core").then(({ invoke }) => {
         invoke("toggle_overlay_window", { overlay: overlayMode }).catch(console.error);
       });
     }
-  }, [overlayMode]);
+  }, [overlayMode, isTauri]);
 
   useEffect(() => {
     // Initial data load for heroes and live stats
     apiService.initData();
+
+    // Unlock audio context on startup
+    audioService.initContext();
 
     // Subscribe to genuine GSI events from Dota 2
     const unsubscribe = gsiService.subscribe((data) => {
@@ -81,7 +91,50 @@ export const App: React.FC = () => {
     };
   }, [heroName]);
 
-  // If in overlay mode, render compact transparent HUD
+  // Handle Document Picture-in-Picture for browser users
+  const handleOpenPiP = async () => {
+    if ('documentPictureInPicture' in window) {
+      try {
+        const pipWindow = await (window as unknown as {
+          documentPictureInPicture: {
+            requestWindow: (options: { width: number; height: number }) => Promise<Window>;
+          };
+        }).documentPictureInPicture.requestWindow({ width: 340, height: 480 });
+
+        // Copy styles
+        document.querySelectorAll('style, link[rel="stylesheet"]').forEach((el) => {
+          pipWindow.document.head.appendChild(el.cloneNode(true));
+        });
+
+        // Render Overlay HUD inside PiP
+        const container = pipWindow.document.createElement('div');
+        container.id = 'pip-root';
+        pipWindow.document.body.appendChild(container);
+        pipWindow.document.body.className = 'bg-slate-950 text-slate-100 overflow-hidden select-none m-0 p-0';
+
+        import('react-dom/client').then(({ createRoot }) => {
+          const pipRoot = createRoot(container);
+          pipRoot.render(
+            <OverlayHUD
+              payload={livePayload}
+              isConnected={isConnected}
+              alerts={alerts}
+              items={popularItems}
+              onOpenSettings={() => setSettingsOpen(true)}
+              onExitOverlay={() => pipWindow.close()}
+            />
+          );
+        });
+      } catch (err) {
+        console.warn('Document PiP failed, fallback to in-window overlay:', err);
+        setOverlayMode(true);
+      }
+    } else {
+      setOverlayMode(true);
+    }
+  };
+
+  // If in overlay mode, render compact HUD
   if (overlayMode) {
     return (
       <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative">
@@ -117,11 +170,11 @@ export const App: React.FC = () => {
                   DotaAssist
                 </h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 font-semibold border border-slate-700">
-                  v1.0 (Tauri + GSI)
+                  v1.0 {isTauri ? '(Native Desktop)' : '(Web / PiP Mode)'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                In-Game Real-Time Assistant & Timing Engine
+                In-Game Real-Time Assistant, Voice Announcer &amp; Timing Engine
               </p>
             </div>
           </div>
@@ -129,49 +182,86 @@ export const App: React.FC = () => {
           {/* Action & Window Controls */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setOverlayMode(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95"
+              onClick={() => audioService.playWisdomRuneAlert()}
+              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition flex items-center gap-1.5 text-xs px-2.5"
+              title="Test Voice & Sound Announcer"
             >
-              <Monitor className="w-3.5 h-3.5" />
-              <span>Switch to Overlay HUD</span>
+              <Volume2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Test Audio</span>
             </button>
+
+            {/* Switch to Overlay HUD */}
+            {isTauri ? (
+              <button
+                onClick={() => setOverlayMode(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95"
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                <span>Switch to Overlay HUD</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleOpenPiP}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95"
+                title="Pop out Always-On-Top floating HUD"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Floating HUD (PiP)</span>
+              </button>
+            )}
 
             <button
               onClick={() => setSettingsOpen(true)}
               className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-              title="GSI Setup & Configuration"
+              title="GSI Setup & Voice Settings"
             >
               <SlidersHorizontal className="w-4 h-4" />
             </button>
 
-            <button
-              onClick={async () => {
-                if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
-                  const { getCurrentWindow } = await import("@tauri-apps/api/window");
-                  getCurrentWindow().minimize();
-                }
-              }}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-              title="Minimize"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
+            {isTauri && (
+              <>
+                <button
+                  onClick={async () => {
+                    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+                    getCurrentWindow().minimize();
+                  }}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+                  title="Minimize"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
 
-            <button
-              onClick={async () => {
-                if (typeof window !== "undefined" && "__TAURI_INTERNALS__" in window) {
-                  const { getCurrentWindow } = await import("@tauri-apps/api/window");
-                  getCurrentWindow().close();
-                }
-              }}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-300 border border-slate-700 transition"
-              title="Close Application"
-            >
-              <X className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={async () => {
+                    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+                    getCurrentWindow().close();
+                  }}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-300 border border-slate-700 transition"
+                  title="Close Application"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
+
+      {/* Helpful Dota 2 Borderless Window Banner */}
+      <div className="bg-amber-950/40 border-b border-amber-500/30 px-6 py-2">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-amber-200">
+          <div className="flex items-center gap-2">
+            <span className="px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 font-bold text-[10px]">NOTE</span>
+            <span>For HUD to stay visible over Dota 2: In Dota 2 Settings ➜ Video ➜ set Display Mode to <strong className="text-white">Borderless Window</strong>.</span>
+          </div>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="text-amber-400 hover:underline font-semibold text-[11px]"
+          >
+            Setup Guide ➜
+          </button>
+        </div>
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-5 space-y-5">

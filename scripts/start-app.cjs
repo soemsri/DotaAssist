@@ -3,7 +3,7 @@ const { spawn } = require('child_process');
 
 console.log('====================================================');
 console.log('  DotaAssist - Starting Application');
-console.log('  1. GSI Listener: http://127.0.0.1:3000/gsi');
+console.log('  1. GSI Listener: http://127.0.0.1:3001/gsi');
 console.log('  2. Web Interface: http://localhost:1420');
 console.log('====================================================');
 
