@@ -126,14 +126,14 @@ class AudioNotificationService {
 
   // --- Objective-Specific Alerts (Chime + Speech) ---
 
-  public playWisdomRuneAlert() {
+  public playWisdomShrineAlert() {
     this.initContext();
     if (this.settings.sfxEnabled && this.ctx) {
       const now = this.ctx.currentTime;
       this.playTone(600, now, 0.25, 'sine');
       this.playTone(900, now + 0.18, 0.35, 'sine');
     }
-    this.speak('Wisdom Rune in thirty seconds');
+    this.speak('Wisdom Shrine in thirty seconds');
   }
 
   public playPowerRuneAlert(isWaterRune: boolean = false) {
@@ -198,9 +198,9 @@ class AudioNotificationService {
       this.playTone(isNightfall ? 300 : 500, now + 0.15, 0.3, 'sine');
     }
     if (isNightfall) {
-      this.speak('Nightfall approaching. Roshan moves top.');
+      this.speak('Nightfall approaching.');
     } else {
-      this.speak('Daybreak approaching. Roshan moves bottom.');
+      this.speak('Daybreak approaching.');
     }
   }
 

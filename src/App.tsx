@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { GSIPayload } from "./types/gsi";
 import { gsiService } from "./services/gsiService";
-import { timingEngine } from "./services/timingEngine";
+import { DOTA_RULESET_VERSION, timingEngine } from "./services/timingEngine";
 import { apiService } from "./services/apiService";
 import { audioService } from "./services/audioService";
 import { TimingEventAlert, PopularItem } from "./types/meta";
@@ -21,6 +22,8 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
   const [isTauri, setIsTauri] = useState<boolean>(false);
+  const [pipContainer, setPipContainer] = useState<HTMLElement | null>(null);
+  const pipWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
     const hasTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -45,6 +48,7 @@ export const App: React.FC = () => {
 
     // Subscribe to genuine GSI events from Dota 2
     const unsubscribe = gsiService.subscribe((data) => {
+      timingEngine.handleGSIPayload(data);
       setPayload(data);
       setIsConnected(true);
     });
@@ -91,8 +95,28 @@ export const App: React.FC = () => {
     };
   }, [heroName]);
 
+  const closePiP = useCallback(() => {
+    const pipWindow = pipWindowRef.current;
+    pipWindowRef.current = null;
+    setPipContainer(null);
+    if (pipWindow && !pipWindow.closed) {
+      pipWindow.close();
+    }
+  }, []);
+
+  useEffect(() => () => {
+    const pipWindow = pipWindowRef.current;
+    pipWindowRef.current = null;
+    if (pipWindow && !pipWindow.closed) pipWindow.close();
+  }, []);
+
   // Handle Document Picture-in-Picture for browser users
   const handleOpenPiP = async () => {
+    if (pipWindowRef.current && !pipWindowRef.current.closed) {
+      pipWindowRef.current.focus();
+      return;
+    }
+
     if ('documentPictureInPicture' in window) {
       try {
         const pipWindow = await (window as unknown as {
@@ -111,20 +135,15 @@ export const App: React.FC = () => {
         container.id = 'pip-root';
         pipWindow.document.body.appendChild(container);
         pipWindow.document.body.className = 'bg-slate-950 text-slate-100 overflow-hidden select-none m-0 p-0';
+        pipWindowRef.current = pipWindow;
+        setPipContainer(container);
 
-        import('react-dom/client').then(({ createRoot }) => {
-          const pipRoot = createRoot(container);
-          pipRoot.render(
-            <OverlayHUD
-              payload={livePayload}
-              isConnected={isConnected}
-              alerts={alerts}
-              items={popularItems}
-              onOpenSettings={() => setSettingsOpen(true)}
-              onExitOverlay={() => pipWindow.close()}
-            />
-          );
-        });
+        pipWindow.addEventListener('pagehide', () => {
+          if (pipWindowRef.current === pipWindow) {
+            pipWindowRef.current = null;
+            setPipContainer(null);
+          }
+        }, { once: true });
       } catch (err) {
         console.warn('Document PiP failed, fallback to in-window overlay:', err);
         setOverlayMode(true);
@@ -134,20 +153,40 @@ export const App: React.FC = () => {
     }
   };
 
-  // If in overlay mode, render compact HUD
-  if (overlayMode) {
-    return (
-      <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative">
+  const pipOverlay = pipContainer
+    ? createPortal(
         <OverlayHUD
           payload={livePayload}
           isConnected={isConnected}
           alerts={alerts}
           items={popularItems}
-          onOpenSettings={() => setSettingsOpen(true)}
-          onExitOverlay={() => setOverlayMode(false)}
-        />
-        <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
-      </div>
+          onOpenSettings={() => {
+            setSettingsOpen(true);
+            window.focus();
+          }}
+          onExitOverlay={closePiP}
+        />,
+        pipContainer,
+      )
+    : null;
+
+  // If in overlay mode, render compact HUD
+  if (overlayMode) {
+    return (
+      <>
+        <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative">
+          <OverlayHUD
+            payload={livePayload}
+            isConnected={isConnected}
+            alerts={alerts}
+            items={popularItems}
+            onOpenSettings={() => setSettingsOpen(true)}
+            onExitOverlay={() => setOverlayMode(false)}
+          />
+          <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        </div>
+        {pipOverlay}
+      </>
     );
   }
 
@@ -170,7 +209,7 @@ export const App: React.FC = () => {
                   DotaAssist
                 </h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 font-semibold border border-slate-700">
-                  v1.0 {isTauri ? '(Native Desktop)' : '(Web / PiP Mode)'}
+                  v1.0 · Rules {DOTA_RULESET_VERSION} {isTauri ? '(Native)' : '(Web / PiP)'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
@@ -182,7 +221,7 @@ export const App: React.FC = () => {
           {/* Action & Window Controls */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => audioService.playWisdomRuneAlert()}
+              onClick={() => audioService.playWisdomShrineAlert()}
               className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition flex items-center gap-1.5 text-xs px-2.5"
               title="Test Voice & Sound Announcer"
             >
@@ -324,7 +363,10 @@ export const App: React.FC = () => {
 
           {activeTab === "draft" && (
             <div className="space-y-5">
-              <DraftAdvisor draft={livePayload?.draft} />
+              <DraftAdvisor
+                draft={livePayload?.draft}
+                playerTeam={livePayload?.player?.team_name}
+              />
               <TimingAlerts alerts={alerts} clockTime={clockTime} />
             </div>
           )}
@@ -335,7 +377,10 @@ export const App: React.FC = () => {
                 heroName={heroName}
                 currentGold={livePayload?.player?.gold}
               />
-              <DraftAdvisor draft={livePayload?.draft} />
+              <DraftAdvisor
+                draft={livePayload?.draft}
+                playerTeam={livePayload?.player?.team_name}
+              />
             </div>
           )}
         </div>
@@ -348,6 +393,7 @@ export const App: React.FC = () => {
 
       {/* Settings Modal */}
       <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      {pipOverlay}
     </div>
   );
 };

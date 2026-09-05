@@ -31,6 +31,7 @@ export const OverlayHUD: React.FC<Props> = ({
   const mostUrgentAlert = alerts[0];
   const popularItem = items.find((item) => item.tier === 'core') ?? items[0];
   const roshanState = timingEngine.getRoshanState();
+  const tormentorState = timingEngine.getTormentorState();
 
   const handleToggleSound = () => {
     const next = !soundEnabled;
@@ -41,6 +42,10 @@ export const OverlayHUD: React.FC<Props> = ({
 
   const handleRecordRoshan = () => {
     timingEngine.recordRoshanDeath(clockTime);
+  };
+
+  const handleRecordTormentor = () => {
+    timingEngine.recordTormentorDeath(clockTime);
   };
 
   const getAlertIcon = (type: TimingEventAlert['type']) => {
@@ -142,8 +147,9 @@ export const OverlayHUD: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Quick Roshan Death Button */}
-          <div className="flex items-center justify-between gap-2 px-1">
+          {/* Quick objective death buttons. GSI can update Roshan automatically;
+              these controls remain useful when optional fields are unavailable. */}
+          <div className="grid grid-cols-2 gap-1.5 px-1">
             {!roshanState.isDead ? (
               <button
                 onClick={handleRecordRoshan}
@@ -157,6 +163,26 @@ export const OverlayHUD: React.FC<Props> = ({
                 <span className="text-rose-300 font-semibold">Roshan Dead</span>
                 <button
                   onClick={() => timingEngine.resetRoshan()}
+                  className="text-[10px] text-slate-400 hover:text-slate-200 underline"
+                >
+                  Reset
+                </button>
+              </div>
+            )}
+
+            {!tormentorState.isDead ? (
+              <button
+                onClick={handleRecordTormentor}
+                className="py-1 px-2 rounded-lg bg-blue-950/70 hover:bg-blue-900 border border-blue-700/80 text-blue-200 text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95"
+              >
+                <Flame className="w-3 h-3 text-blue-400" />
+                <span>Tormentor Slain</span>
+              </button>
+            ) : (
+              <div className="flex items-center justify-between bg-blue-950/40 border border-blue-800/80 rounded-lg px-2 py-1 text-[10px]">
+                <span className="text-blue-300 font-semibold">Tormentor Dead</span>
+                <button
+                  onClick={() => timingEngine.resetTormentor()}
                   className="text-[10px] text-slate-400 hover:text-slate-200 underline"
                 >
                   Reset

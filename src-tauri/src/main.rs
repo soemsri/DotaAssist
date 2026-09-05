@@ -7,7 +7,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
-use tiny_http::{Response, Server, StatusCode};
+use tiny_http::{Method, Response, Server, StatusCode};
 
 #[tauri::command]
 fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), String> {
@@ -47,7 +47,19 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
             match server.recv_timeout(Duration::from_millis(500)) {
                 Ok(Some(mut request)) => {
                     let url = request.url().to_string();
-                    if url == "/gsi" || url == "/" {
+                    if request.method() == &Method::Options {
+                        let response = Response::empty(StatusCode(204)).with_header(
+                            tiny_http::Header::from_bytes(
+                                &b"Access-Control-Allow-Origin"[..],
+                                &b"*"[..],
+                            )
+                            .unwrap(),
+                        );
+                        let _ = request.respond(response);
+                    } else if request.method() == &Method::Get && url == "/health" {
+                        let response = Response::from_string("OK").with_status_code(StatusCode(200));
+                        let _ = request.respond(response);
+                    } else if request.method() == &Method::Post && (url == "/gsi" || url == "/") {
                         let mut body_str = String::new();
                         if let Err(e) = request.as_reader().read_to_string(&mut body_str) {
                             eprintln!("[DotaAssist Rust GSI] Error reading request body: {}", e);
@@ -56,15 +68,26 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                             continue;
                         }
 
-                        if !body_str.trim().is_empty() {
-                            match serde_json::from_str::<Value>(&body_str) {
-                                Ok(payload) => {
-                                    let _ = app_handle.emit("gsi-update", payload);
-                                }
-                                Err(e) => {
-                                    eprintln!("[DotaAssist Rust GSI] Error parsing JSON: {}", e);
-                                }
+                        if body_str.trim().is_empty() {
+                            let response = Response::from_string("Missing JSON payload")
+                                .with_status_code(StatusCode(400));
+                            let _ = request.respond(response);
+                            continue;
+                        }
+
+                        let payload = match serde_json::from_str::<Value>(&body_str) {
+                            Ok(payload) => payload,
+                            Err(e) => {
+                                eprintln!("[DotaAssist Rust GSI] Error parsing JSON: {}", e);
+                                let response = Response::from_string("Invalid JSON payload")
+                                    .with_status_code(StatusCode(400));
+                                let _ = request.respond(response);
+                                continue;
                             }
+                        };
+
+                        if let Err(e) = app_handle.emit("gsi-update", payload) {
+                            eprintln!("[DotaAssist Rust GSI] Error emitting payload: {}", e);
                         }
 
                         let response = Response::from_string("OK")
@@ -76,6 +99,10 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                                 )
                                 .unwrap(),
                             );
+                        let _ = request.respond(response);
+                    } else if url == "/gsi" || url == "/" {
+                        let response = Response::from_string("Method Not Allowed")
+                            .with_status_code(StatusCode(405));
                         let _ = request.respond(response);
                     } else {
                         let response = Response::empty(StatusCode(404));

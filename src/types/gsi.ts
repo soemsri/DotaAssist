@@ -29,8 +29,23 @@ export interface GSIMap {
   customgamename: string;
   radiant_score?: number;
   dire_score?: number;
-  roshan_state?: 'alive' | 'respawn_base' | 'respawn_variable';
+  roshan_state?: 'alive' | 'respawn_base' | 'respawn_variable' | string;
   roshan_state_end_seconds?: number;
+}
+
+export interface GSIEvent {
+  event_type?: string;
+  event?: string;
+  game_time?: number;
+  [key: string]: unknown;
+}
+
+export interface GSIRoshan {
+  alive?: boolean;
+  health?: number;
+  max_health?: number;
+  phase_time_remaining?: number;
+  spawn_phase?: number;
 }
 
 export interface GSIPlayer {
@@ -145,5 +160,7 @@ export interface GSIPayload {
   abilities?: Record<string, { name: string; level: number; can_cast: boolean; cooldown: number; passive: boolean }>;
   items?: GSIItems;
   draft?: GSIDraft;
+  events?: GSIEvent[] | Record<string, GSIEvent>;
+  roshan?: GSIRoshan;
   previously?: Partial<GSIPayload>;
 }

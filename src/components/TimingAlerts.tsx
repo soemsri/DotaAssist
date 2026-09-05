@@ -12,6 +12,7 @@ interface Props {
 export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
   const [soundEnabled, setSoundEnabled] = React.useState(true);
   const roshanState = timingEngine.getRoshanState();
+  const tormentorState = timingEngine.getTormentorState();
 
   const handleToggleSound = () => {
     const next = !soundEnabled;
@@ -26,6 +27,14 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
 
   const handleResetRoshan = () => {
     timingEngine.resetRoshan();
+  };
+
+  const handleRecordTormentor = () => {
+    timingEngine.recordTormentorDeath(clockTime);
+  };
+
+  const handleResetTormentor = () => {
+    timingEngine.resetTormentor();
   };
 
   const getAlertIcon = (type: TimingEventAlert['type']) => {
@@ -58,23 +67,42 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Roshan Manual Kill Button */}
-          {!roshanState.isDead ? (
-            <button
-              onClick={handleRecordRoshan}
-              className="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800 text-rose-200 border border-rose-700 transition"
-              title="Click when Roshan dies to start 5m Aegis and 8-11m respawn timers"
-            >
-              Roshan Killed
-            </button>
-          ) : (
-            <button
-              onClick={handleResetRoshan}
-              className="text-xs px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
-            >
-              Reset Roshan
-            </button>
-          )}
+          <div className="flex items-center gap-1.5">
+            {/* Manual fallbacks for game modes that omit objective GSI fields. */}
+            {!roshanState.isDead ? (
+              <button
+                onClick={handleRecordRoshan}
+                className="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800 text-rose-200 border border-rose-700 transition"
+                title="Manual fallback: start 5m Aegis and 8-11m Roshan timers"
+              >
+                Roshan Killed
+              </button>
+            ) : (
+              <button
+                onClick={handleResetRoshan}
+                className="text-xs px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+              >
+                Reset Roshan
+              </button>
+            )}
+
+            {!tormentorState.isDead ? (
+              <button
+                onClick={handleRecordTormentor}
+                className="text-xs px-2.5 py-1 rounded bg-blue-900/50 hover:bg-blue-800 text-blue-200 border border-blue-700 transition"
+                title="Start the 10-minute Tormentor respawn timer"
+              >
+                Tormentor Killed
+              </button>
+            ) : (
+              <button
+                onClick={handleResetTormentor}
+                className="text-xs px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+              >
+                Reset Tormentor
+              </button>
+            )}
+          </div>
 
           {/* Sound Toggle */}
           <button

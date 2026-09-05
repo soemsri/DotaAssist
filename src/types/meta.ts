@@ -28,7 +28,7 @@ export interface TimingEventAlert {
   id: string;
   title: string;
   subtitle: string;
-  targetSeconds: number; // e.g. next rune spawn at 180s
+  targetSeconds: number; // Game clock for the objective occurrence.
   secondsRemaining: number;
   type: 'rune_bounty' | 'rune_power' | 'rune_wisdom' | 'roshan' | 'tormentor' | 'lotus' | 'day_night';
   urgent: boolean;

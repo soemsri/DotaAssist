@@ -12,6 +12,9 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "build": "tsc && vite build",
+    "test": "npm run test:verification && npm run test:gsi",
+    "test:verification": "tsx tests/verification.test.ts",
+    "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
     "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-desktop-shortcut.ps1",
     "tauri": "tauri"
@@ -33,6 +36,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.2",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.13",
     "typescript": "^5.7.3",
     "vite": "^6.1.0"
   }

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { GSIDraft } from "../types/gsi";
+import { GSIDraft, GSIPlayer } from "../types/gsi";
 import { apiService } from "../services/apiService";
+import { getEnemyPickClasses } from "../services/draftService";
 import { HeroCounter, HeroMetaInfo } from "../types/meta";
 import { TrendingUp, Crosshair, Sparkles, AlertCircle } from "lucide-react";
 
 interface Props {
   draft?: GSIDraft;
+  playerTeam?: GSIPlayer['team_name'];
 }
 
-export const DraftAdvisor: React.FC<Props> = ({ draft }) => {
+export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
   const [allHeroes, setAllHeroes] = useState<HeroMetaInfo[]>([]);
   const [selectedEnemyHeroId, setSelectedEnemyHeroId] = useState<number | null>(null);
   const [counters, setCounters] = useState<HeroCounter[]>([]);
@@ -22,27 +24,18 @@ export const DraftAdvisor: React.FC<Props> = ({ draft }) => {
     });
   }, []);
 
-  // Detect genuine enemy picks from draft
-  const enemyPickClasses: string[] = [];
-  if (draft?.team3) {
-    if (draft.team3.pick0_class) enemyPickClasses.push(draft.team3.pick0_class);
-    if (draft.team3.pick1_class) enemyPickClasses.push(draft.team3.pick1_class);
-    if (draft.team3.pick2_class) enemyPickClasses.push(draft.team3.pick2_class);
-    if (draft.team3.pick3_class) enemyPickClasses.push(draft.team3.pick3_class);
-    if (draft.team3.pick4_class) enemyPickClasses.push(draft.team3.pick4_class);
-  }
+  // Resolve the opposing side from the local player's actual GSI team.
+  const enemyPickClasses = getEnemyPickClasses(draft, playerTeam);
 
   const firstEnemyPick = enemyPickClasses[0];
+  const autoDetectedEnemyHeroId = allHeroes.find((hero) => hero.name === firstEnemyPick)?.id;
 
   // Auto-sync enemy hero when GSI draft detects enemy picks
   useEffect(() => {
-    if (firstEnemyPick) {
-      const hero = apiService.getHeroByName(firstEnemyPick);
-      if (hero && hero.id !== selectedEnemyHeroId) {
-        setSelectedEnemyHeroId(hero.id);
-      }
+    if (autoDetectedEnemyHeroId) {
+      setSelectedEnemyHeroId(autoDetectedEnemyHeroId);
     }
-  }, [firstEnemyPick, selectedEnemyHeroId]);
+  }, [autoDetectedEnemyHeroId]);
 
   useEffect(() => {
     let cancelled = false;

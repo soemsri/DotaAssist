@@ -23,6 +23,8 @@ const GSI_CFG_CONTENT = `"Dota 2 Integration Configuration"
         "abilities"     "1"
         "items"         "1"
         "draft"         "1"
+        "events"        "1"
+        "roshan"        "1"
         "wearables"     "0"
     }
 }`;
@@ -175,10 +177,10 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <button
-                onClick={() => audioService.playWisdomRuneAlert()}
+                onClick={() => audioService.playWisdomShrineAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-purple-300 font-semibold transition text-left"
               >
-                🔮 Wisdom Rune (7m)
+                🔮 Wisdom Shrine (7m)
               </button>
               <button
                 onClick={() => audioService.playPowerRuneAlert()}
@@ -190,7 +192,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 onClick={() => audioService.playBountyRuneAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
-                💰 Bounty Rune (3m)
+                💰 Bounty Rune (4m)
               </button>
               <button
                 onClick={() => audioService.playTormentorAlert()}

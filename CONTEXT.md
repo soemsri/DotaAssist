@@ -1,7 +1,7 @@
 # DotaAssist — Project Context & Architecture Guide
 
 ## 1. Project Vision
-**DotaAssist** is an ultra-lightweight in-game overlay and strategic assistant application for Valve's Dota 2. It delivers real-time timing alerts, spoken voice announcements (TTS), counter-pick recommendations, and dynamic item builds without impacting gameplay performance or FPS.
+**DotaAssist** is an in-game overlay and strategic assistant application for Valve's Dota 2. It delivers real-time timing alerts, spoken voice announcements (TTS), counter-pick recommendations, and dynamic item builds. Runtime memory and FPS impact must be measured on the target operating system and hardware.
 
 ---
 
@@ -12,12 +12,11 @@
      - **In-Game Overlay HUD**: Compact, translucent, floating widget showing immediate objective timers, situational warnings, and quick item advice.
      - **Strategy & Analysis Dashboard**: Comprehensive multi-tab interface designed for hero pick/drafting phase, dual monitors, or strategy review.
 2. **Tauri (Rust + React/TypeScript)**:
-   - Ultra-low memory footprint (~10-25 MB RAM total vs ~300-600 MB in Electron).
-   - Zero measurable FPS degradation during intense Dota 2 team fights.
+   - Uses the operating system WebView instead of bundling Chromium. Actual memory and FPS impact must be benchmarked on each target platform.
    - Native OS transparent window integration with `alwaysOnTop` and dynamic window resizing between Overlay HUD (360x520) and Strategy Dashboard (1280x840).
-   - Built-in embedded Rust HTTP server (`tiny_http`) for receiving Dota 2 GSI payloads directly at localhost:3001 with zero latency.
+   - Built-in embedded Rust HTTP server (`tiny_http`) for receiving local Dota 2 GSI payloads at localhost:3001.
 3. **Voice Announcer & Sound Engine**:
-   - Web Speech API (TTS) voice announcements for upcoming objectives (Wisdom Rune, Power Rune, Tormentor, Roshan, Aegis Expiration, Day/Night Cycle).
+   - Web Speech API (TTS) voice announcements for upcoming objectives (Wisdom Shrine, Power Rune, Tormentor, Roshan, Aegis Expiration, Day/Night Cycle).
    - Zero-dependency Web Audio API synthesizer for clean chime cues.
 4. **Hybrid Data Flow: Local GSI + Public Meta APIs**:
    - **Local Dota 2 GSI (Game State Integration)**: High-speed local HTTP POST feed emitted by the Dota 2 game client on port `3001/gsi` containing clock time, hero status, inventory, gold, health, mana, and live draft.
@@ -29,14 +28,14 @@
 
 | Term | Definition |
 |---|---|
-| **GSI (Game State Integration)** | Valve's official engine feature in Dota 2 that exports live game events to an HTTP webhook listener. Completely VAC-safe and authorized. |
-| **Bounty Runes** | Spawns at 0:00 and every 3 minutes (3:00, 6:00, 9:00, 12:00...) across 4 designated map points, granting team-wide gold. |
+| **GSI (Game State Integration)** | Dota 2 engine feature that exports game state to a local HTTP webhook. DotaAssist uses this feed without memory reads, DLL injection, or input automation. |
+| **Bounty Runes** | Spawns at 0:00 and every 4 minutes (4:00, 8:00, 12:00...), granting team-wide gold. |
 | **Power Runes** | Spawns at River runes every 2 minutes starting from 6:00 (Haste, Double Damage, Arcane, Invisibility, Regen, Shield). Water runes spawn at 2:00 & 4:00. |
-| **Wisdom Runes** | Crucial team XP runes spawning every 7 minutes (7:00, 14:00, 21:00, 28:00...) on the edges of the map near offlane bases. |
+| **Wisdom Shrines** | Team XP objectives whose countdown becomes available every 7 minutes (7:00, 14:00, 21:00, 28:00...). |
 | **Tormentor** | High-durability objective spawning at 20:00, granting an Aghanim's Shard to the lowest net-worth support. Respawns 10 minutes after being destroyed. |
 | **Lotus Pools** | Spawns healing fruit every 3 minutes (3:00, 6:00, 9:00...) in the side lanes. |
 | **Roshan Respawn Window** | When Roshan dies, Aegis of the Immortal expires after 5 minutes (300s). Roshan respawns at a random timestamp between 8 and 11 minutes (480s to 660s) post-slain. |
-| **Day / Night Cycle** | Transitions every 5 minutes (300s). Determines Roshan pit location: Day = Southeast (Radiant), Night = Northwest (Dire). |
+| **Day / Night Cycle** | Transitions every 5 minutes (300s), changing vision and other map conditions. Roshan movement is not inferred from this clock. |
 | **Counter Edge** | Counter hero win rate against the selected target minus the neutral 50% baseline, calculated from OpenDota `games_played` and target-hero `wins`. |
 
 ---
@@ -59,9 +58,11 @@
 ```
 
 ### Alert Thresholds:
+- **Ruleset marker**: Hard-coded objective intervals are audited for Dota 2 `7.41e`; re-audit them after a major gameplay patch.
 - **Audio & Voice Trigger**: Spoken voice announcement and audio chimes fired 15–30 seconds prior to rune/objective spawn.
 - **Urgent Visual Pulsing**: Displays warning animation when time remaining is $\le$ 20 seconds.
-- **Roshan Tracker**: Can be auto-detected via GSI map events or toggled manually by one click in the HUD.
+- **Roshan Tracker**: Synchronizes from optional GSI map/Roshan/event fields when present and retains a one-click manual fallback.
+- **Tormentor Tracker**: Starts a 10-minute respawn timer from a GSI event when available or from the manual HUD control.
 
 ---
 
@@ -71,6 +72,7 @@
 - `src/services/`:
   - `gsiService.ts`: Real-time GSI stream receiver from Tauri IPC / Dota 2 client.
   - `timingEngine.ts`: Objective timing calculations (Bounty, Power, Wisdom, Roshan, Tormentor) with float-tolerant threshold triggers.
+  - `draftService.ts`: Resolves the opponent draft side from the local player's actual GSI team.
   - `apiService.ts`: OpenDota live statistics and item-popularity integration; bundled catalogs contain lookup metadata only.
   - `audioService.ts`: Web Speech API (TTS) voice announcer + Web Audio API synthesizer.
 - `src/components/`:

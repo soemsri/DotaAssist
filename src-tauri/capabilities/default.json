@@ -3,5 +3,9 @@
   "identifier": "default",
   "description": "Permissions required by the DotaAssist main window",
   "windows": ["main"],
-  "permissions": ["core:default", "core:event:allow-listen"]
+  "permissions": [
+    "core:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize"
+  ]
 }
