@@ -2,8 +2,10 @@ import { openDotaCache } from '../services/openDotaCache';
 import { OpenDotaStatus } from './OpenDotaStatus';
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { apiService } from "../services/apiService";
+import { audioService } from "../services/audioService";
 import { PopularItem, HeroMetaInfo } from "../types/meta";
-import { Package, Coins, HelpCircle } from "lucide-react";
+import { Package, Coins, HelpCircle, Volume2, Sparkles } from "lucide-react";
+import { neutralAdvisor, getHeroArchetype } from "../services/neutralAdvisor";
 
 interface Props {
   heroName?: string;
@@ -19,6 +21,8 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
   const [items, setItems] = useState<PopularItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [itemSection, setItemSection] = useState<"shop" | "neutral">("shop");
+  const [selectedNeutralTier, setSelectedNeutralTier] = useState<number>(1);
 
   useEffect(() => {
     apiService.initData().then(() => setAllHeroes(apiService.getAllHeroes()));
@@ -128,12 +132,179 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
               </strong>
             </span>
           </div>
+
+          {activeHero && items.length > 0 && (
+            <button
+              onClick={() => {
+                const core = items.filter((i) => i.tier === "core");
+                const early = items.filter((i) => i.tier === "early");
+                const targetItems = core.length > 0 ? core : (early.length > 0 ? early : items);
+                const phase = core.length > 0 ? "core" : (early.length > 0 ? "early" : "luxury");
+                audioService.playItemAdvice(activeHero.localized_name, phase, targetItems, true);
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition"
+              title="Speak recommended items"
+            >
+              <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+              <span>Speak Advice</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {activeHero && <OpenDotaStatus resource={`heroes/${activeHero.id}/itemPopularity`} onRefresh={() => setRefresh(n => n + 1)} />}
+      {/* Sub-tab Switcher */}
+      <div className="flex items-center gap-2 mb-3 border-b border-slate-800/80 pb-2">
+        <button
+          onClick={() => setItemSection("shop")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            itemSection === "shop"
+              ? "bg-amber-500/15 text-amber-300 border border-amber-500/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+          }`}
+        >
+          <Package className="w-3.5 h-3.5" />
+          <span>Shop Items (OpenDota)</span>
+        </button>
 
-      {!activeHero ? (
+        <button
+          onClick={() => setItemSection("neutral")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            itemSection === "neutral"
+              ? "bg-purple-500/15 text-purple-300 border border-purple-500/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+          <span>Neutral Creep Items (Tier 1-5)</span>
+        </button>
+      </div>
+
+      {itemSection === "shop" && activeHero && (
+        <OpenDotaStatus resource={`heroes/${activeHero.id}/itemPopularity`} onRefresh={() => setRefresh(n => n + 1)} />
+      )}
+
+
+      {itemSection === "neutral" ? (
+        !activeHero ? (
+          <div className="bg-slate-950/50 border border-dashed border-slate-800 rounded-lg p-5 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
+            <HelpCircle className="w-6 h-6 text-slate-500" />
+            <p>No active hero detected.</p>
+            <p className="text-slate-500 text-[11px]">
+              Pick a hero in Dota 2 or choose one above to see neutral creep item recommendations.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {/* Hero Role Banner & Audio Actions */}
+            {(() => {
+              const isThai = audioService.getSettings().voiceLanguage === "th-TH";
+              const heroKey = activeHero.name || "hero";
+              const archetypeInfo = getHeroArchetype(heroKey);
+              const neutralRecs = neutralAdvisor.getRecommendations(heroKey, selectedNeutralTier);
+
+              return (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-slate-950/70 border border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-slate-200">{activeHero.localized_name}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-purple-900/50 text-purple-300 border border-purple-700/50 font-medium">
+                        {isThai ? archetypeInfo.roleLabelTh : archetypeInfo.roleLabelEn}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const topItems = neutralRecs.slice(0, 2).map((r) => r.displayName).join(", ");
+                        audioService.playNeutralSlotReminder(selectedNeutralTier, activeHero.localized_name, topItems, true);
+                      }}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 text-xs font-semibold transition"
+                    >
+                      <Volume2 className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Speak Neutral Advice</span>
+                    </button>
+                  </div>
+
+                  {/* Tier Selector Pills */}
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {[1, 2, 3, 4, 5].map((tierNum) => {
+                      const isSelected = selectedNeutralTier === tierNum;
+                      const tierMinutes = [7, 17, 27, 37, 60][tierNum - 1];
+
+                      return (
+                        <button
+                          key={tierNum}
+                          onClick={() => setSelectedNeutralTier(tierNum)}
+                          className={`py-1.5 px-2 rounded-lg text-center transition flex flex-col items-center justify-center border text-[11px] ${
+                            isSelected
+                              ? "bg-purple-900/60 border-purple-500 text-purple-200 shadow-md shadow-purple-900/40 font-bold"
+                              : "bg-slate-950/60 border-slate-800 text-slate-400 hover:bg-slate-900/50"
+                          }`}
+                        >
+                          <span className="text-xs font-mono font-bold">Tier {tierNum}</span>
+                          <span className="text-[9px] opacity-75">{tierMinutes}m</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Recommendation Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    {neutralRecs.map((item) => {
+                      const isS = item.tierRank === "S";
+                      const isA = item.tierRank === "A";
+
+                      return (
+                        <div
+                          key={item.key}
+                          className={`p-3 rounded-lg border flex flex-col justify-between transition ${
+                            isS
+                              ? "bg-purple-950/40 border-purple-500/60 shadow-sm shadow-purple-900/20"
+                              : isA
+                              ? "bg-emerald-950/30 border-emerald-500/40"
+                              : "bg-slate-950/60 border-slate-800"
+                          }`}
+                        >
+                          <div>
+                            <div className="flex items-center justify-between gap-1 mb-1">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span
+                                  className={`px-1.5 py-0.5 rounded font-black text-[10px] font-mono shrink-0 ${
+                                    isS
+                                      ? "bg-gradient-to-r from-purple-600 to-amber-500 text-white shadow"
+                                      : isA
+                                      ? "bg-emerald-600 text-white"
+                                      : "bg-slate-700 text-slate-300"
+                                  }`}
+                                >
+                                  {item.tierRank}-Tier
+                                </span>
+                                <span className="font-bold text-xs text-slate-100 truncate">
+                                  {item.displayName}
+                                </span>
+                              </div>
+                              <span className="text-xs font-mono font-semibold text-amber-400 shrink-0">
+                                {item.score} pts
+                              </span>
+                            </div>
+
+                            <div className="text-[11px] font-mono text-emerald-400 font-medium mb-1">
+                              {item.statsSummary}
+                            </div>
+
+                            <div className="text-xs text-slate-300 mb-1.5 leading-relaxed">
+                              {isThai ? item.reasonTh : item.reasonEn}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        )
+      ) : !activeHero ? (
         <div className="bg-slate-950/50 border border-dashed border-slate-800 rounded-lg p-5 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
           <HelpCircle className="w-6 h-6 text-slate-500" />
           <p>No active hero detected from Dota 2 GSI.</p>

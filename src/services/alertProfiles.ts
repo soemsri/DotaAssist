@@ -8,7 +8,7 @@ export const OBJECTIVES: Record<Objective, string> = {
   rune_bounty: 'Bounty runes', rune_power: 'Power / water runes', rune_wisdom: 'Wisdom shrines',
   roshan: 'Roshan / Aegis', tormentor: 'Tormentor', lotus: 'Lotus pools', day_night: 'Day / night',
   neutral_item: 'Neutral items', camp_stack: 'Camp stacking', enemy_ultimate: 'Enemy ultimates',
-  enemy_glyph: 'Enemy glyph',
+  enemy_glyph: 'Enemy glyph', danger: 'Threat & danger',
 };
 type Profile = Record<Objective, boolean>;
 type Profiles = Record<Role, Profile>;

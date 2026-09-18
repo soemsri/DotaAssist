@@ -1,4 +1,4 @@
-import { TimingEventAlert } from '../types/meta';
+import { TimingEventAlert, PopularItem } from '../types/meta';
 import { GSIEvent, GSIPayload } from '../types/gsi';
 import { audioService, ReminderContext } from './audioService';
 import { buybackService } from './buybackService';
@@ -11,6 +11,8 @@ import { enemyGlyphService } from './enemyGlyphService';
 import { TIMING_RULES as RULES, NEUTRAL_TIER_TIMINGS } from '../data/timingRules';
 import { alertProfiles, Objective } from './alertProfiles';
 export const DOTA_RULESET_VERSION = RULES.patch;
+
+export const BOUNTY_RUNE_MAX_TIME_SECONDS = 1800; // 30:00 - disable bounty rune alerts from minute 30 onwards
 
 export interface RoshanTrackState {
   isDead: boolean;
@@ -176,6 +178,38 @@ export class TimingEngine {
     enemyGlyphService.resetAll();
   }
 
+  public checkItemAdvice(clockTime: number, heroName: string, items: PopularItem[]) {
+    if (!heroName || items.length === 0) return;
+    const currentSec = Math.floor(clockTime);
+
+    // 1. Early game items (30s - 90s)
+    if (currentSec >= 30 && currentSec <= 90 && !this.playedAlerts.has('audio_item_early')) {
+      const earlyItems = items.filter((i) => i.tier === 'early');
+      if (earlyItems.length > 0) {
+        audioService.playItemAdvice(heroName, 'early', earlyItems);
+        this.playedAlerts.add('audio_item_early');
+      }
+    }
+
+    // 2. Mid game core items (12:00 -> 720s - 760s)
+    if (currentSec >= 720 && currentSec <= 760 && !this.playedAlerts.has('audio_item_core')) {
+      const coreItems = items.filter((i) => i.tier === 'core');
+      if (coreItems.length > 0) {
+        audioService.playItemAdvice(heroName, 'core', coreItems);
+        this.playedAlerts.add('audio_item_core');
+      }
+    }
+
+    // 3. Late game luxury items (25:00 -> 1500s - 1540s)
+    if (currentSec >= 1500 && currentSec <= 1540 && !this.playedAlerts.has('audio_item_luxury')) {
+      const luxuryItems = items.filter((i) => i.tier === 'luxury');
+      if (luxuryItems.length > 0) {
+        audioService.playItemAdvice(heroName, 'luxury', luxuryItems);
+        this.playedAlerts.add('audio_item_luxury');
+      }
+    }
+  }
+
   public calculateAlerts(clockTime: number, isPreGame: boolean): TimingEventAlert[] {
     const roundedSec = Math.floor(clockTime);
     const previousClockTime = this.lastClockTime;
@@ -215,27 +249,31 @@ export class TimingEngine {
     const currentSec = Math.max(0, roundedSec);
     const alerts: TimingEventAlert[] = [];
 
-    // 1. Bounty Runes (initial spawn at 0:00, then every 4 minutes)
-    const nextBountyInterval = this.nextOccurrence(
-      currentSec,
-      RULES.bountyInterval,
-      0,
-    );
-    const bountyDiff = nextBountyInterval - currentSec;
-    if (bountyDiff <= 60 && bountyDiff >= 0) {
-      alerts.push({
-        id: `bounty_${nextBountyInterval}`,
-        title: 'Bounty Runes',
-        subtitle: `Spawns at ${this.formatTime(nextBountyInterval)}`,
-        targetSeconds: nextBountyInterval,
-        secondsRemaining: bountyDiff,
-        type: 'rune_bounty',
-        urgent: bountyDiff <= 15,
-      });
+    // 1. Bounty Runes (initial spawn at 0:00, then every 4 minutes until 30:00)
+    if (currentSec < BOUNTY_RUNE_MAX_TIME_SECONDS) {
+      const nextBountyInterval = this.nextOccurrence(
+        currentSec,
+        RULES.bountyInterval,
+        0,
+      );
+      if (nextBountyInterval <= BOUNTY_RUNE_MAX_TIME_SECONDS) {
+        const bountyDiff = nextBountyInterval - currentSec;
+        if (bountyDiff <= 60 && bountyDiff >= 0) {
+          alerts.push({
+            id: `bounty_${nextBountyInterval}`,
+            title: 'Bounty Runes',
+            subtitle: `Spawns at ${this.formatTime(nextBountyInterval)}`,
+            targetSeconds: nextBountyInterval,
+            secondsRemaining: bountyDiff,
+            type: 'rune_bounty',
+            urgent: bountyDiff <= 15,
+          });
 
-      if (bountyDiff <= 15 && bountyDiff > 0 && !this.playedAlerts.has(`audio_bounty_${nextBountyInterval}`)) {
-        this.play('rune_bounty', () => audioService.playBountyRuneAlert(), { id: `bounty_${nextBountyInterval}`, target: nextBountyInterval, label: 'Bounty runes' });
-        this.playedAlerts.add(`audio_bounty_${nextBountyInterval}`);
+          if (bountyDiff <= 15 && bountyDiff > 0 && !this.playedAlerts.has(`audio_bounty_${nextBountyInterval}`)) {
+            this.play('rune_bounty', () => audioService.playBountyRuneAlert(), { id: `bounty_${nextBountyInterval}`, target: nextBountyInterval, label: 'Bounty runes' });
+            this.playedAlerts.add(`audio_bounty_${nextBountyInterval}`);
+          }
+        }
       }
     }
 
@@ -271,6 +309,25 @@ export class TimingEngine {
       if (powerDiff <= 20 && powerDiff > 0 && !this.playedAlerts.has(`audio_power_${nextPowerSec}`)) {
         this.play('rune_power', () => audioService.playPowerRuneAlert(isWaterRune), { id: `power_${nextPowerSec}`, target: nextPowerSec, label: powerLabel });
         this.playedAlerts.add(`audio_power_${nextPowerSec}`);
+      }
+    }
+
+    // 2b. Gank Alert: Minute 6:00 (Crucial First Night + River Power Rune)
+    if (currentSec >= 345 && currentSec <= 360) {
+      const gankDiff = 360 - currentSec;
+      alerts.push({
+        id: 'gank_window_min6',
+        title: 'Gank Alert (Min 6)',
+        subtitle: 'First Night & River Rune gank spike in side lanes',
+        targetSeconds: 360,
+        secondsRemaining: gankDiff,
+        type: 'danger',
+        urgent: true,
+      });
+
+      if (!this.playedAlerts.has('audio_gank_min6')) {
+        audioService.playGankWindowAlert();
+        this.playedAlerts.add('audio_gank_min6');
       }
     }
 

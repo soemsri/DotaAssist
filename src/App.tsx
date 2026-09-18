@@ -10,16 +10,20 @@ import { apiService } from "./services/apiService";
 import { audioService } from "./services/audioService";
 import { objectiveTracker } from "./services/objectiveTracker";
 import { enemyUltimateService } from "./services/enemyUltimateService";
+import { minimapScanner, MinimapScanResult } from "./services/minimapScanner";
+import { tacticalCoach } from "./services/tacticalCoach";
 import { TimingEventAlert, PopularItem } from "./types/meta";
 import { GSIStatusBadge } from "./components/GSIStatusBadge";
 import { TimingAlerts } from "./components/TimingAlerts";
 import { EnemyUltimateBar } from "./components/EnemyUltimateBar";
 import { DraftAdvisor } from "./components/DraftAdvisor";
 import { ItemGuide } from "./components/ItemGuide";
+import { TacticalCoachPanel } from "./components/TacticalCoachPanel";
 import { OverlayHUD } from "./components/OverlayHUD";
 import { DesktopStatus } from "./components/DesktopSetup";
 import { SettingsModal } from "./components/SettingsModal";
-import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink } from "lucide-react";
+import { VisionWardMap } from "./components/VisionWardMap";
+import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink, Zap, Eye } from "lucide-react";
 
 export const App: React.FC = () => {
   useSyncExternalStore(alertProfiles.subscribe, alertProfiles.getSnapshot);
@@ -27,14 +31,19 @@ export const App: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [overlayMode, setOverlayMode] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
+  const [activeTab, setActiveTab] = useState<"timers" | "coach" | "draft" | "items" | "vision">("timers");
   const [itemRefresh, setItemRefresh] = useState(0);
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
+  const [minimapResult, setMinimapResult] = useState<MinimapScanResult | null>(minimapScanner.getLastResult());
   const [isTauri, setIsTauri] = useState<boolean>(false);
   const [pipContainer, setPipContainer] = useState<HTMLElement | null>(null);
   const [desktop, setDesktop] = useState<DesktopStatus | null>(null);
   const [desktopError, setDesktopError] = useState("");
   const pipWindowRef = useRef<Window | null>(null);
+
+  const lastRenderTimeRef = useRef<number>(0);
+  const lastClockTimeRef = useRef<number | null>(null);
+  const lastGameStateRef = useRef<string | null>(null);
 
   useEffect(() => {
     const hasTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -101,8 +110,29 @@ export const App: React.FC = () => {
     const unsubscribe = gsiService.subscribe((data) => {
       hadConnection = true;
       timingEngine.handleGSIPayload(data);
-      setPayload(data);
-      setIsConnected(true);
+
+      // Throttle React DOM re-renders to eliminate CPU/GPU stutter:
+      // Re-render only when whole second ticks (1Hz), game_state changes, or 1000ms elapses
+      const now = Date.now();
+      const rawClock = data.map?.clock_time;
+      const clockSec = rawClock !== undefined && rawClock !== null ? Math.floor(rawClock) : null;
+      const gameState = data.map?.game_state ?? null;
+
+      const clockChanged = clockSec !== null && clockSec !== lastClockTimeRef.current;
+      const stateChanged = gameState !== lastGameStateRef.current;
+      const timeElapsed = now - lastRenderTimeRef.current >= 1000;
+
+      if (clockChanged || stateChanged || timeElapsed || !lastRenderTimeRef.current) {
+        lastClockTimeRef.current = clockSec;
+        lastGameStateRef.current = gameState;
+        lastRenderTimeRef.current = now;
+        setPayload(data);
+        setIsConnected(true);
+      }
+    });
+
+    const unsubMinimap = minimapScanner.subscribe((res) => {
+      setMinimapResult(res);
     });
 
     const connectionMonitor = window.setInterval(() => {
@@ -114,6 +144,7 @@ export const App: React.FC = () => {
 
     return () => {
       unsubscribe();
+      unsubMinimap();
       window.clearInterval(connectionMonitor);
     };
   }, []);
@@ -138,6 +169,8 @@ export const App: React.FC = () => {
   const matchId = livePayload?.map?.matchid;
   useEffect(() => { alertProfiles.observe(heroName, matchId); }, [heroName, matchId]);
 
+  const coachState = tacticalCoach.process(livePayload, minimapResult);
+
   useEffect(() => {
     let cancelled = false;
     const hero = heroName ? apiService.getHeroByName(heroName) : undefined;
@@ -161,6 +194,15 @@ export const App: React.FC = () => {
       cancelled = true;
     };
   }, [heroName, itemRefresh]);
+
+  // Start minimap scanner lifecycle (only active when enabled in Settings)
+  useEffect(() => {
+    minimapScanner.start();
+
+    return () => {
+      minimapScanner.stop();
+    };
+  }, []);
 
   const closePiP = useCallback(() => {
     const pipWindow = pipWindowRef.current;
@@ -228,6 +270,8 @@ export const App: React.FC = () => {
           alerts={alerts}
           onRefreshItems={() => setItemRefresh(n => n + 1)}
           items={popularItems}
+          coachState={coachState}
+          scanResult={minimapResult}
           onOpenSettings={() => {
             setSettingsOpen(true);
             window.focus();
@@ -254,6 +298,8 @@ export const App: React.FC = () => {
             alerts={alerts}
             onRefreshItems={() => setItemRefresh(n => n + 1)}
             items={popularItems}
+            coachState={coachState}
+            scanResult={minimapResult}
             onOpenSettings={() => setSettingsOpen(true)}
             onExitOverlay={() => { void changeOverlay(false); }}
           />
@@ -401,6 +447,18 @@ export const App: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setActiveTab("coach")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
+              activeTab === "coach"
+                ? "bg-rose-500/10 text-rose-400 border border-rose-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            <span>Tactical Coach &amp; Talents</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab("draft")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
               activeTab === "draft"
@@ -423,10 +481,32 @@ export const App: React.FC = () => {
             <ShieldCheck className="w-4 h-4" />
             <span>Item Guides & Builds</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab("vision")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
+              activeTab === "vision"
+                ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            <span>Vision & Ward Map</span>
+          </button>
         </div>
 
         {/* Active Tab View */}
         <div className="space-y-5">
+          {activeTab === "coach" && (
+            <div className="space-y-5">
+              <TacticalCoachPanel
+                coachState={coachState}
+                payload={livePayload}
+                isConnected={isConnected}
+                minimapResult={minimapResult}
+              />
+            </div>
+          )}
           {activeTab === "timers" && (
             <div className="space-y-5">
               <EnemyUltimateBar />
@@ -457,6 +537,16 @@ export const App: React.FC = () => {
               <DraftAdvisor
                 draft={livePayload?.draft}
                 playerTeam={livePayload?.player?.team_name}
+              />
+            </div>
+          )}
+
+          {activeTab === "vision" && (
+            <div className="space-y-5">
+              <VisionWardMap
+                coachState={coachState}
+                payload={livePayload}
+                isConnected={isConnected}
               />
             </div>
           )}

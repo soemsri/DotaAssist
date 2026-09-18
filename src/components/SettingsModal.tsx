@@ -1,9 +1,10 @@
+import React, { useState, useSyncExternalStore } from 'react';
 import { AlertProfileControls } from './AlertProfileControls';
 import { DesktopSetup } from './DesktopSetup';
-import React, { useState, useSyncExternalStore } from 'react';
-import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard } from 'lucide-react';
+import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard, Scroll, Compass, GitBranch, Eye } from 'lucide-react';
 import { audioService } from '../services/audioService';
 import { objectiveTracker } from '../services/objectiveTracker';
+import { voiceCommandService } from '../services/voiceCommandService';
 
 interface Props {
   isOpen: boolean;
@@ -39,7 +40,13 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
   const [volume, setVolume] = useState(Math.round(currentSettings.masterVolume * 100));
   const [sfxEnabled, setSfxEnabled] = useState(currentSettings.sfxEnabled);
   const [voiceEnabled, setVoiceEnabled] = useState(currentSettings.voiceEnabled);
+  const [voiceCommandEnabled, setVoiceCommandEnabled] = useState(currentSettings.voiceCommandEnabled ?? true);
   const [voiceLang, setVoiceLang] = useState<'en-US' | 'th-TH'>(currentSettings.voiceLanguage);
+  const [tpScrollAlertEnabled, setTpScrollAlertEnabled] = useState(currentSettings.tpScrollAlertEnabled);
+  const [laneAssistantMode, setLaneAssistantMode] = useState<'auto' | 'always' | 'disabled'>(currentSettings.laneAssistantMode || 'auto');
+  const [talentAlertsEnabled, setTalentAlertsEnabled] = useState(currentSettings.talentAlertsEnabled ?? true);
+  const [minimapScannerEnabled, setMinimapScannerEnabled] = useState(currentSettings.minimapScannerEnabled ?? false);
+  const [minimapPosition, setMinimapPosition] = useState<'left' | 'right'>(currentSettings.minimapPosition || 'left');
 
   const trackerState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
   const [browserRoshanKey, setBrowserRoshanKey] = useState(trackerState.roshanHotkey);
@@ -72,9 +79,48 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
     audioService.setVoiceEnabled(next);
   };
 
+  const handleToggleVoiceCommand = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setVoiceCommandEnabled(next);
+    audioService.updateSettings({ voiceCommandEnabled: next });
+    if (next) {
+      voiceCommandService.startListening();
+    } else {
+      voiceCommandService.stopListening();
+    }
+  };
+
+  const handleToggleTpScroll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setTpScrollAlertEnabled(next);
+    audioService.setTpScrollAlertEnabled(next);
+  };
+
   const handleLangChange = (lang: 'en-US' | 'th-TH') => {
     setVoiceLang(lang);
     audioService.setVoiceLanguage(lang);
+  };
+
+  const handleLaneModeChange = (mode: 'auto' | 'always' | 'disabled') => {
+    setLaneAssistantMode(mode);
+    audioService.setLaneAssistantMode(mode);
+  };
+
+  const handleToggleTalentAlerts = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setTalentAlertsEnabled(next);
+    audioService.setTalentAlertsEnabled(next);
+  };
+
+  const handleToggleMinimapScanner = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setMinimapScannerEnabled(next);
+    audioService.setMinimapScannerEnabled(next);
+  };
+
+  const handleMinimapPositionChange = (pos: 'left' | 'right') => {
+    setMinimapPosition(pos);
+    audioService.setMinimapPosition(pos);
   };
 
   return (
@@ -176,7 +222,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
             <span>Voice Announcer &amp; Audio Notifications</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
             {/* Master Volume */}
             <div className="space-y-1">
               <span className="text-[11px] text-slate-400">Master Volume:</span>
@@ -221,6 +267,34 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
               </label>
             </div>
 
+            {/* TP Alert Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={tpScrollAlertEnabled}
+                  onChange={handleToggleTpScroll}
+                  className="accent-amber-500 rounded"
+                />
+                <Scroll className="w-3.5 h-3.5 text-amber-400" />
+                <span>TP Alert</span>
+              </label>
+            </div>
+
+            {/* Talent Tree Voice Alert Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={talentAlertsEnabled}
+                  onChange={handleToggleTalentAlerts}
+                  className="accent-amber-500 rounded"
+                />
+                <GitBranch className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Talent Tree</span>
+              </label>
+            </div>
+
             {/* Voice Language */}
             <div className="flex items-center justify-between gap-1.5 bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
               <div className="flex items-center gap-1 text-slate-300">
@@ -236,6 +310,133 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 <option value="th-TH">Thai</option>
               </select>
             </div>
+
+            {/* Lane Assistant (Pull & Stack) Mode */}
+            <div className="flex items-center justify-between gap-1.5 bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
+              <div className="flex items-center gap-1 text-slate-300">
+                <Compass className="w-3.5 h-3.5 text-amber-400" />
+                <span>Lane Assist:</span>
+              </div>
+              <select
+                value={laneAssistantMode}
+                onChange={(e) => handleLaneModeChange(e.target.value as 'auto' | 'always' | 'disabled')}
+                className="bg-slate-800 text-amber-400 text-xs rounded border border-slate-700 px-1 py-0.5 outline-none"
+                title="Lane Assistant: Creep pull (:15/:45) & Jungle stack (:53) voice alerts during 1:00-10:00"
+              >
+                <option value="auto">Auto (Support only)</option>
+                <option value="always">Always On (All Heroes)</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+
+            {/* Minimap MIA Scanner (Experimental Screen Capture) */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={minimapScannerEnabled}
+                  onChange={handleToggleMinimapScanner}
+                  className="accent-amber-500 rounded"
+                />
+                <Eye className="w-3.5 h-3.5 text-rose-400" />
+                <span>MIA Scanner (Exp)</span>
+              </label>
+            </div>
+
+            {/* Minimap Position */}
+            <div className="flex items-center justify-between gap-1.5 bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
+              <div className="flex items-center gap-1 text-slate-300">
+                <Eye className="w-3.5 h-3.5 text-sky-400" />
+                <span>Map Pos:</span>
+              </div>
+              <select
+                value={minimapPosition}
+                onChange={(e) => handleMinimapPositionChange(e.target.value as 'left' | 'right')}
+                className="bg-slate-800 text-amber-400 text-xs rounded border border-slate-700 px-1 py-0.5 outline-none"
+              >
+                <option value="left">Left Corner</option>
+                <option value="right">Right Corner</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Performance Optimization Note */}
+          <div className="text-[11px] text-slate-400 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 flex items-center gap-2">
+            <span className="text-amber-400 font-bold">💡 Performance Tip:</span>
+            <span>MIA Scanner uses desktop screen capture. Keep disabled for maximum game FPS and 0% GPU capture overhead.</span>
+          </div>
+
+          {/* Hands-Free Voice Commands Section */}
+          <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Mic className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-slate-100">
+                  Hands-Free Voice Command &amp; Query (ระบบสั่งการและถามตอบด้วยเสียง)
+                </span>
+              </div>
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={voiceCommandEnabled}
+                  onChange={handleToggleVoiceCommand}
+                  className="accent-emerald-500 rounded"
+                />
+                <span className="font-semibold text-emerald-400">
+                  {voiceCommandEnabled ? 'Active' : 'Disabled'}
+                </span>
+              </label>
+            </div>
+
+            <div className="text-[11px] text-slate-400">
+              {voiceLang === 'th-TH'
+                ? 'ไมค์ทำงานเบื้องหลังอัตโนมัติ พูดสั่งการได้ทันที เช่น "โรชานตาย", "ศัตรูกดบีเคบี", "เวลารูน", หรือ "ไอเทมต่อไป"'
+                : 'Continuous background mic listening. Speak commands hands-free e.g. "Roshan dead", "BKB used", "Next rune", or "Next item".'}
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap pt-1">
+              <span className="text-[10px] text-slate-500 font-semibold">Test Voice Commands:</span>
+              <button
+                onClick={() =>
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'โรชานตาย' : 'roshan dead'
+                  )
+                }
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'โรชานตาย' : 'roshan dead'}"
+              </button>
+              <button
+                onClick={() =>
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'ศัตรูกดบีเคบี' : 'bkb used'
+                  )
+                }
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'ศัตรูกดบีเคบี' : 'bkb used'}"
+              </button>
+              <button
+                onClick={() =>
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'เวลารูน' : 'next rune'
+                  )
+                }
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'เวลารูน' : 'next rune'}"
+              </button>
+              <button
+                onClick={() =>
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'ไอเทมต่อไป' : 'next item'
+                  )
+                }
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'ไอเทมต่อไป' : 'next item'}"
+              </button>
+            </div>
           </div>
 
           <p className="text-xs text-slate-400">
@@ -249,7 +450,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
             <div className="text-[11px] font-semibold text-slate-400 mb-1.5">
               Click to Test Sound &amp; Voice Output:
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 onClick={() => audioService.playWisdomShrineAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-purple-300 font-semibold transition text-left"
@@ -327,6 +528,45 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
                 🛡️ Glyph Ready
+              </button>
+              <button
+                onClick={() => audioService.playNoTpScrollAlert(true)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-amber-950/60 border border-amber-800/60 text-xs text-amber-300 font-semibold transition text-left"
+              >
+                📜 No TP Scroll
+              </button>
+              <button
+                onClick={() => audioService.playCreepPullAlert(false, true)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950/60 border border-emerald-800/60 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                🌾 Pull Creeps (:15)
+              </button>
+              <button
+                onClick={() => audioService.playCreepPullAlert(true, true)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950/60 border border-emerald-800/60 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                🌲 Pull Large (:45)
+              </button>
+              <button
+                onClick={() => audioService.playJungleStackAlert(true)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-sky-950/60 border border-sky-800/60 text-xs text-sky-300 font-semibold transition text-left"
+              >
+                🏕️ Stack Camp (:53)
+              </button>
+              <button
+                onClick={() => {
+                  const isThai = voiceLang === 'th-TH';
+                  audioService.playTalentAlert(
+                    10,
+                    'left',
+                    isThai ? '+9 ความแข็งแกร่ง' : '+9 Strength',
+                    isThai ? 'เพิ่มเลือดป้องกันเวทเบิร์สต์' : 'Bonus HP against enemy magic burst',
+                    true,
+                  );
+                }}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950/60 border border-emerald-800/60 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                🌳 Talent Advice (Lvl 10)
               </button>
             </div>
           </div>
