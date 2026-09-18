@@ -1,8 +1,9 @@
 import { AlertProfileControls } from './AlertProfileControls';
 import { DesktopSetup } from './DesktopSetup';
-import React, { useState } from 'react';
-import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe } from 'lucide-react';
+import React, { useState, useSyncExternalStore } from 'react';
+import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard } from 'lucide-react';
 import { audioService } from '../services/audioService';
+import { objectiveTracker } from '../services/objectiveTracker';
 
 interface Props {
   isOpen: boolean;
@@ -39,6 +40,11 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
   const [sfxEnabled, setSfxEnabled] = useState(currentSettings.sfxEnabled);
   const [voiceEnabled, setVoiceEnabled] = useState(currentSettings.voiceEnabled);
   const [voiceLang, setVoiceLang] = useState<'en-US' | 'th-TH'>(currentSettings.voiceLanguage);
+
+  const trackerState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
+  const [browserRoshanKey, setBrowserRoshanKey] = useState(trackerState.roshanHotkey);
+  const [browserTormentorKey, setBrowserTormentorKey] = useState(trackerState.tormentorHotkey);
+  const [hotkeyMsg, setHotkeyMsg] = useState('');
 
   if (!isOpen) return null;
 
@@ -90,7 +96,62 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
           </button>
         </div>
 
-        {'__TAURI_INTERNALS__' in window && <DesktopSetup isConnected={isConnected} />}
+        {'__TAURI_INTERNALS__' in window ? (
+          <DesktopSetup isConnected={isConnected} />
+        ) : (
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 text-sm">
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+              <Keyboard className="w-4 h-4 text-amber-400" />
+              <span>Objective Hotkeys &amp; Clipboard (Web / Browser Mode)</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-slate-300">Roshan Slain hotkey
+                  <input
+                    className="block w-full bg-slate-800 p-2 rounded mt-1 text-xs"
+                    value={browserRoshanKey}
+                    onChange={e => setBrowserRoshanKey(e.target.value)}
+                  />
+                </label>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-300">Tormentor Slain hotkey
+                  <input
+                    className="block w-full bg-slate-800 p-2 rounded mt-1 text-xs"
+                    value={browserTormentorKey}
+                    onChange={e => setBrowserTormentorKey(e.target.value)}
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-xs">
+                <input
+                  type="checkbox"
+                  checked={trackerState.autoCopyClipboard}
+                  onChange={e => objectiveTracker.setAutoCopyClipboard(e.target.checked)}
+                  className="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0"
+                />
+                <span className="text-slate-200">Auto-copy timing summary to clipboard on kill</span>
+              </label>
+              <button
+                onClick={() => {
+                  const res = objectiveTracker.setHotkeys(browserRoshanKey, browserTormentorKey);
+                  if (res.success) {
+                    setHotkeyMsg('Hotkeys saved.');
+                  } else {
+                    setHotkeyMsg(res.error || 'Failed to save hotkeys.');
+                  }
+                  setTimeout(() => setHotkeyMsg(''), 3000);
+                }}
+                className="bg-slate-700 hover:bg-slate-600 rounded px-3 py-1.5 text-xs font-semibold"
+              >
+                Save Hotkeys
+              </button>
+            </div>
+            {hotkeyMsg && <p className="text-xs text-amber-300">{hotkeyMsg}</p>}
+          </div>
+        )}
 
         <AlertProfileControls editor />
 
@@ -224,6 +285,48 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
                 ⏳ Aegis Expiring
+              </button>
+              <button
+                onClick={() => audioService.playNeutralTierAlert(1)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
+              >
+                📦 Neutral Tier Alert
+              </button>
+              <button
+                onClick={() => audioService.speak('Reminder: Neutral item slot is empty. Tier 1 is available.', undefined, 'neutral_item')}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-orange-300 font-semibold transition text-left"
+              >
+                ⚠️ Missing Neutral Reminder
+              </button>
+              <button
+                onClick={() => audioService.playCampStackAlert()}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                🌲 Camp Stacking
+              </button>
+              <button
+                onClick={() => audioService.playEnemyUltimateReadyAlert('Enigma', 'Black Hole')}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-rose-300 font-semibold transition text-left"
+              >
+                ⚔️ Enemy Ultimate Ready
+              </button>
+              <button
+                onClick={() => audioService.playLaningMilestoneAlert(5, 28, 'on pace')}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
+              >
+                🌾 Laning Milestone (5m)
+              </button>
+              <button
+                onClick={() => audioService.playEnemyGlyphActivatedAlert()}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-sky-300 font-semibold transition text-left"
+              >
+                ⚡ Glyph Activated (7s)
+              </button>
+              <button
+                onClick={() => audioService.playEnemyGlyphReadyAlert()}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                🛡️ Glyph Ready
               </button>
             </div>
           </div>

@@ -1,3 +1,34 @@
+## Manual enemy lineup alignment — 2026-09-18
+
+- Empty ultimate slots offer hero selection from the bundled catalog, in dashboard and interactive overlay modes. Duplicate and occupied-slot selections are rejected.
+- GSI fills available empty slots without moving existing heroes, duplicating them, or resetting their timers/corrections. Manual slots are labeled and retain their hotkeys.
+- Clear selection is available for manual slots. Active cooldowns or manual corrections require explicit in-app confirmation; Cancel preserves state. A cleared manual slot stays reserved for replacement until selected or reset, so incoming GSI cannot immediately fill it.
+- Match/tracker reset clears all five heroes, timers, corrections, and replacement reservations. Manual lineups are not persisted between matches.
+- Regression coverage includes late/repeated GSI, duplicates, selection validation, clearing confirmation, replacement, and match reset.
+
+## Enemy ultimate estimate corrections — 2026-09-18
+
+- Countdown, readiness, clipboard summaries and readiness speech explicitly describe estimates.
+- Each enemy has a separate Edit control with optional level and cooldown overrides; native overlay editing requires interaction mode. Cast recording and quick undo retain their controls.
+- Corrections immediately recalculate an active countdown from its recorded cast time and persist for future casts in the match. Match/tracker reset or hero replacement clears overrides. Blank fields restore automatic estimates; explicit cooldown takes precedence over level.
+- Corrections that move completion into the past mark estimated readiness immediately. They clear the old clipboard notice without overwriting the clipboard.
+
+## Enemy ultimate tracker alignment — 2026-09-18
+
+- Synchronizes 5 enemy heroes from live GSI draft data, mapping into slots 1-5 with ultimate names and cooldown levels.
+- Dedicated global hotkeys (`Alt+1` to `Alt+5`) record casts in click-through mode without refocusing.
+- 10-second quick-undo window cancels accidental triggers with spoken confirmation.
+- 5-slot HUD bar renders real-time countdowns (green = ready, red = cooldown) and announces completion with spoken voice alert ("[Hero] ultimate is ready").
+- Automatic clipboard copy formats concise summary for Dota 2 team chat.
+- Tests in `tests/enemy_ultimates.test.ts` verify draft synchronization, hotkey triggers, 10s undo, countdowns, ready audio announcements, and profile filtering.
+
+## Objective hotkeys, quick undo, and clipboard alignment — 2026-09-18
+
+- Dedicated global hotkeys (`Alt+F9` for Roshan, `Alt+F8` for Tormentor) allow recording death times instantly without toggling overlay mouse interaction.
+- Voice confirmation announces recording ("Roshan slain recorded" / "Tormentor slain recorded"). Pressing the same hotkey again within 10 seconds cancels the recording with spoken confirmation ("Roshan timer canceled" / "Tormentor timer canceled").
+- Automatic clipboard copy formats a concise summary string (`Roshan 25:15 | Aegis 30:15 | Respawn 33:15-36:15` or `Tormentor 20:00 | Respawn 30:00`) for pasting directly into Dota 2 team chat. Toggleable in Settings and persisted in preferences.
+- Tests in `tests/objective_hotkeys.test.ts` cover hotkey matching, conflict handling, voice undo timing, state reversibility, and clipboard formatting.
+
 ## OpenDota cache alignment — 2026-09-18
 
 - Language work was skipped; existing language behavior is unchanged.
@@ -94,6 +125,9 @@
 - **Urgent Visual Pulsing**: Displays warning animation when time remaining is $\le$ 20 seconds.
 - **Roshan Tracker**: Synchronizes from optional GSI map/Roshan/event fields when present and retains a one-click manual fallback.
 - **Tormentor Tracker**: Starts a 10-minute respawn timer from a GSI event when available or from the manual HUD control.
+- **Buyback & Safe-to-Spend**: Real-time calculation of buyback affordability (`gold >= cost && cooldown === 0`), missing gold, and safe-to-spend surplus (`gold - cost`). Objective-linked voice warnings trigger in late game (30:00+) prior to Roshan, Tormentor, and Wisdom Shrine teamfights with a 3-minute throttle.
+- **Neutral Items (Tier 1-5)**: Countdown cards appear 60s before each Tier unlock (7:00, 17:00, 27:00, 37:00, 60:00) and dismiss at unlock. Voice announcements fire at 20s. A 90s grace period allows token farming before missing/outdated neutral slot checks trigger voice reminders (throttled at 2 minutes, max 2 reminders per tier).
+- **Camp Stacking & Pulling**: Active in early-to-mid game (1:00 - 15:00 / 60s - 900s). Countdown cards appear 20s prior to pull timing (:33 - :53), auto-dismissing after :55. Spoken voice announcement fires at :43 ("Stack camp in ten seconds"), automatically yielding priority (remaining silent) if a major objective with spoken reminders (runes, roshan, tormentor, neutral tier unlock) is active within 25 seconds. Enabled by default for Support and Offlane alert profiles.
 
 ---
 
@@ -102,14 +136,22 @@
 - `src-tauri/`: Rust backend, embedded GSI HTTP server (port 3001), dynamic window controls.
 - `src/services/`:
   - `gsiService.ts`: Real-time GSI stream receiver from Tauri IPC / Dota 2 client.
-  - `timingEngine.ts`: Objective timing calculations (Bounty, Power, Wisdom, Roshan, Tormentor) with float-tolerant threshold triggers.
+  - `timingEngine.ts`: Objective timing calculations (Bounty, Power, Wisdom, Roshan, Tormentor, Neutral Items, Camp Stacking) with float-tolerant threshold triggers.
+  - `campStackService.ts`: Camp stacking timing calculation (:33 - :55), countdown cards, yielding voice trigger logic, and role profile integration.
+  - `enemyUltimateService.ts`: Synchronizes 5 enemy heroes from GSI draft data, handles Alt+1 to Alt+5 hotkeys, 10s quick undo, and spoken ready alerts.
+  - `neutralItemService.ts`: Neutral item tier classification, 90s grace period, and throttled voice reminders for missing or outdated neutral items.
+  - `buybackService.ts`: Buyback affordability, safe-to-spend surplus calculation, and objective-linked late-game warning throttling.
+  - `objectiveTracker.ts`: Dedicated global hotkey handling, 10s voice quick-undo, and auto-clipboard formatting.
   - `draftService.ts`: Resolves the opponent draft side from the local player's actual GSI team.
   - `apiService.ts`: OpenDota live statistics and item-popularity integration; bundled catalogs contain lookup metadata only.
   - `audioService.ts`: Web Speech API (TTS) voice announcer + Web Audio API synthesizer.
+- `src/data/`:
+  - `heroUltimates.ts`: Dota 2 hero ultimate catalog and level-based cooldown lookup.
 - `src/components/`:
-  - `OverlayHUD.tsx`: Compact draggable/floating in-game HUD with quick Roshan button & audio controls.
-  - `TimingAlerts.tsx`: Interactive countdown cards with Roshan tracker.
+  - `OverlayHUD.tsx`: Compact draggable/floating in-game HUD with quick Roshan button, buyback status banner, neutral item status banner & badge, enemy ultimate tracker bar, & audio controls.
+  - `EnemyUltimateBar.tsx`: 5-slot enemy ultimate tracker bar with green ready / red countdown states, hotkeys, and quick undo.
+  - `TimingAlerts.tsx`: Interactive countdown cards with Roshan tracker, Neutral Items alerts, and enemy ultimate alerts.
   - `DraftAdvisor.tsx`: Counter-pick calculator and win-rate analyzer.
   - `ItemGuide.tsx`: Popular item phases derived from current OpenDota responses.
-  - `GSIStatusBadge.tsx`: Connection health, hero vitality, and game clock.
-  - `SettingsModal.tsx`: GSI config guide, voice synthesizer tester, and Dota 2 Borderless Window guide.
+  - `GSIStatusBadge.tsx`: Connection health, hero vitality, game clock, Buyback / Safe-to-Spend indicators, and Neutral Item status badge.
+  - `SettingsModal.tsx`: GSI config guide, voice synthesizer tester (with neutral items and enemy ultimate audio tests), and Dota 2 Borderless Window guide.

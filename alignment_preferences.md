@@ -1,11 +1,13 @@
 # Design Alignment Summary
 
-Date: 2026-09-18T00:41:34.224347
+Date: 2026-09-18T07:42:13.630446
 
-Implemented the selected caching policy:
+Implemented all three choices:
 
-- Language changes remained skipped.
-- Successful OpenDota responses persist across restarts, with fetch times, stale-data labels, and Refresh buttons.
-- Cache from another supported app patch is excluded; failed requests without matching data show unavailable.
+- Empty slots now offer manual hero selection.
+- Incoming GSI preserves existing slots, timers, and corrections while filling empty slots without duplicates.
+- Manual slots have **Clear selection**, with confirmation before discarding timers or corrections.
 
-Updated dashboard/HUD integration and documentation. Production build, existing tests, and new cache tests passed.
+Cleared slots remain available for replacement; match resets clear the lineup. Updated documentation and regression tests.
+
+All 12 test suites and the production build pass. Native Windows interaction remains untested on-device.

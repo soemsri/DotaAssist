@@ -1,7 +1,9 @@
 import React from "react";
 import { GSIPayload } from "../types/gsi";
-import { Coins, Sun, Moon, Radio } from "lucide-react";
+import { Coins, Sun, Moon, Radio, Package } from "lucide-react";
 import { timingEngine } from "../services/timingEngine";
+import { buybackService } from "../services/buybackService";
+import { neutralItemService } from "../services/neutralItemService";
 
 interface Props {
   payload: GSIPayload | null;
@@ -85,6 +87,64 @@ export const GSIStatusBadge: React.FC<Props> = ({
             </div>
           </div>
         )}
+
+        {/* Buyback & Safe-to-Spend Status */}
+        {hero && (() => {
+          const buyback = buybackService.calculateBuyback(payload);
+          return (
+            <div
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono font-medium ${
+                buyback.cooldown > 0
+                  ? 'bg-amber-950/50 border-amber-500/50 text-amber-300'
+                  : buyback.hasBuyback
+                  ? 'bg-emerald-950/50 border-emerald-500/50 text-emerald-300'
+                  : 'bg-rose-950/50 border-rose-500/50 text-rose-300'
+              }`}
+              title={`Buyback Cost: ${buyback.cost}g | Cooldown: ${buyback.cooldown}s`}
+            >
+              <span>
+                {buyback.cooldown > 0
+                  ? `BB CD ${buyback.cooldown}s`
+                  : buyback.hasBuyback
+                  ? `BB Ready (+${buyback.surplusGold.toLocaleString()}g safe)`
+                  : `No BB (-${buyback.missingGold.toLocaleString()}g needed)`}
+              </span>
+            </div>
+          );
+        })()}
+
+        {/* Neutral Item Status */}
+        {hero && (() => {
+          const neutralStatus = neutralItemService.getNeutralItemStatus(payload, clockTime);
+          if (neutralStatus.unlockedTier === 0) return null;
+          return (
+            <div
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono font-medium ${
+                neutralStatus.isMissing
+                  ? 'bg-rose-950/50 border-rose-500/50 text-rose-300 animate-pulse'
+                  : neutralStatus.isOutdated
+                  ? 'bg-amber-950/50 border-amber-500/50 text-amber-300'
+                  : 'bg-slate-950/80 border-slate-800 text-slate-300'
+              }`}
+              title={`Neutral Item: ${
+                neutralStatus.isMissing
+                  ? `Slot Empty! Tier ${neutralStatus.unlockedTier} available`
+                  : neutralStatus.isOutdated
+                  ? `Tier ${neutralStatus.equippedTier} equipped (Tier ${neutralStatus.unlockedTier} unlocked)`
+                  : `Tier ${neutralStatus.equippedTier} equipped`
+              }`}
+            >
+              <Package className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>
+                {neutralStatus.isMissing
+                  ? `Neutral: Missing T${neutralStatus.unlockedTier}`
+                  : neutralStatus.isOutdated
+                  ? `Neutral: T${neutralStatus.equippedTier} (T${neutralStatus.unlockedTier} avail)`
+                  : `Neutral: T${neutralStatus.equippedTier}`}
+              </span>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

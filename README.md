@@ -17,6 +17,10 @@
    - **Power / Water Runes**: แจ้งเตือน Water Runes (2:00, 4:00) และ Power Runes แม่น้ำทุก 2 นาทีเริ่มตั้งแต่นาทีที่ 6:00 เตือนล่วงหน้า 20 วินาที
    - **Tormentor**: แจ้งเตือนเกิดครั้งแรกที่ 20:00 และนับเวลาเกิดใหม่ 10 นาทีหลังบันทึกว่า Tormentor ถูกกำจัด
    - **Roshan & Aegis Tracker**: ตรวจสถานะ Roshan จาก GSI เมื่อ game mode ส่งข้อมูลนี้มา พร้อมปุ่ม manual fallback; นับเวลา Aegis หมดอายุ (5 นาที) และช่วงหน้าต่างสุ่มเกิด 8–11 นาที
+   - **Neutral Items Tier Unlock & Missing/Outdated Detector**:
+     - แจ้งเตือนเวลาปลดล็อกแต่ละ Tier (Tier 1 ที่ 7:00, Tier 2 ที่ 17:00, Tier 3 ที่ 27:00, Tier 4 ที่ 37:00, Tier 5 ที่ 60:00) แสดงเป็นการ์ดนับถอยหลังล่วงหน้า 60 วินาที และส่งเสียงเตือน
+     - ตรวจจับช่อง Neutral Item ผ่าน GSI โดยมีระยะเวลาผ่อนผัน (Grace Period) 90 วินาทีหลังปลดล็อก เพื่อให้เวลาฟาร์ม Token
+     - ส่งเสียงแจ้งเตือนหากยังไม่ได้ใส่ไอเทม (Missing) หรือยังใช้ของ Tier เก่า (Outdated) โดยเว้นระยะเตือนซ้ำทุก 2 นาที (สูงสุดไม่เกิน 2 ครั้งต่อ Tier)
    - **Web Audio API Synthesizer**: สังเคราะห์เสียงเตือน Chime เฉพาะของแต่ละรูน
    - กฎเวลาในรุ่นนี้ตรวจเทียบกับ **Dota 2 7.41e**; เมื่อ Valve เปลี่ยนแพตช์หลักควรตรวจค่ากติกาและอัปเดต `DOTA_RULESET_VERSION`
 3. **Draft Advisor & Counter-Pick Matrix**:
@@ -110,3 +114,9 @@ Run one mode at a time: both listeners use port 3001. `DotaAssist.bat` launches 
 On Ubuntu/Debian, native development checks require `pkg-config`, `libgtk-3-dev`, `libwebkit2gtk-4.1-dev`, and `librsvg2-dev`. To build a native executable for a development smoke test without the Windows installer target, run `npm run tauri:build -- --no-bundle`.
 
 Before shipping, test the installer, Steam detection across libraries, hotkey conflicts and persistence, click-through over a borderless Dota 2 match, manual timer controls, setup backups, and connection loss on Windows. Measure FPS and memory on the target machine.
+
+### Manual enemy ultimate lineup
+
+Use **Select hero** under any empty enemy slot when draft data is unavailable. In the native overlay, enable mouse interaction first. Selected heroes are marked **Manual**. Incoming draft data fills other empty slots without moving existing heroes or changing their timers, corrections, or hotkeys.
+
+Use **Clear selection** to fix a manual pick. If it has an active timer or manual corrections, choose **Confirm clear** to discard them or **Cancel** to keep them. The cleared slot stays available for your replacement selection. Match/tracker reset clears the lineup; selections are not saved between matches.

@@ -162,5 +162,6 @@ export interface GSIPayload {
   draft?: GSIDraft;
   events?: GSIEvent[] | Record<string, GSIEvent>;
   roshan?: GSIRoshan;
+  buildings?: Record<string, { health?: number; max_health?: number }>;
   previously?: Partial<GSIPayload>;
 }

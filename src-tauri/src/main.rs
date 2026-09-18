@@ -178,6 +178,9 @@ fn main() {
             toggle_overlay_window,
             desktop::desktop_status,
             desktop::set_overlay_hotkey,
+            desktop::set_roshan_hotkey,
+            desktop::set_tormentor_hotkey,
+            desktop::set_auto_copy_clipboard,
             desktop::detect_dota_installations,
             desktop::install_gsi_config
         ])

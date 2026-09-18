@@ -250,6 +250,87 @@ class AudioNotificationService {
     }
   }
 
+  public playNeutralTierAlert(tier: number) {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.15, 'sine');
+      this.playTone(659.25, now + 0.12, 0.25, 'sine');
+    }
+    this.speak(`Neutral items tier ${tier} are now unlocked`, undefined, 'neutral_item');
+  }
+
+  public playCampStackAlert() {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(493.88, now, 0.12, 'sine');
+      this.playTone(587.33, now + 0.1, 0.2, 'sine');
+    }
+    this.speak('Stack camp in ten seconds', undefined, 'camp_stack');
+  }
+
+  public playEnemyUltimateReadyAlert(heroName: string, abilityName?: string) {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.15, 'triangle');
+      this.playTone(659.25, now + 0.12, 0.25, 'triangle');
+    }
+    const label = abilityName && abilityName !== 'Ultimate' ? `${heroName} ${abilityName}` : `${heroName} ultimate`;
+    this.speak(`${label} is estimated ready`, undefined, 'enemy_ultimate');
+  }
+
+  public playEnemyUltimateRecordedAlert(heroName: string) {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(700, now, 0.1, 'sine');
+    }
+    this.speak(`${heroName} ultimate recorded`, undefined, 'enemy_ultimate');
+  }
+
+  public playLaningMilestoneAlert(minute: number, lastHits: number, paceStatusOrWord: string, _netWorth?: number) {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.12, 'sine');
+      this.playTone(659.25, now + 0.1, 0.15, 'sine');
+      this.playTone(783.99, now + 0.2, 0.25, 'sine');
+    }
+    const paceText = paceStatusOrWord.includes('pace')
+      ? paceStatusOrWord
+      : paceStatusOrWord === 'ahead'
+      ? 'ahead of pace'
+      : paceStatusOrWord === 'behind'
+      ? 'behind pace'
+      : 'on pace';
+    const message = minute >= 10
+      ? `Ten minutes: ${lastHits} last hits, ${paceText}. Laning phase complete.`
+      : `${minute} minutes: ${lastHits} last hits, ${paceText}.`;
+    this.speak(message);
+  }
+
+  public playEnemyGlyphActivatedAlert() {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(392.00, now, 0.2, 'sawtooth');
+      this.playTone(523.25, now + 0.15, 0.3, 'sawtooth');
+    }
+    this.speak('Enemy Glyph activated', undefined, 'enemy_glyph');
+  }
+
+  public playEnemyGlyphReadyAlert() {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.15, 'sine');
+      this.playTone(659.25, now + 0.12, 0.25, 'sine');
+    }
+    this.speak('Enemy Glyph is ready', undefined, 'enemy_glyph');
+  }
+
   public playWarningBeep() {
     this.initContext();
     if (this.settings.sfxEnabled && this.ctx) {

@@ -8,15 +8,38 @@ use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 
 const DEFAULT_HOTKEY: &str = "Ctrl+Shift+F10";
+const DEFAULT_ROSHAN_HOTKEY: &str = "Alt+F9";
+const DEFAULT_TORMENTOR_HOTKEY: &str = "Alt+F8";
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Preferences {
     pub hotkey: String,
+    #[serde(default = "default_roshan_hotkey")]
+    pub roshan_hotkey: String,
+    #[serde(default = "default_tormentor_hotkey")]
+    pub tormentor_hotkey: String,
+    #[serde(default = "default_auto_copy")]
+    pub auto_copy_clipboard: bool,
     pub dota_path: Option<String>,
 }
+
+fn default_roshan_hotkey() -> String {
+    DEFAULT_ROSHAN_HOTKEY.into()
+}
+fn default_tormentor_hotkey() -> String {
+    DEFAULT_TORMENTOR_HOTKEY.into()
+}
+fn default_auto_copy() -> bool {
+    true
+}
+
 impl Default for Preferences {
     fn default() -> Self {
         Self {
             hotkey: DEFAULT_HOTKEY.into(),
+            roshan_hotkey: DEFAULT_ROSHAN_HOTKEY.into(),
+            tormentor_hotkey: DEFAULT_TORMENTOR_HOTKEY.into(),
+            auto_copy_clipboard: true,
             dota_path: None,
         }
     }
@@ -32,9 +55,12 @@ pub struct Runtime {
     pub hotkey_ready: bool,
     pub error: Option<String>,
 }
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct DesktopStatus {
     pub hotkey: String,
+    pub roshan_hotkey: String,
+    pub tormentor_hotkey: String,
+    pub auto_copy_clipboard: bool,
     pub dota_path: Option<String>,
     pub interactive: bool,
     pub hotkey_ready: bool,
@@ -46,6 +72,9 @@ pub fn desktop_status(app: AppHandle) -> DesktopStatus {
     let s = state.0.lock().unwrap();
     DesktopStatus {
         hotkey: s.preferences.hotkey.clone(),
+        roshan_hotkey: s.preferences.roshan_hotkey.clone(),
+        tormentor_hotkey: s.preferences.tormentor_hotkey.clone(),
+        auto_copy_clipboard: s.preferences.auto_copy_clipboard,
         dota_path: s.preferences.dota_path.clone(),
         interactive: s.interactive,
         hotkey_ready: s.hotkey_ready,
@@ -64,7 +93,7 @@ fn save(app: &AppHandle, prefs: &Preferences) -> Result<(), String> {
     )
     .map_err(|e| e.to_string())
 }
-fn register(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
+fn register_interaction_shortcut(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
     app.global_shortcut()
         .on_shortcut(shortcut, |app, _, event| {
             if event.state != ShortcutState::Pressed {
@@ -92,6 +121,31 @@ fn register(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
         })
         .map_err(|e| e.to_string())
 }
+
+fn register_roshan_shortcut(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
+    app.global_shortcut()
+        .on_shortcut(shortcut, |app, _, event| {
+            if event.state != ShortcutState::Pressed {
+                return;
+            }
+            let _ = app.emit("hotkey-roshan", ());
+            let _ = app.emit("hotkey-trigger", "roshan");
+        })
+        .map_err(|e| e.to_string())
+}
+
+fn register_tormentor_shortcut(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
+    app.global_shortcut()
+        .on_shortcut(shortcut, |app, _, event| {
+            if event.state != ShortcutState::Pressed {
+                return;
+            }
+            let _ = app.emit("hotkey-tormentor", ());
+            let _ = app.emit("hotkey-trigger", "tormentor");
+        })
+        .map_err(|e| e.to_string())
+}
+
 pub fn initialize(app: &AppHandle) {
     let prefs = app
         .path()
@@ -100,17 +154,47 @@ pub fn initialize(app: &AppHandle) {
         .and_then(|p| fs::read(p.join("desktop.json")).ok())
         .and_then(|v| serde_json::from_slice::<Preferences>(&v).ok())
         .unwrap_or_default();
-    let result = prefs
+
+    let mut errors = Vec::new();
+
+    let res1 = prefs
         .hotkey
         .parse::<Shortcut>()
         .map_err(|e| e.to_string())
-        .and_then(|s| register(app, s));
+        .and_then(|s| register_interaction_shortcut(app, s));
+    if let Err(e) = res1 {
+        errors.push(format!("Interaction hotkey error: {e}"));
+    }
+
+    let res2 = prefs
+        .roshan_hotkey
+        .parse::<Shortcut>()
+        .map_err(|e| e.to_string())
+        .and_then(|s| register_roshan_shortcut(app, s));
+    if let Err(e) = res2 {
+        errors.push(format!("Roshan hotkey error: {e}"));
+    }
+
+    let res3 = prefs
+        .tormentor_hotkey
+        .parse::<Shortcut>()
+        .map_err(|e| e.to_string())
+        .and_then(|s| register_tormentor_shortcut(app, s));
+    if let Err(e) = res3 {
+        errors.push(format!("Tormentor hotkey error: {e}"));
+    }
+
     let state = app.state::<DesktopState>();
     let mut s = state.0.lock().unwrap();
     s.preferences = prefs;
-    s.hotkey_ready = result.is_ok();
-    s.error = result.err();
+    s.hotkey_ready = errors.is_empty();
+    s.error = if errors.is_empty() {
+        None
+    } else {
+        Some(errors.join(". "))
+    };
 }
+
 #[tauri::command]
 pub fn set_overlay_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatus, String> {
     let shortcut = hotkey.parse::<Shortcut>().map_err(|e| e.to_string())?;
@@ -119,12 +203,19 @@ pub fn set_overlay_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatu
     }
     let state = app.state::<DesktopState>();
     let mut s = state.0.lock().unwrap();
+
+    if hotkey.eq_ignore_ascii_case(&s.preferences.roshan_hotkey)
+        || hotkey.eq_ignore_ascii_case(&s.preferences.tormentor_hotkey)
+    {
+        return Err("Overlay hotkey conflicts with Roshan or Tormentor hotkey.".into());
+    }
+
     let old = s.preferences.hotkey.parse::<Shortcut>().ok();
     if old == Some(shortcut) && s.hotkey_ready {
         drop(s);
         return Ok(desktop_status(app));
     }
-    register(&app, shortcut)?;
+    register_interaction_shortcut(&app, shortcut)?;
     let mut prefs = s.preferences.clone();
     prefs.hotkey = hotkey;
     if let Err(e) = save(&app, &prefs) {
@@ -139,6 +230,86 @@ pub fn set_overlay_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatu
     s.preferences = prefs;
     s.hotkey_ready = true;
     s.error = None;
+    drop(s);
+    let status = desktop_status(app.clone());
+    let _ = app.emit("desktop-status", &status);
+    Ok(status)
+}
+
+#[tauri::command]
+pub fn set_roshan_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatus, String> {
+    let shortcut = hotkey.parse::<Shortcut>().map_err(|e| e.to_string())?;
+    if shortcut.mods.is_empty() {
+        return Err("Use a modifier such as Ctrl or Alt with the key.".into());
+    }
+    let state = app.state::<DesktopState>();
+    let mut s = state.0.lock().unwrap();
+
+    if hotkey.eq_ignore_ascii_case(&s.preferences.hotkey)
+        || hotkey.eq_ignore_ascii_case(&s.preferences.tormentor_hotkey)
+    {
+        return Err("Roshan hotkey conflicts with Overlay or Tormentor hotkey.".into());
+    }
+
+    let old = s.preferences.roshan_hotkey.parse::<Shortcut>().ok();
+    register_roshan_shortcut(&app, shortcut)?;
+    let mut prefs = s.preferences.clone();
+    prefs.roshan_hotkey = hotkey;
+    if let Err(e) = save(&app, &prefs) {
+        let _ = app.global_shortcut().unregister(shortcut);
+        return Err(e);
+    }
+    if let Some(old) = old {
+        let _ = app.global_shortcut().unregister(old);
+    }
+    s.preferences = prefs;
+    drop(s);
+    let status = desktop_status(app.clone());
+    let _ = app.emit("desktop-status", &status);
+    Ok(status)
+}
+
+#[tauri::command]
+pub fn set_tormentor_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatus, String> {
+    let shortcut = hotkey.parse::<Shortcut>().map_err(|e| e.to_string())?;
+    if shortcut.mods.is_empty() {
+        return Err("Use a modifier such as Ctrl or Alt with the key.".into());
+    }
+    let state = app.state::<DesktopState>();
+    let mut s = state.0.lock().unwrap();
+
+    if hotkey.eq_ignore_ascii_case(&s.preferences.hotkey)
+        || hotkey.eq_ignore_ascii_case(&s.preferences.roshan_hotkey)
+    {
+        return Err("Tormentor hotkey conflicts with Overlay or Roshan hotkey.".into());
+    }
+
+    let old = s.preferences.tormentor_hotkey.parse::<Shortcut>().ok();
+    register_tormentor_shortcut(&app, shortcut)?;
+    let mut prefs = s.preferences.clone();
+    prefs.tormentor_hotkey = hotkey;
+    if let Err(e) = save(&app, &prefs) {
+        let _ = app.global_shortcut().unregister(shortcut);
+        return Err(e);
+    }
+    if let Some(old) = old {
+        let _ = app.global_shortcut().unregister(old);
+    }
+    s.preferences = prefs;
+    drop(s);
+    let status = desktop_status(app.clone());
+    let _ = app.emit("desktop-status", &status);
+    Ok(status)
+}
+
+#[tauri::command]
+pub fn set_auto_copy_clipboard(app: AppHandle, enabled: bool) -> Result<DesktopStatus, String> {
+    let state = app.state::<DesktopState>();
+    let mut s = state.0.lock().unwrap();
+    let mut prefs = s.preferences.clone();
+    prefs.auto_copy_clipboard = enabled;
+    save(&app, &prefs)?;
+    s.preferences = prefs;
     drop(s);
     let status = desktop_status(app.clone());
     let _ = app.emit("desktop-status", &status);

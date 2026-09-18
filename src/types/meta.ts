@@ -30,7 +30,7 @@ export interface TimingEventAlert {
   subtitle: string;
   targetSeconds: number; // Game clock for the objective occurrence.
   secondsRemaining: number;
-  type: 'rune_bounty' | 'rune_power' | 'rune_wisdom' | 'roshan' | 'tormentor' | 'lotus' | 'day_night';
+  type: 'rune_bounty' | 'rune_power' | 'rune_wisdom' | 'roshan' | 'tormentor' | 'lotus' | 'day_night' | 'neutral_item' | 'camp_stack' | 'enemy_ultimate' | 'enemy_glyph';
   urgent: boolean;
   audioPlayed?: boolean;
 }

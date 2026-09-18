@@ -1,19 +1,19 @@
 {
   "project": "DotaAssist",
-  "timestamp": "2026-09-18T00:41:34.223829",
-  "summary": "Implemented the selected caching policy:\n\n- Language changes remained skipped.\n- Successful OpenDota responses persist across restarts, with fetch times, stale-data labels, and Refresh buttons.\n- Cache from another supported app patch is excluded; failed requests without matching data show unavailable.\n\nUpdated dashboard/HUD integration and documentation. Production build, existing tests, and new cache tests passed.",
+  "timestamp": "2026-09-18T07:42:13.630018",
+  "summary": "Implemented all three choices:\n\n- Empty slots now offer manual hero selection.\n- Incoming GSI preserves existing slots, timers, and corrections while filling empty slots without duplicates.\n- Manual slots have **Clear selection**, with confirmation before discarding timers or corrections.\n\nCleared slots remain available for replacement; match resets clear the lineup. Updated documentation and regression tests.\n\nAll 12 test suites and the production build pass. Native Windows interaction remains untested on-device.",
   "answers": [
     {
       "step": 1,
-      "answer": "Skip"
+      "answer": "(Recommended) Allow manual hero selection for each empty slot, keeping ultimate tracking usable without draft data."
     },
     {
       "step": 2,
-      "answer": "(Recommended) Cache successful responses — show saved data with its fetch time and a stale-data label when refresh fails; provide a manual refresh button."
+      "answer": "(Recommended) Keep manually selected heroes in their slots, preserve their timers and corrections, and fill empty slots with newly detected heroes without duplicates."
     },
     {
       "step": 3,
-      "answer": "(Recommended) Exclude previous-patch cache — fetch fresh data and show unavailable if the request fails; label all cached data with its fetch time."
+      "answer": "(Recommended) Add a Clear selection action for manual slots, confirming before discarding an active timer or cooldown corrections; then allow selecting another hero."
     }
   ]
 }

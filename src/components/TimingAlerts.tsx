@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import { TimingEventAlert } from '../types/meta';
+import { Bell, ShieldAlert, Sparkles, Flame, Droplets, Volume2, VolumeX, ClipboardCheck, Package, Layers, Swords } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 import { audioService } from '../services/audioService';
-import { Bell, Flame, ShieldAlert, Sparkles, Droplets, Volume2, VolumeX } from 'lucide-react';
+import { objectiveTracker } from '../services/objectiveTracker';
 
 interface Props {
   alerts: TimingEventAlert[];
@@ -10,7 +11,9 @@ interface Props {
 }
 
 export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
-  const [soundEnabled, setSoundEnabled] = React.useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const undoState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
+
   const roshanState = timingEngine.getRoshanState();
   const tormentorState = timingEngine.getTormentorState();
 
@@ -22,19 +25,27 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
   };
 
   const handleRecordRoshan = () => {
-    timingEngine.recordRoshanDeath(clockTime);
+    objectiveTracker.recordRoshan(clockTime);
   };
 
   const handleResetRoshan = () => {
-    timingEngine.resetRoshan();
+    if (undoState.roshanActive) {
+      objectiveTracker.undoRoshan();
+    } else {
+      timingEngine.resetRoshan();
+    }
   };
 
   const handleRecordTormentor = () => {
-    timingEngine.recordTormentorDeath(clockTime);
+    objectiveTracker.recordTormentor(clockTime);
   };
 
   const handleResetTormentor = () => {
-    timingEngine.resetTormentor();
+    if (undoState.tormentorActive) {
+      objectiveTracker.undoTormentor();
+    } else {
+      timingEngine.resetTormentor();
+    }
   };
 
   const getAlertIcon = (type: TimingEventAlert['type']) => {
@@ -51,6 +62,12 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
         return <Flame className="w-4 h-4 text-blue-400" />;
       case 'lotus':
         return <Droplets className="w-4 h-4 text-emerald-400" />;
+      case 'neutral_item':
+        return <Package className="w-4 h-4 text-amber-300" />;
+      case 'camp_stack':
+        return <Layers className="w-4 h-4 text-emerald-400" />;
+      case 'enemy_ultimate':
+        return <Swords className="w-4 h-4 text-rose-400" />;
       default:
         return <Bell className="w-4 h-4 text-slate-400" />;
     }
@@ -68,38 +85,46 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            {/* Manual fallbacks for game modes that omit objective GSI fields. */}
+            {/* Manual controls with hotkeys, 10s voice quick-undo, and auto-copy. */}
             {!roshanState.isDead ? (
               <button
                 onClick={handleRecordRoshan}
-                className="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800 text-rose-200 border border-rose-700 transition"
-                title="Manual fallback: start 5m Aegis and 8-11m Roshan timers"
+                className="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800 text-rose-200 border border-rose-700 transition font-semibold"
+                title={`Record Roshan Slain (${undoState.roshanHotkey})`}
               >
-                Roshan Killed
+                Roshan Killed ({undoState.roshanHotkey})
               </button>
             ) : (
               <button
                 onClick={handleResetRoshan}
-                className="text-xs px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+                className={`text-xs px-2 py-1 rounded border transition font-medium ${
+                  undoState.roshanActive
+                    ? 'bg-amber-950/60 hover:bg-amber-900 border-amber-500 text-amber-200 animate-pulse'
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                }`}
               >
-                Reset Roshan
+                {undoState.roshanActive ? `Undo Roshan (${undoState.roshanRemainingSec}s)` : 'Reset Roshan'}
               </button>
             )}
 
             {!tormentorState.isDead ? (
               <button
                 onClick={handleRecordTormentor}
-                className="text-xs px-2.5 py-1 rounded bg-blue-900/50 hover:bg-blue-800 text-blue-200 border border-blue-700 transition"
-                title="Start the 10-minute Tormentor respawn timer"
+                className="text-xs px-2.5 py-1 rounded bg-blue-900/50 hover:bg-blue-800 text-blue-200 border border-blue-700 transition font-semibold"
+                title={`Record Tormentor Slain (${undoState.tormentorHotkey})`}
               >
-                Tormentor Killed
+                Tormentor Killed ({undoState.tormentorHotkey})
               </button>
             ) : (
               <button
                 onClick={handleResetTormentor}
-                className="text-xs px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+                className={`text-xs px-2 py-1 rounded border transition font-medium ${
+                  undoState.tormentorActive
+                    ? 'bg-amber-950/60 hover:bg-amber-900 border-amber-500 text-amber-200 animate-pulse'
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                }`}
               >
-                Reset Tormentor
+                {undoState.tormentorActive ? `Undo Torm (${undoState.tormentorRemainingSec}s)` : 'Reset Tormentor'}
               </button>
             )}
           </div>
@@ -118,6 +143,21 @@ export const TimingAlerts: React.FC<Props> = ({ alerts, clockTime }) => {
           </button>
         </div>
       </div>
+
+      {undoState.lastClipboardNotice && (
+        <div className="mb-3 px-3 py-1.5 bg-emerald-950/60 border border-emerald-500/50 rounded-lg flex items-center justify-between text-xs text-emerald-200 animate-fadeIn">
+          <div className="flex items-center gap-2 truncate">
+            <ClipboardCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="truncate">Copied to clipboard: <strong>{undoState.lastClipboardNotice}</strong></span>
+          </div>
+          <button
+            onClick={() => objectiveTracker.clearClipboardNotice()}
+            className="text-slate-400 hover:text-slate-200 ml-2 text-sm"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
       {/* Alert Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">

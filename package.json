@@ -12,7 +12,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "build": "tsc && vite build",
-    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache",
+    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph",
     "test:verification": "tsx tests/verification.test.ts",
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
@@ -22,7 +22,14 @@
     "build:windows": "tauri build --bundles nsis",
     "test:profiles": "tsx tests/alert_profiles.test.ts",
     "test:voice": "tsx tests/voice_queue.test.ts",
-    "test:cache": "tsx tests/opendota_cache.test.ts"
+    "test:cache": "tsx tests/opendota_cache.test.ts",
+    "test:hotkeys": "tsx tests/objective_hotkeys.test.ts",
+    "test:buyback": "tsx tests/buyback_tracker.test.ts",
+    "test:neutral": "tsx tests/neutral_items.test.ts",
+    "test:stack": "tsx tests/camp_stacking.test.ts",
+    "test:enemy_ult": "tsx tests/enemy_ultimates.test.ts",
+    "test:laning": "tsx tests/laning_benchmark.test.ts",
+    "test:glyph": "tsx tests/enemy_glyph.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

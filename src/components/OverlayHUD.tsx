@@ -1,14 +1,24 @@
 import { OpenDotaStatus } from './OpenDotaStatus';
 import { apiService } from '../services/apiService';
 import { AlertProfileControls } from './AlertProfileControls';
-import React, { useState } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import { TimingEventAlert, PopularItem } from '../types/meta';
 import { GSIPayload } from '../types/gsi';
-import { Bell, Minimize2, Maximize2, Package, X, Settings, Volume2, VolumeX, ShieldAlert, Sparkles, Flame, Droplets } from 'lucide-react';
+import { Bell, Minimize2, Maximize2, Package, X, Settings, Volume2, VolumeX, ShieldAlert, Shield, Sparkles, Flame, Droplets, ClipboardCheck, Coins, Layers, Swords } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 import { audioService } from '../services/audioService';
+import { objectiveTracker } from '../services/objectiveTracker';
+import { buybackService } from '../services/buybackService';
+import { neutralItemService } from '../services/neutralItemService';
+import { enemyUltimateService } from '../services/enemyUltimateService';
+import { EnemyUltimateBar } from './EnemyUltimateBar';
+import { laningBenchmarkService } from '../services/laningBenchmarkService';
+import { LaningPaceIndicator } from './LaningPaceIndicator';
+import { enemyGlyphService } from '../services/enemyGlyphService';
+import { EnemyGlyphIndicator } from './EnemyGlyphIndicator';
 
 interface Props {
+  interactive?: boolean;
   payload: GSIPayload | null;
   isConnected: boolean;
   alerts: TimingEventAlert[];
@@ -19,6 +29,7 @@ interface Props {
 }
 
 export const OverlayHUD: React.FC<Props> = ({
+  interactive = true,
   payload,
   isConnected,
   alerts,
@@ -30,13 +41,20 @@ export const OverlayHUD: React.FC<Props> = ({
   const [collapsed, setCollapsed] = useState(false);
   const [opacity, setOpacity] = useState(90);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const undoState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
 
   const clockTime = payload?.map?.clock_time ?? 0;
   const formattedTime = isConnected ? timingEngine.formatTime(clockTime) : '--:--';
   const mostUrgentAlert = alerts[0];
+  const stackAlert = alerts.find((a) => a.type === 'camp_stack');
   const popularItem = items.find((item) => item.tier === 'core') ?? items[0];
   const roshanState = timingEngine.getRoshanState();
   const tormentorState = timingEngine.getTormentorState();
+  const buyback = buybackService.calculateBuyback(payload);
+  const neutralStatus = neutralItemService.getNeutralItemStatus(payload, clockTime);
+  const ultSnapshot = useSyncExternalStore(enemyUltimateService.subscribe, enemyUltimateService.getSnapshot);
+  const laningSnapshot = useSyncExternalStore(laningBenchmarkService.subscribe, laningBenchmarkService.getSnapshot);
+  const glyphSnapshot = useSyncExternalStore(enemyGlyphService.subscribe, enemyGlyphService.getSnapshot);
 
   const handleToggleSound = () => {
     const next = !soundEnabled;
@@ -46,11 +64,11 @@ export const OverlayHUD: React.FC<Props> = ({
   };
 
   const handleRecordRoshan = () => {
-    timingEngine.recordRoshanDeath(clockTime);
+    objectiveTracker.recordRoshan(clockTime);
   };
 
   const handleRecordTormentor = () => {
-    timingEngine.recordTormentorDeath(clockTime);
+    objectiveTracker.recordTormentor(clockTime);
   };
 
   const getAlertIcon = (type: TimingEventAlert['type']) => {
@@ -67,6 +85,14 @@ export const OverlayHUD: React.FC<Props> = ({
         return <Flame className="w-3.5 h-3.5 text-blue-400" />;
       case 'lotus':
         return <Droplets className="w-3.5 h-3.5 text-emerald-400" />;
+      case 'neutral_item':
+        return <Package className="w-3.5 h-3.5 text-amber-300" />;
+      case 'camp_stack':
+        return <Layers className="w-3.5 h-3.5 text-emerald-400" />;
+      case 'enemy_ultimate':
+        return <Swords className="w-3.5 h-3.5 text-rose-400" />;
+      case 'enemy_glyph':
+        return <Shield className="w-3.5 h-3.5 text-sky-400" />;
       default:
         return <Bell className="w-3.5 h-3.5 text-slate-400" />;
     }
@@ -92,6 +118,106 @@ export const OverlayHUD: React.FC<Props> = ({
               }`}
             />
             <span className="font-mono font-black text-amber-400">{formattedTime}</span>
+            {isConnected && payload?.hero && (
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  buyback.cooldown > 0
+                    ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
+                    : buyback.hasBuyback
+                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                    : 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
+                }`}
+                title={`Buyback: ${buyback.hasBuyback ? 'Ready' : buyback.cooldown > 0 ? 'Cooldown' : 'Not ready'}`}
+              >
+                {buyback.cooldown > 0
+                  ? `CD ${buyback.cooldown}s`
+                  : buyback.hasBuyback
+                  ? `+${buyback.surplusGold}g`
+                  : `-${buyback.missingGold}g`}
+              </span>
+            )}
+            {isConnected && neutralStatus.unlockedTier > 0 && (
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  neutralStatus.isMissing
+                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 animate-pulse'
+                    : neutralStatus.isOutdated
+                    ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
+                    : 'bg-slate-800 text-slate-300 border border-slate-700'
+                }`}
+                title={`Neutral Item: ${
+                  neutralStatus.isMissing
+                    ? `Slot Empty! Tier ${neutralStatus.unlockedTier} Available`
+                    : neutralStatus.isOutdated
+                    ? `Tier ${neutralStatus.equippedTier} equipped (Tier ${neutralStatus.unlockedTier} available)`
+                    : `Tier ${neutralStatus.equippedTier} (${neutralStatus.equippedItemName?.replace(/^item_/, '') || 'Equipped'})`
+                }`}
+              >
+                {neutralStatus.isMissing
+                  ? `No T${neutralStatus.unlockedTier}`
+                  : neutralStatus.isOutdated
+                  ? `T${neutralStatus.equippedTier}→T${neutralStatus.unlockedTier}`
+                  : `T${neutralStatus.equippedTier}`}
+              </span>
+            )}
+            {isConnected && stackAlert && (
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  stackAlert.urgent
+                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 animate-pulse'
+                    : 'bg-slate-800 text-slate-300 border border-slate-700'
+                }`}
+                title={`Camp Stacking: ${stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s to pull (:53)` : 'Pull NOW (until :55)'}`}
+              >
+                Stack {stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s` : 'NOW'}
+              </span>
+            )}
+            {isConnected && ultSnapshot.activeCooldownCount > 0 && (
+              <span
+                className="text-[10px] font-mono px-1.5 py-0.5 rounded font-bold bg-rose-950/80 text-rose-300 border border-rose-500/40"
+                title={`${ultSnapshot.activeCooldownCount} enemy ultimates estimated on cooldown`}
+              >
+                {ultSnapshot.activeCooldownCount} Est. Ult CD
+              </span>
+            )}
+            {isConnected && laningSnapshot.isActive && laningSnapshot.clockTime <= 600 && (
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  laningSnapshot.paceStatus === 'ahead'
+                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                    : laningSnapshot.paceStatus === 'behind'
+                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
+                    : 'bg-slate-800 text-slate-300 border border-slate-700'
+                }`}
+                title={`${laningSnapshot.role.toUpperCase()} CS: ${laningSnapshot.currentLastHits}/${laningSnapshot.expectedCS} (${laningSnapshot.csDiff >= 0 ? `+${laningSnapshot.csDiff}` : laningSnapshot.csDiff})`}
+              >
+                CS {laningSnapshot.currentLastHits}/{laningSnapshot.expectedCS}
+              </span>
+            )}
+            {isConnected && (
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  glyphSnapshot.isActive
+                    ? 'bg-sky-950/80 text-sky-200 border border-sky-400 animate-pulse'
+                    : !glyphSnapshot.isReady
+                    ? 'bg-slate-800 text-slate-300 border border-slate-700'
+                    : 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                }`}
+                title={`Enemy Glyph: ${
+                  glyphSnapshot.isActive
+                    ? `INVULNERABLE (${glyphSnapshot.activeRemainingSeconds}s)`
+                    : !glyphSnapshot.isReady
+                    ? `Cooldown (${timingEngine.formatTime(glyphSnapshot.cooldownRemainingSeconds)})`
+                    : 'Ready'
+                }`}
+              >
+                {glyphSnapshot.isActive
+                  ? `Glyph ${glyphSnapshot.activeRemainingSeconds}s ⚡`
+                  : !glyphSnapshot.isReady
+                  ? `Glyph ${timingEngine.formatTime(glyphSnapshot.cooldownRemainingSeconds)}`
+                  : 'Glyph Ready'}
+              </span>
+            )}
           </div>
           {mostUrgentAlert && (
             <span className="text-slate-200 text-[11px] truncate max-w-[160px]">
@@ -139,7 +265,7 @@ export const OverlayHUD: React.FC<Props> = ({
               <button
                 onClick={() => setCollapsed(true)}
                 className="p-1 text-slate-400 hover:text-slate-200 rounded"
-                title="Collapse to pill"
+                title="Minimize HUD"
               >
                 <Minimize2 className="w-3.5 h-3.5" />
               </button>
@@ -153,25 +279,128 @@ export const OverlayHUD: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Quick objective death buttons. GSI can update Roshan automatically;
-              these controls remain useful when optional fields are unavailable. */}
+          {/* Buyback & Safe-to-Spend Status Banner */}
+          {isConnected && payload?.hero && (
+            <div
+              className={`px-2.5 py-1.5 rounded-xl border flex items-center justify-between text-[11px] ${
+                buyback.cooldown > 0
+                  ? 'bg-amber-950/40 border-amber-500/50 text-amber-200'
+                  : buyback.hasBuyback
+                  ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-200'
+                  : 'bg-rose-950/40 border-rose-500/50 text-rose-200'
+              }`}
+            >
+              <div className="flex items-center gap-1.5 font-semibold">
+                <Coins
+                  className={`w-3.5 h-3.5 shrink-0 ${
+                    buyback.cooldown > 0
+                      ? 'text-amber-400'
+                      : buyback.hasBuyback
+                      ? 'text-emerald-400'
+                      : 'text-rose-400'
+                  }`}
+                />
+                <span className="truncate">
+                  {buyback.cooldown > 0
+                    ? `Buyback Cooldown (${buyback.cooldown}s)`
+                    : buyback.hasBuyback
+                    ? 'Buyback Ready'
+                    : 'No Buyback'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 font-mono font-bold text-[10px] shrink-0">
+                {buyback.cooldown > 0 ? (
+                  <span className="text-amber-300">Cost: {buyback.cost}g</span>
+                ) : buyback.hasBuyback ? (
+                  <span className="text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                    +{buyback.surplusGold.toLocaleString()}g safe
+                  </span>
+                ) : (
+                  <span className="text-rose-300 bg-rose-950/80 px-1.5 py-0.5 rounded border border-rose-500/30">
+                    -{buyback.missingGold.toLocaleString()}g needed
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Neutral Item Status Banner */}
+          {isConnected && neutralStatus.unlockedTier > 0 && (
+            <div
+              className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-xs ${
+                neutralStatus.isMissing
+                  ? 'bg-rose-950/50 border-rose-500/80 text-rose-200 animate-pulse'
+                  : neutralStatus.isOutdated
+                  ? 'bg-amber-950/50 border-amber-500/80 text-amber-200'
+                  : 'bg-slate-900/80 border-slate-800 text-slate-300'
+              }`}
+            >
+              <div className="flex items-center gap-1.5 truncate">
+                <Package className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span className="font-semibold truncate">
+                  {neutralStatus.isMissing
+                    ? `Neutral Slot Empty (Tier ${neutralStatus.unlockedTier} Unlocked)`
+                    : neutralStatus.isOutdated
+                    ? `Upgrade Neutral (Tier ${neutralStatus.equippedTier} → Tier ${neutralStatus.unlockedTier})`
+                    : `Neutral: ${neutralStatus.equippedItemName?.replace(/^item_/, '').replace(/_/g, ' ') || `Tier ${neutralStatus.equippedTier}`}`}
+                </span>
+              </div>
+              <span
+                className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${
+                  neutralStatus.isMissing
+                    ? 'bg-rose-900/80 text-rose-100'
+                    : neutralStatus.isOutdated
+                    ? 'bg-amber-900/80 text-amber-100'
+                    : 'bg-slate-800 text-slate-300'
+                }`}
+              >
+                {neutralStatus.isMissing
+                  ? 'EMPTY'
+                  : neutralStatus.isOutdated
+                  ? `T${neutralStatus.equippedTier} (OLD)`
+                  : `TIER ${neutralStatus.equippedTier}`}
+              </span>
+            </div>
+          )}
+
+          {/* Laning Stage CS & Net Worth Benchmark Pace Indicator */}
+          <LaningPaceIndicator />
+
+          {/* Enemy Glyph of Fortification Dedicated Status Pill */}
+          <EnemyGlyphIndicator />
+
+          {/* Enemy Ultimate Cooldown Tracker (Alt+1 to Alt+5) */}
+          <EnemyUltimateBar interactive={interactive} />
+
+          {/* Quick objective death buttons. Supports dedicated global hotkeys, 10s voice quick-undo, and auto-copy. */}
           <div className="grid grid-cols-2 gap-1.5 px-1">
             {!roshanState.isDead ? (
               <button
                 onClick={handleRecordRoshan}
-                className="w-full py-1 px-2.5 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-700/80 text-rose-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition active:scale-95"
+                className="w-full py-1.5 px-2 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-700/80 text-rose-200 text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95"
+                title={`Record Roshan Slain (${undoState.roshanHotkey})`}
               >
-                <ShieldAlert className="w-3 h-3 text-rose-400" />
-                <span>Mark Roshan Slain (5m Aegis)</span>
+                <ShieldAlert className="w-3 h-3 text-rose-400 shrink-0" />
+                <span className="truncate">Roshan ({undoState.roshanHotkey})</span>
               </button>
             ) : (
-              <div className="w-full flex items-center justify-between bg-rose-950/40 border border-rose-800/80 rounded-lg px-2 py-1 text-[11px]">
-                <span className="text-rose-300 font-semibold">Roshan Dead</span>
+              <div
+                className={`w-full flex items-center justify-between border rounded-lg px-2 py-1 text-[10px] ${
+                  undoState.roshanActive
+                    ? 'bg-amber-950/40 border-amber-500/80 text-amber-200'
+                    : 'bg-rose-950/40 border-rose-800/80 text-rose-300'
+                }`}
+              >
+                <span className="font-semibold truncate">
+                  {undoState.roshanActive ? `Roshan (Undo ${undoState.roshanRemainingSec}s)` : 'Roshan Dead'}
+                </span>
                 <button
-                  onClick={() => timingEngine.resetRoshan()}
-                  className="text-[10px] text-slate-400 hover:text-slate-200 underline"
+                  onClick={undoState.roshanActive ? () => objectiveTracker.undoRoshan() : () => timingEngine.resetRoshan()}
+                  className={`text-[10px] font-bold ml-1 underline ${
+                    undoState.roshanActive ? 'text-amber-400 hover:text-amber-300' : 'text-slate-400 hover:text-slate-200'
+                  }`}
                 >
-                  Reset
+                  {undoState.roshanActive ? 'Undo' : 'Reset'}
                 </button>
               </div>
             )}
@@ -179,23 +408,49 @@ export const OverlayHUD: React.FC<Props> = ({
             {!tormentorState.isDead ? (
               <button
                 onClick={handleRecordTormentor}
-                className="py-1 px-2 rounded-lg bg-blue-950/70 hover:bg-blue-900 border border-blue-700/80 text-blue-200 text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95"
+                className="w-full py-1.5 px-2 rounded-lg bg-blue-950/70 hover:bg-blue-900 border border-blue-700/80 text-blue-200 text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95"
+                title={`Record Tormentor Slain (${undoState.tormentorHotkey})`}
               >
-                <Flame className="w-3 h-3 text-blue-400" />
-                <span>Tormentor Slain</span>
+                <Flame className="w-3 h-3 text-blue-400 shrink-0" />
+                <span className="truncate">Tormentor ({undoState.tormentorHotkey})</span>
               </button>
             ) : (
-              <div className="flex items-center justify-between bg-blue-950/40 border border-blue-800/80 rounded-lg px-2 py-1 text-[10px]">
-                <span className="text-blue-300 font-semibold">Tormentor Dead</span>
+              <div
+                className={`w-full flex items-center justify-between border rounded-lg px-2 py-1 text-[10px] ${
+                  undoState.tormentorActive
+                    ? 'bg-amber-950/40 border-amber-500/80 text-amber-200'
+                    : 'bg-blue-950/40 border-blue-800/80 text-blue-300'
+                }`}
+              >
+                <span className="font-semibold truncate">
+                  {undoState.tormentorActive ? `Torm (Undo ${undoState.tormentorRemainingSec}s)` : 'Tormentor Dead'}
+                </span>
                 <button
-                  onClick={() => timingEngine.resetTormentor()}
-                  className="text-[10px] text-slate-400 hover:text-slate-200 underline"
+                  onClick={undoState.tormentorActive ? () => objectiveTracker.undoTormentor() : () => timingEngine.resetTormentor()}
+                  className={`text-[10px] font-bold ml-1 underline ${
+                    undoState.tormentorActive ? 'text-amber-400 hover:text-amber-300' : 'text-slate-400 hover:text-slate-200'
+                  }`}
                 >
-                  Reset
+                  {undoState.tormentorActive ? 'Undo' : 'Reset'}
                 </button>
               </div>
             )}
           </div>
+
+          {undoState.lastClipboardNotice && (
+            <div className="mx-1 px-2 py-1 bg-emerald-950/60 border border-emerald-500/50 rounded-lg flex items-center justify-between text-[10px] text-emerald-200 animate-fadeIn">
+              <div className="flex items-center gap-1.5 truncate">
+                <ClipboardCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+                <span className="truncate">Copied: {undoState.lastClipboardNotice}</span>
+              </div>
+              <button
+                onClick={() => objectiveTracker.clearClipboardNotice()}
+                className="text-slate-400 hover:text-slate-200 ml-1 text-xs"
+              >
+                &times;
+              </button>
+            </div>
+          )}
 
           {/* Timers list */}
           <div className="space-y-1.5">

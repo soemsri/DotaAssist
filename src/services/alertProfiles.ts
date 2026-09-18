@@ -7,6 +7,8 @@ export type Objective = TimingEventAlert['type'];
 export const OBJECTIVES: Record<Objective, string> = {
   rune_bounty: 'Bounty runes', rune_power: 'Power / water runes', rune_wisdom: 'Wisdom shrines',
   roshan: 'Roshan / Aegis', tormentor: 'Tormentor', lotus: 'Lotus pools', day_night: 'Day / night',
+  neutral_item: 'Neutral items', camp_stack: 'Camp stacking', enemy_ultimate: 'Enemy ultimates',
+  enemy_glyph: 'Enemy glyph',
 };
 type Profile = Record<Objective, boolean>;
 type Profiles = Record<Role, Profile>;
@@ -14,8 +16,12 @@ const defaults = (): Profiles => {
   const profile = (disabled: Objective[] = []): Profile => Object.fromEntries(
     Object.keys(OBJECTIVES).map(key => [key, !disabled.includes(key as Objective)]),
   ) as Profile;
-  return { carry: profile(['rune_wisdom', 'rune_power']), mid: profile(['lotus', 'rune_wisdom']),
-    offlane: profile(['rune_power']), support: profile() };
+  return {
+    carry: profile(['rune_wisdom', 'rune_power', 'camp_stack']),
+    mid: profile(['lotus', 'rune_wisdom', 'camp_stack']),
+    offlane: profile(['rune_power']),
+    support: profile(),
+  };
 };
 export function suggestRole(heroName: string): { role: Role; hero: string; reason: string } | null {
   const hero = heroes.find(h => h.name === heroName);

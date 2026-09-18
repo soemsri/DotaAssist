@@ -8,9 +8,12 @@ import { gsiService } from "./services/gsiService";
 import { DOTA_RULESET_VERSION, timingEngine } from "./services/timingEngine";
 import { apiService } from "./services/apiService";
 import { audioService } from "./services/audioService";
+import { objectiveTracker } from "./services/objectiveTracker";
+import { enemyUltimateService } from "./services/enemyUltimateService";
 import { TimingEventAlert, PopularItem } from "./types/meta";
 import { GSIStatusBadge } from "./components/GSIStatusBadge";
 import { TimingAlerts } from "./components/TimingAlerts";
+import { EnemyUltimateBar } from "./components/EnemyUltimateBar";
 import { DraftAdvisor } from "./components/DraftAdvisor";
 import { ItemGuide } from "./components/ItemGuide";
 import { OverlayHUD } from "./components/OverlayHUD";
@@ -36,6 +39,8 @@ export const App: React.FC = () => {
   useEffect(() => {
     const hasTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
     setIsTauri(hasTauri);
+    objectiveTracker.init();
+    enemyUltimateService.init();
   }, []);
 
   useEffect(() => {
@@ -44,13 +49,27 @@ export const App: React.FC = () => {
     let unlisten: (() => void) | undefined;
     async function initialize() {
       const { listen } = await import('@tauri-apps/api/event');
-      const stop = await listen<DesktopStatus>('desktop-status', event => setDesktop(event.payload));
+      const stop = await listen<DesktopStatus>('desktop-status', event => {
+        setDesktop(event.payload);
+        if (event.payload.roshan_hotkey) {
+          objectiveTracker.setHotkeys(event.payload.roshan_hotkey, event.payload.tormentor_hotkey, event.payload.hotkey);
+        }
+        if (typeof event.payload.auto_copy_clipboard === 'boolean') {
+          objectiveTracker.setAutoCopyClipboard(event.payload.auto_copy_clipboard);
+        }
+      });
       if (disposed) { stop(); return; }
       unlisten = stop;
       const { invoke } = await import('@tauri-apps/api/core');
       const status = await invoke<DesktopStatus>('desktop_status');
       if (!disposed) {
         setDesktop(status);
+        if (status.roshan_hotkey) {
+          objectiveTracker.setHotkeys(status.roshan_hotkey, status.tormentor_hotkey, status.hotkey);
+        }
+        if (typeof status.auto_copy_clipboard === 'boolean') {
+          objectiveTracker.setAutoCopyClipboard(status.auto_copy_clipboard);
+        }
         if (!status.dota_path || !status.hotkey_ready) setSettingsOpen(true);
       }
     }
@@ -229,6 +248,7 @@ export const App: React.FC = () => {
             {(desktopError || desktop?.error) && <p>{desktopError || desktop?.error}</p>}
           </div>}
           <OverlayHUD
+            interactive={!isTauri || (desktop?.interactive ?? false)}
             payload={livePayload}
             isConnected={isConnected}
             alerts={alerts}
@@ -409,6 +429,7 @@ export const App: React.FC = () => {
         <div className="space-y-5">
           {activeTab === "timers" && (
             <div className="space-y-5">
+              <EnemyUltimateBar />
               <TimingAlerts alerts={alerts} clockTime={clockTime} />
               <ItemGuide
                 heroName={heroName}

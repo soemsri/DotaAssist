@@ -1,8 +1,14 @@
 import { TimingEventAlert } from '../types/meta';
 import { GSIEvent, GSIPayload } from '../types/gsi';
 import { audioService, ReminderContext } from './audioService';
+import { buybackService } from './buybackService';
+import { neutralItemService } from './neutralItemService';
+import { campStackService } from './campStackService';
+import { enemyUltimateService } from './enemyUltimateService';
+import { laningBenchmarkService } from './laningBenchmarkService';
+import { enemyGlyphService } from './enemyGlyphService';
 
-import { TIMING_RULES as RULES } from '../data/timingRules';
+import { TIMING_RULES as RULES, NEUTRAL_TIER_TIMINGS } from '../data/timingRules';
 import { alertProfiles, Objective } from './alertProfiles';
 export const DOTA_RULESET_VERSION = RULES.patch;
 
@@ -25,6 +31,7 @@ export class TimingEngine {
   private lastRoshanGSIState: string | null = null;
   private lastRoshanAlive: boolean | null = null;
   private processedGSIEvents: Set<string> = new Set();
+  private lastPayload: GSIPayload | null = null;
 
   public recordRoshanDeath(clockTime: number) {
     const time = Math.max(0, Math.floor(clockTime));
@@ -49,6 +56,14 @@ export class TimingEngine {
 
   public getRoshanState(): RoshanTrackState {
     return this.roshanState;
+  }
+
+  public getLastClockTime(): number {
+    return this.lastClockTime;
+  }
+
+  public getLastPayload(): GSIPayload | null {
+    return this.lastPayload;
   }
 
   public recordTormentorDeath(clockTime: number) {
@@ -78,6 +93,7 @@ export class TimingEngine {
   /** Synchronize objective state exposed by Dota 2 GSI. Manual controls remain
    * available when a client or game mode omits these optional fields. */
   public handleGSIPayload(payload: GSIPayload) {
+    this.lastPayload = payload;
     const map = payload.map;
     const matchId = map?.matchid?.trim() || null;
 
@@ -133,6 +149,10 @@ export class TimingEngine {
         this.recordTormentorDeath(clockTime);
       }
     });
+
+    enemyUltimateService.updateFromGSI(payload.draft, payload.player?.team_name, clockTime);
+    laningBenchmarkService.updateFromGSI(payload, clockTime);
+    enemyGlyphService.updateFromGSI(payload, clockTime);
   }
 
   public resetAlerts() {
@@ -149,10 +169,16 @@ export class TimingEngine {
     this.lastRoshanGSIState = null;
     this.lastRoshanAlive = null;
     this.processedGSIEvents.clear();
+    buybackService.resetAlerts();
+    neutralItemService.resetAlerts();
+    enemyUltimateService.resetAll();
+    laningBenchmarkService.resetAll();
+    enemyGlyphService.resetAll();
   }
 
   public calculateAlerts(clockTime: number, isPreGame: boolean): TimingEventAlert[] {
     const roundedSec = Math.floor(clockTime);
+    const previousClockTime = this.lastClockTime;
 
     // Detect game restart or match switch (clock jumped backward significantly)
     if (roundedSec < this.lastClockTime - 15 || (isPreGame && this.lastClockTime > 60)) {
@@ -160,6 +186,11 @@ export class TimingEngine {
     }
     this.lastClockTime = roundedSec;
     audioService.updateGameClock(clockTime);
+
+    if (!isPreGame) {
+      laningBenchmarkService.updateFromGSI(this.lastPayload, clockTime);
+      enemyGlyphService.updateFromGSI(this.lastPayload, clockTime);
+    }
 
     if (isPreGame) {
       const preGameSeconds = Math.max(0, -roundedSec);
@@ -264,6 +295,9 @@ export class TimingEngine {
       if (wisdomDiff <= 30 && wisdomDiff > 0 && !this.playedAlerts.has(`audio_wisdom_${nextWisdomSec}`)) {
         this.play('rune_wisdom', () => audioService.playWisdomShrineAlert(), { id: `wisdom_${nextWisdomSec}`, target: nextWisdomSec, label: 'Wisdom shrine' });
         this.playedAlerts.add(`audio_wisdom_${nextWisdomSec}`);
+        if (nextWisdomSec >= 1800) {
+          buybackService.checkObjectiveLinkedAlert('Wisdom shrine', this.lastPayload);
+        }
       }
     }
 
@@ -286,6 +320,9 @@ export class TimingEngine {
         if (tormentorDiff <= 30 && !this.playedAlerts.has(`audio_tormentor_respawn_${tormentorRespawnSec}`)) {
           this.play('tormentor', () => audioService.playTormentorAlert(), { id: `tormentor_${tormentorRespawnSec}`, target: tormentorRespawnSec, label: 'Tormentor ready' });
           this.playedAlerts.add(`audio_tormentor_respawn_${tormentorRespawnSec}`);
+          if (tormentorRespawnSec >= 1800) {
+            buybackService.checkObjectiveLinkedAlert('Tormentor', this.lastPayload);
+          }
         }
       } else {
         this.resetTormentor();
@@ -384,6 +421,9 @@ export class TimingEngine {
         if (aegisDiff <= 30 && aegisDiff > 0 && !this.playedAlerts.has('audio_aegis_expiring')) {
           this.play('roshan', () => audioService.playAegisExpiringAlert(), { id: 'aegis_expiring', target: aegisExpiresSec, label: 'Aegis expires' });
           this.playedAlerts.add('audio_aegis_expiring');
+          if (currentSec >= 1800) {
+            buybackService.checkObjectiveLinkedAlert('Aegis expiring', this.lastPayload);
+          }
         }
       } else if (currentSec < earliestRespawnSec) {
         const respawnWaitDiff = earliestRespawnSec - currentSec;
@@ -411,6 +451,9 @@ export class TimingEngine {
         if (!this.playedAlerts.has('audio_roshan_window_opened')) {
           this.play('roshan', () => audioService.playRoshanAlert('Roshan respawn window is open'), { id: 'roshan_window', target: currentSec, expiresAt: Math.min(latestRespawnSec, currentSec + 30) });
           this.playedAlerts.add('audio_roshan_window_opened');
+          if (currentSec >= 1800) {
+            buybackService.checkObjectiveLinkedAlert('Roshan window', this.lastPayload);
+          }
         }
       } else {
         // Exceeded 11 minutes -> Roshan is guaranteed alive
@@ -429,6 +472,99 @@ export class TimingEngine {
           this.playedAlerts.add('audio_roshan_guaranteed_alive');
         }
       }
+    }
+
+    // 8. Neutral Items (Tier 1-5 unlock timing cards & audio)
+    for (const tierEntry of NEUTRAL_TIER_TIMINGS) {
+      const tierDiff = tierEntry.time - currentSec;
+      if (tierDiff <= 60 && tierDiff >= 0) {
+        alerts.push({
+          id: `neutral_tier_${tierEntry.tier}`,
+          title: `Neutral Items ${tierEntry.label}`,
+          subtitle: `Unlocks at ${this.formatTime(tierEntry.time)}`,
+          targetSeconds: tierEntry.time,
+          secondsRemaining: tierDiff,
+          type: 'neutral_item',
+          urgent: tierDiff <= 20,
+        });
+
+      }
+
+      // Announce the unlock itself (rather than an early voice prompt). Allow a
+      // two-second GSI sampling window so a dropped clock tick does not lose the
+      // alert, while avoiding announcements for old tiers on a late connection.
+      const justUnlocked = previousClockTime < tierEntry.time
+        && currentSec >= tierEntry.time
+        && currentSec <= tierEntry.time + 2;
+      if (justUnlocked && !this.playedAlerts.has(`audio_neutral_tier_${tierEntry.tier}`)) {
+        this.play('neutral_item', () => audioService.playNeutralTierAlert(tierEntry.tier), {
+          id: `neutral_tier_${tierEntry.tier}`,
+          target: tierEntry.time,
+          label: `Neutral items ${tierEntry.label}`,
+        });
+        this.playedAlerts.add(`audio_neutral_tier_${tierEntry.tier}`);
+      }
+    }
+
+    // Check missing or outdated neutral item reminder (Decisions 1 & 2: 90s grace period, 120s repeat, max 2)
+    neutralItemService.checkMissingOrOutdatedReminder(this.lastPayload, currentSec);
+
+    // 9. Camp Stacking (:33-:55 card, :43 voice, yielding to major objectives)
+    const stackAlert = campStackService.calculateStackAlert(currentSec);
+    if (stackAlert) {
+      alerts.push(stackAlert);
+    }
+
+    const minuteStart = Math.floor(currentSec / 60) * 60;
+    const targetVoiceSec = minuteStart + 43;
+    if (
+      !this.playedAlerts.has(`audio_camp_stack_${targetVoiceSec}`) &&
+      campStackService.shouldPlayVoice(currentSec, previousClockTime, alerts)
+    ) {
+      this.play('camp_stack', () => audioService.playCampStackAlert(), {
+        id: `camp_stack_${minuteStart + 53}`,
+        target: minuteStart + 53,
+        label: 'Stack camp',
+      });
+      this.playedAlerts.add(`audio_camp_stack_${targetVoiceSec}`);
+    } else if (
+      !this.playedAlerts.has(`audio_camp_stack_${targetVoiceSec}`) &&
+      previousClockTime < targetVoiceSec &&
+      currentSec >= targetVoiceSec
+    ) {
+      // Voice yielded to a major objective; mark as handled for this minute
+      this.playedAlerts.add(`audio_camp_stack_${targetVoiceSec}`);
+    }
+
+    // 10. Enemy Ultimates
+    enemyUltimateService.updateFromGSI(this.lastPayload?.draft, this.lastPayload?.player?.team_name, currentSec);
+    const ultSnapshot = enemyUltimateService.getSnapshot();
+    ultSnapshot.slots.forEach((s) => {
+      if (s.heroClass && s.state === 'cooldown' && s.remainingSeconds <= 30 && s.remainingSeconds > 0) {
+        alerts.push({
+          id: `enemy_ult_${s.slot}`,
+          title: `${s.heroName} Ult CD`,
+          subtitle: `${s.abilityName} ready in ${s.remainingSeconds}s`,
+          targetSeconds: s.cooldownEndClock,
+          secondsRemaining: s.remainingSeconds,
+          type: 'enemy_ultimate',
+          urgent: s.remainingSeconds <= 15,
+        });
+      }
+    });
+
+    // 11. Enemy Glyph Ready Alert (when cooldown remaining <= 30s)
+    const glyphSnap = enemyGlyphService.getSnapshot();
+    if (!glyphSnap.isReady && glyphSnap.cooldownRemainingSeconds <= 30 && glyphSnap.cooldownRemainingSeconds > 0 && glyphSnap.cooldownEndClockTime !== null) {
+      alerts.push({
+        id: 'enemy_glyph_ready',
+        title: 'Enemy Glyph Ready',
+        subtitle: `Glyph off cooldown in ${glyphSnap.cooldownRemainingSeconds}s`,
+        targetSeconds: glyphSnap.cooldownEndClockTime,
+        secondsRemaining: glyphSnap.cooldownRemainingSeconds,
+        type: 'enemy_glyph',
+        urgent: glyphSnap.cooldownRemainingSeconds <= 15,
+      });
     }
 
     return alerts.filter(alert => alertProfiles.enabled(alert.type)).sort((a, b) => a.secondsRemaining - b.secondsRemaining);
