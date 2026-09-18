@@ -133,19 +133,19 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     voiceUnrecognized: 'Command not recognized',
   },
   'th-TH': {
-    wisdomShrine: 'วิสดอม ไชร์น ในอีก 30 วินาที',
-    powerRune: 'พาวเวอร์ รูน ในอีก 20 วินาที',
-    waterRune: 'วอเตอร์ รูน ในอีก 20 วินาที',
+    wisdomShrine: 'รูนวิสดอม EXP ในอีก 30 วินาที',
+    powerRune: 'รูนแม่น้ำ ในอีก 20 วินาที',
+    waterRune: 'รูนน้ำ ในอีก 20 วินาที',
     bountyRune: 'รูนทอง ในอีก 15 วินาที',
-    tormentor: 'ทอร์เมนเตอร์ พร้อมเกิดใน 30 วินาที',
-    roshanWindow: 'หน้าต่างเกิดโรชานเปิดแล้ว',
-    roshanGuaranteed: 'โรชานเกิดแน่นอนแล้ว',
-    aegisExpiring: 'เอจิส จะหมดอายุในอีก 30 วินาที',
+    tormentor: 'บอสทอร์เมนเตอร์ พร้อมเกิดใน 30 วินาที',
+    roshanWindow: 'ช่วงเวลาเกิดโรชานเริ่มแล้ว',
+    roshanGuaranteed: 'โรชานเกิดแล้ว',
+    aegisExpiring: 'โล่เอจิส จะหมดอายุในอีก 30 วินาที',
     nightfall: 'กำลังจะเข้าสู่เวลากลางคืน ระยะมองเห็นลดลง ระวังศัตรูดักซุ่ม',
     daybreak: 'กำลังจะเข้าสู่เวลากลางวัน',
     allEnemiesMissing: 'ศัตรูหายไปจากมินิแมพทั้งหมด ระวังตัว',
     gankWindowMinute6: 'นาทีที่ 6 ระวังศัตรูเดินแก๊ง เลนข้างระวังตัว',
-    noTpScroll: 'คำเตือน! ไม่มีใบวาป อย่าลืมซื้อใบวาปสำรอง',
+    noTpScroll: 'คำเตือน! ไม่มีใบวาป อย่าลืมซื้อใบวาร์ปติดตัว',
     creepPullSmall: 'พูลครีป',
     creepPullLarge: 'พูลครีปใหญ่',
     jungleStack: 'สแต็กครีปป่า',
@@ -154,28 +154,28 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     itemAdviceCore: (_hero, items) => `ช่วงกลางเกม แนะนำออก ${items}`,
     itemAdviceLuxury: (_hero, items) => `ช่วงท้ายเกม แนะนำออก ${items}`,
     levelSpike: (level, hero, combo) =>
-      `เลเวล ${level} แล้วสำหรับ ${hero}! อัลติเมทพร้อมใช้งาน ทริคคอมโบ: ${combo}`,
+      `เลเวล ${level} แล้วสำหรับ ${hero}! อัลติเมทพร้อมใช้งาน คอมโบแนะนำ: ${combo}`,
     neutralItemMissing: (tier, hero, topItems) =>
       hero && topItems
         ? `ปลดล็อกไอเทมป่า เทียร์ ${tier} แล้ว! สำหรับ ${hero} แนะนำ ${topItems}`
         : `ปลดล็อกไอเทมป่า เทียร์ ${tier} แล้ว ช่องไอเทมป่ายังว่าง อย่าลืมไปเปิดเหรียญป่า`,
     buybackDeficit: (shortfall) =>
-      `คำเตือน! ขาดเงินอีก ${shortfall} โกลด์ สำหรับ บายแบ็ค ระวังตัวและเก็บเงินไว้ก่อน`,
+      `คำเตือน! ขาดเงินอีก ${shortfall} สำหรับบายแบ็ค ระวังตัวและเก็บเงินไว้ก่อน`,
     overextendDanger:
-      'อันตราย! ศัตรูหายจากมินิแมพและเลือดเหลือน้อย ถอยเข้าป้อมด่วน!',
+      'อันตราย! ศัตรูหายจากมินิแมพและเลือดเหลือน้อย รีบถอยเข้าป้อมด่วน!',
     pushAdvantage:
-      'ศัตรูตายหลายตัว! ได้เปรียบจำนวนคน ดันป้อมหรือเก็บอ็อบเจกต์ทันที',
+      'ศัตรูตายหลายตัว! ได้เปรียบจำนวนคน ดันป้อมหรือยึดพื้นที่ทันที',
     counterItemAdvice: (threat, items) =>
       `แก้ทาง ${threat}: แนะนำออก ${items}`,
     talentRecommendation: (level, side, talent, reason) =>
       reason
         ? `เลเวล ${level} แล้ว! แนะนำเลือกฝั่ง${side} ${talent} ${reason}`
         : `เลเวล ${level} แล้ว! แนะนำเลือกฝั่ง${side} ${talent}`,
-    wardExpired: 'หวอร์ดหมดอายุแล้ว',
+    wardExpired: 'วอร์ดหมดอายุแล้ว',
     voiceRoshanRecorded: 'บันทึกเวลาโรชานตายเรียบร้อยแล้ว',
-    voiceBkbRecorded: 'เริ่มจับเวลา บีเคบี ศัตรู 90 วินาที',
+    voiceBkbRecorded: 'เริ่มจับเวลาไอเทม BKB ศัตรู 90 วินาที',
     voiceUltimateRecorded: (name) => `เริ่มจับเวลาสกิล ${name} ของศัตรู`,
-    voiceWardRecorded: 'บันทึกการปักหวอร์ดแล้ว',
+    voiceWardRecorded: 'บันทึกการปักวอร์ดแล้ว',
     voiceHudToggled: (minimized) => (minimized ? 'ย่อหน้าต่างแล้ว' : 'ขยายหน้าต่างแล้ว'),
     voiceAudioMuted: (muted) => (muted ? 'ปิดเสียงเตือนแล้ว' : 'เปิดเสียงเตือนแล้ว'),
     voiceQueryRune: (name, seconds) =>
@@ -187,10 +187,78 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     voiceQueryBuyback: (ready, shortfall) =>
       ready
         ? 'บายแบ็คพร้อมใช้งาน'
-        : `ยังขาดเงินอีก ${shortfall} โกลด์ สำหรับบายแบ็ค`,
+        : `ยังขาดเงินอีก ${shortfall} สำหรับบายแบ็ค`,
     voiceUnrecognized: 'ไม่พบคำสั่งที่ตรงกัน',
   },
 };
+
+export function formatThaiCountdown(label: string, seconds: number, objective?: Objective): string {
+  const norm = label.toLowerCase();
+  if (norm.includes('wisdom') || objective === 'rune_wisdom') {
+    return `รูน EXP ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('water')) {
+    return `รูนน้ำ ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('power') || objective === 'rune_power') {
+    return `รูนแม่น้ำ ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('bounty') || objective === 'rune_bounty') {
+    return `รูนทอง ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('tormentor') || objective === 'tormentor') {
+    return `บอสทอร์เมนเตอร์ เกิดใน ${seconds} วินาที`;
+  }
+  if (norm.includes('stack') || objective === 'camp_stack') {
+    return `ดึงซ้อนครีปป่า ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('aegis')) {
+    return `โล่เอจิส จะหมดอายุในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('nightfall')) {
+    return `กำลังจะเข้าสู่เวลากลางคืน ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('daybreak')) {
+    return `กำลังจะเข้าสู่เวลากลางวัน ในอีก ${seconds} วินาที`;
+  }
+  if (norm.includes('roshan') || objective === 'roshan') {
+    return `โรชาน ในอีก ${seconds} วินาที`;
+  }
+  return `${label} ในอีก ${seconds} วินาที`;
+}
+
+export function normalizeThaiSpeech(text: string): string {
+  return text
+    .replace(/\bEXP\b/gi, 'อีเอ็กซ์พี')
+    .replace(/\bBKB\b/gi, 'บีเคบี')
+    .replace(/\bTP\b/gi, 'ทีพี')
+    .replace(/\bHP\b/gi, 'เลือด')
+    .replace(/\bCS\b/gi, 'ครีป')
+    .replace(/\bTier\s*(\d+)/gi, 'เทียร์ $1')
+    .replace(/\bAnti-Mage\b/gi, 'แอนตี้เมจ')
+    .replace(/\bFaceless Void\b/gi, 'เฟซเลสวอยด์')
+    .replace(/\bTidehunter\b/gi, 'ไทด์ฮันเตอร์')
+    .replace(/\bEnigma\b/gi, 'อินิกม่า')
+    .replace(/\bJuggernaut\b/gi, 'จัดเกอร์น็อต')
+    .replace(/\bPhantom Assassin\b/gi, 'แฟนทอม')
+    .replace(/\bCrystal Maiden\b/gi, 'คริสตัลไมเดน')
+    .replace(/\bWitch Doctor\b/gi, 'วิชด็อกเตอร์')
+    .replace(/\bBristleback\b/gi, 'บริสเทิลแบ็ค')
+    .replace(/\bInvoker\b/gi, 'อินโวเกอร์')
+    .replace(/\bSniper\b/gi, 'สไนเปอร์')
+    .replace(/\bQuelling Blade\b/gi, 'ขวานตัดต้นไม้ Quelling Blade')
+    .replace(/\bTango\b/gi, 'แทงโก้')
+    .replace(/\bPower Treads\b/gi, 'รองเท้าแปลงร่าง Power Treads')
+    .replace(/\bBlack King Bar\b/gi, 'บีเคบี')
+    .replace(/\bBlink Dagger\b/gi, 'บลิงก์')
+    .replace(/\bShiva's Guard\b/gi, 'ชิวาสการ์ด')
+    .replace(/\bScythe of Vyse\b/gi, 'คทาเสกแกะ Hex')
+    .replace(/หวอร์ด/g, 'วอร์ด')
+    .replace(/ใบวาป/g, 'ใบวาร์ป')
+    .replace(/พูลครีปใหญ่/g, 'ดึงครีปใหญ่')
+    .replace(/พูลครีป/g, 'ดึงครีปเลน')
+    .replace(/สแต็กครีปป่า/g, 'ดึงซ้อนครีปป่า');
+}
 
 function loadStoredSettings(): Partial<AudioSettings> {
   if (typeof window === 'undefined' || !window.localStorage) return {};
@@ -426,22 +494,31 @@ class AudioNotificationService {
   public speak(text: string, langOverride?: string, objective?: Objective) {
     if (!this.settings.voiceEnabled) return;
     const context = this.reminder;
+    const targetLang = langOverride ?? this.settings.voiceLanguage;
     this.voiceQueue.enqueue({
       id: context?.id ?? `preview-${++this.sequence}`,
       objective: context?.objective ?? objective,
       priority: context?.target,
       deadline: context?.label ? context.target : undefined,
       expiresAt: context?.expiresAt,
-      language: langOverride,
-      text: clock => context?.label && clock !== null
-        ? `${context.label} in ${Math.max(0, Math.ceil(context.target - clock))} seconds`
-        : text,
+      language: targetLang,
+      text: clock => {
+        if (context?.label && clock !== null) {
+          const remaining = Math.max(0, Math.ceil(context.target - clock));
+          if (targetLang.startsWith('th')) {
+            return formatThaiCountdown(context.label, remaining, context.objective ?? objective);
+          }
+          return `${context.label} in ${remaining} seconds`;
+        }
+        return text;
+      },
     });
   }
 
   private startSpeech(text: string, language: string | undefined, done: () => void) {
     if (typeof window === 'undefined') { done(); return; }
     const targetLang = language ?? this.settings.voiceLanguage;
+    const spokenText = targetLang.startsWith('th') ? normalizeThaiSpeech(text) : text;
 
     let finished = false;
     const finish = () => {
@@ -458,7 +535,7 @@ class AudioNotificationService {
     this.speechTimeout = timeout;
 
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(spokenText);
       utterance.volume = this.settings.masterVolume;
       utterance.rate = 1.05;
       utterance.pitch = 1;
@@ -476,7 +553,7 @@ class AudioNotificationService {
         if ('__TAURI_INTERNALS__' in window) {
           import('@tauri-apps/api/core')
             .then(({ invoke }) => {
-              invoke<string>('fetch_tts_audio', { text, lang: 'th' })
+              invoke<string>('fetch_tts_audio', { text: spokenText, lang: 'th' })
                 .then((dataUri) => {
                   this.stopCurrentVoice();
                   const audio = new Audio(dataUri);
@@ -575,7 +652,8 @@ class AudioNotificationService {
       this.playTone(600, now, 0.15, 'sine');
       this.playTone(900, now + 0.1, 0.2, 'sine');
     }
-    this.speak('Wisdom Shrine in thirty seconds', undefined, 'rune_wisdom');
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].wisdomShrine, undefined, 'rune_wisdom');
   }
 
   public playPowerRuneAlert(isWaterRune: boolean = false) {
@@ -585,10 +663,11 @@ class AudioNotificationService {
       this.playTone(750, now, 0.12, 'triangle');
       this.playTone(1050, now + 0.14, 0.2, 'triangle');
     }
+    const lang = this.settings.voiceLanguage;
     if (isWaterRune) {
-      this.speak('Water Runes in twenty seconds', undefined, 'rune_power');
+      this.speak(PHRASES[lang].waterRune, undefined, 'rune_power');
     } else {
-      this.speak('Power Rune in twenty seconds', undefined, 'rune_power');
+      this.speak(PHRASES[lang].powerRune, undefined, 'rune_power');
     }
   }
 
@@ -599,7 +678,8 @@ class AudioNotificationService {
       this.playTone(987.77, now, 0.08, 'sine');
       this.playTone(1318.51, now + 0.06, 0.18, 'sine');
     }
-    this.speak('Bounty Runes in fifteen seconds', undefined, 'rune_bounty');
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].bountyRune, undefined, 'rune_bounty');
   }
 
   public playTormentorAlert() {
@@ -609,7 +689,8 @@ class AudioNotificationService {
       this.playTone(440, now, 0.15, 'triangle');
       this.playTone(550, now + 0.1, 0.2, 'triangle');
     }
-    this.speak('Tormentor ready in thirty seconds', undefined, 'tormentor');
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].tormentor, undefined, 'tormentor');
   }
 
   public playRoshanAlert(message: string = 'Roshan respawn window is active') {
@@ -619,7 +700,17 @@ class AudioNotificationService {
       this.playTone(440, now, 0.15, 'sine');
       this.playTone(330, now + 0.1, 0.2, 'sine');
     }
-    this.speak(message, undefined, 'roshan');
+    const lang = this.settings.voiceLanguage;
+    let spoken = message;
+    if (lang === 'th-TH') {
+      const m = message.toLowerCase();
+      if (m.includes('window') || m.includes('open') || m.includes('active')) {
+        spoken = PHRASES['th-TH'].roshanWindow;
+      } else if (m.includes('alive') || m.includes('guaranteed')) {
+        spoken = PHRASES['th-TH'].roshanGuaranteed;
+      }
+    }
+    this.speak(spoken, undefined, 'roshan');
   }
 
   public playAegisExpiringAlert() {
@@ -629,7 +720,8 @@ class AudioNotificationService {
       this.playTone(550, now, 0.12, 'sine');
       this.playTone(440, now + 0.1, 0.18, 'sine');
     }
-    this.speak('Aegis expires in thirty seconds', undefined, 'roshan');
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].aegisExpiring, undefined, 'roshan');
   }
 
   public playDayNightAlert(isNightfall: boolean) {
@@ -639,10 +731,11 @@ class AudioNotificationService {
       this.playTone(400, now, 0.12, 'sine');
       this.playTone(isNightfall ? 300 : 500, now + 0.1, 0.18, 'sine');
     }
+    const lang = this.settings.voiceLanguage;
     if (isNightfall) {
-      this.speak('Nightfall approaching.', undefined, 'day_night');
+      this.speak(PHRASES[lang].nightfall, undefined, 'day_night');
     } else {
-      this.speak('Daybreak approaching.', undefined, 'day_night');
+      this.speak(PHRASES[lang].daybreak, undefined, 'day_night');
     }
   }
 
@@ -884,7 +977,11 @@ class AudioNotificationService {
       this.playTone(523.25, now, 0.15, 'sine');
       this.playTone(659.25, now + 0.12, 0.25, 'sine');
     }
-    this.speak(`Neutral items tier ${tier} are now unlocked`, undefined, 'neutral_item');
+    const lang = this.settings.voiceLanguage;
+    const text = lang === 'th-TH'
+      ? `ปลดล็อกไอเทมป่า เทียร์ ${tier} แล้ว`
+      : `Neutral items tier ${tier} are now unlocked`;
+    this.speak(text, undefined, 'neutral_item');
   }
 
   public playCampStackAlert() {
@@ -894,7 +991,11 @@ class AudioNotificationService {
       this.playTone(493.88, now, 0.12, 'sine');
       this.playTone(587.33, now + 0.1, 0.2, 'sine');
     }
-    this.speak('Stack camp in ten seconds', undefined, 'camp_stack');
+    const lang = this.settings.voiceLanguage;
+    const text = lang === 'th-TH'
+      ? 'ดึงซ้อนครีปป่า ในอีก 10 วินาที'
+      : 'Stack camp in ten seconds';
+    this.speak(text, undefined, 'camp_stack');
   }
 
   public playEnemyUltimateReadyAlert(heroName: string, abilityName?: string) {
@@ -904,8 +1005,14 @@ class AudioNotificationService {
       this.playTone(523.25, now, 0.15, 'triangle');
       this.playTone(659.25, now + 0.12, 0.25, 'triangle');
     }
-    const label = abilityName && abilityName !== 'Ultimate' ? `${heroName} ${abilityName}` : `${heroName} ultimate`;
-    this.speak(`${label} is estimated ready`, undefined, 'enemy_ultimate');
+    const lang = this.settings.voiceLanguage;
+    if (lang === 'th-TH') {
+      const ability = abilityName && abilityName !== 'Ultimate' ? abilityName : 'อัลติ';
+      this.speak(`สกิล${ability}ของ ${heroName} น่าจะพร้อมใช้งานแล้ว`, undefined, 'enemy_ultimate');
+    } else {
+      const label = abilityName && abilityName !== 'Ultimate' ? `${heroName} ${abilityName}` : `${heroName} ultimate`;
+      this.speak(`${label} is estimated ready`, undefined, 'enemy_ultimate');
+    }
   }
 
   public playEnemyUltimateRecordedAlert(heroName: string) {
@@ -914,7 +1021,11 @@ class AudioNotificationService {
       const now = this.ctx.currentTime;
       this.playTone(700, now, 0.1, 'sine');
     }
-    this.speak(`${heroName} ultimate recorded`, undefined, 'enemy_ultimate');
+    const lang = this.settings.voiceLanguage;
+    const text = lang === 'th-TH'
+      ? `บันทึกเวลาอัลติของ ${heroName} แล้ว`
+      : `${heroName} ultimate recorded`;
+    this.speak(text, undefined, 'enemy_ultimate');
   }
 
   public playLaningMilestoneAlert(minute: number, lastHits: number, paceStatusOrWord: string, _netWorth?: number) {
@@ -925,17 +1036,30 @@ class AudioNotificationService {
       this.playTone(659.25, now + 0.1, 0.15, 'sine');
       this.playTone(783.99, now + 0.2, 0.25, 'sine');
     }
-    const paceText = paceStatusOrWord.includes('pace')
-      ? paceStatusOrWord
-      : paceStatusOrWord === 'ahead'
-      ? 'ahead of pace'
-      : paceStatusOrWord === 'behind'
-      ? 'behind pace'
-      : 'on pace';
-    const message = minute >= 10
-      ? `Ten minutes: ${lastHits} last hits, ${paceText}. Laning phase complete.`
-      : `${minute} minutes: ${lastHits} last hits, ${paceText}.`;
-    this.speak(message);
+    const lang = this.settings.voiceLanguage;
+    if (lang === 'th-TH') {
+      const paceText = paceStatusOrWord.includes('ahead')
+        ? 'เร็วกว่าเป้าหมาย'
+        : paceStatusOrWord.includes('behind')
+        ? 'ช้ากว่าเป้าหมาย'
+        : 'ตามเป้าหมาย';
+      const message = minute >= 10
+        ? `ครบ 10 นาที: ลาสครีปได้ ${lastHits} ตัว ${paceText} จบช่วงยืนเลนแล้ว`
+        : `นาทีที่ ${minute}: ลาสครีปได้ ${lastHits} ตัว ${paceText}`;
+      this.speak(message);
+    } else {
+      const paceText = paceStatusOrWord.includes('pace')
+        ? paceStatusOrWord
+        : paceStatusOrWord === 'ahead'
+        ? 'ahead of pace'
+        : paceStatusOrWord === 'behind'
+        ? 'behind pace'
+        : 'on pace';
+      const message = minute >= 10
+        ? `Ten minutes: ${lastHits} last hits, ${paceText}. Laning phase complete.`
+        : `${minute} minutes: ${lastHits} last hits, ${paceText}.`;
+      this.speak(message);
+    }
   }
 
   public playEnemyGlyphActivatedAlert() {
@@ -945,7 +1069,11 @@ class AudioNotificationService {
       this.playTone(392.00, now, 0.2, 'sawtooth');
       this.playTone(523.25, now + 0.15, 0.3, 'sawtooth');
     }
-    this.speak('Enemy Glyph activated', undefined, 'enemy_glyph');
+    const lang = this.settings.voiceLanguage;
+    const text = lang === 'th-TH'
+      ? 'ศัตรูกดใช้ป้อมอมตะแล้ว'
+      : 'Enemy Glyph activated';
+    this.speak(text, undefined, 'enemy_glyph');
   }
 
   public playEnemyGlyphReadyAlert() {
@@ -955,7 +1083,11 @@ class AudioNotificationService {
       this.playTone(523.25, now, 0.15, 'sine');
       this.playTone(659.25, now + 0.12, 0.25, 'sine');
     }
-    this.speak('Enemy Glyph is ready', undefined, 'enemy_glyph');
+    const lang = this.settings.voiceLanguage;
+    const text = lang === 'th-TH'
+      ? 'ป้อมอมตะของศัตรูพร้อมใช้งานแล้ว'
+      : 'Enemy Glyph is ready';
+    this.speak(text, undefined, 'enemy_glyph');
   }
 
   public playWarningBeep() {

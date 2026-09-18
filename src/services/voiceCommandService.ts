@@ -475,11 +475,18 @@ class VoiceCommandService {
         const runeAlert = alerts.find((a) => a.type.startsWith('rune_'));
         if (runeAlert) {
           const sec = runeAlert.secondsRemaining;
+          const thaiTitle = runeAlert.type === 'rune_wisdom'
+            ? 'รูน EXP'
+            : runeAlert.type === 'rune_power'
+            ? (runeAlert.title.toLowerCase().includes('water') ? 'รูนน้ำ' : 'รูนแม่น้ำ')
+            : runeAlert.type === 'rune_bounty'
+            ? 'รูนทอง'
+            : runeAlert.title;
           feedbackText =
             lang === 'th-TH'
               ? sec <= 5
-                ? `${runeAlert.title} กำลังเกิดแล้ว!`
-                : `${runeAlert.title} ในอีก ${sec} วินาที`
+                ? `${thaiTitle} กำลังเกิดแล้ว!`
+                : `${thaiTitle} ในอีก ${sec} วินาที`
               : sec <= 5
               ? `${runeAlert.title} is spawning now!`
               : `${runeAlert.title} in ${sec} seconds`;
@@ -511,17 +518,17 @@ class VoiceCommandService {
             const left = Math.ceil((minTime - clockTime) / 60);
             feedbackText =
               lang === 'th-TH'
-                ? `โรชานตาย หน้าต่างเกิดจะเปิดที่นาที ${formatMin(minTime)} (อีกราว ${left} นาที)`
+                ? `โรชานตาย ช่วงเวลาสุ่มเกิดจะเปิดที่นาที ${formatMin(minTime)} (อีกราว ${left} นาที)`
                 : `Roshan dead, window opens at ${formatMin(minTime)} (in ${left}m)`;
           } else if (clockTime <= maxTime) {
             feedbackText =
               lang === 'th-TH'
-                ? 'หน้าต่างเกิดโรชานกำลังเปิดอยู่! เกิดแน่นอนที่นาที ' + formatMin(maxTime)
+                ? 'ช่วงเวลาสุ่มเกิดโรชานกำลังเปิดอยู่! เกิดแน่นอนที่นาที ' + formatMin(maxTime)
                 : 'Roshan window active! Guaranteed alive at ' + formatMin(maxTime);
           } else {
             feedbackText =
               lang === 'th-TH'
-                ? 'โรชานเกิดแน่นอนแล้ว!'
+                ? 'โรชานเกิดแล้ว!'
                 : 'Roshan is guaranteed alive!';
           }
         }
@@ -556,7 +563,7 @@ class VoiceCommandService {
           } else {
             feedbackText =
               lang === 'th-TH'
-                ? `ขาดเงินอีก ${bb.deficit} โกลด์ สำหรับบายแบ็ค`
+                ? `ขาดเงินอีก ${bb.deficit} สำหรับบายแบ็ค`
                 : `Need ${bb.deficit} more gold for buyback`;
           }
         } else {

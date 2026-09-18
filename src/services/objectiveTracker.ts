@@ -208,7 +208,8 @@ class ObjectiveTrackerService {
 
     const clockTime = explicitClockTime !== undefined ? explicitClockTime : timingEngine.getLastClockTime();
     timingEngine.recordRoshanDeath(clockTime);
-    audioService.speak('Roshan slain recorded.', undefined, 'roshan');
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    audioService.speak(isThai ? 'บันทึกเวลาโรชานตายเรียบร้อยแล้ว' : 'Roshan slain recorded.', undefined, 'roshan');
 
     // 10 second undo window
     this.roshanUndoExpiry = now + 10000;
@@ -227,7 +228,8 @@ class ObjectiveTrackerService {
   public undoRoshan() {
     this.roshanUndoExpiry = 0;
     timingEngine.resetRoshan();
-    audioService.speak('Roshan timer canceled.', undefined, 'roshan');
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    audioService.speak(isThai ? 'ยกเลิกการจับเวลาโรชานแล้ว' : 'Roshan timer canceled.', undefined, 'roshan');
     this.notify();
   }
 
@@ -241,7 +243,8 @@ class ObjectiveTrackerService {
 
     const clockTime = explicitClockTime !== undefined ? explicitClockTime : timingEngine.getLastClockTime();
     timingEngine.recordTormentorDeath(clockTime);
-    audioService.speak('Tormentor slain recorded.', undefined, 'tormentor');
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    audioService.speak(isThai ? 'บันทึกเวลาทอร์เมนเตอร์ตายเรียบร้อยแล้ว' : 'Tormentor slain recorded.', undefined, 'tormentor');
 
     // 10 second undo window
     this.tormentorUndoExpiry = now + 10000;
@@ -260,7 +263,8 @@ class ObjectiveTrackerService {
   public undoTormentor() {
     this.tormentorUndoExpiry = 0;
     timingEngine.resetTormentor();
-    audioService.speak('Tormentor timer canceled.', undefined, 'tormentor');
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    audioService.speak(isThai ? 'ยกเลิกการจับเวลาทอร์เมนเตอร์แล้ว' : 'Tormentor timer canceled.', undefined, 'tormentor');
     this.notify();
   }
 

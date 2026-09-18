@@ -202,18 +202,18 @@ export class NeutralItemService {
 
     const alertType = equippedTier === 0 ? 'missing' : 'outdated';
 
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+
     if (alertType === 'missing') {
-      audioService.speak(
-        `Reminder: Neutral item slot is empty. Tier ${unlockedTier} is available.`,
-        undefined,
-        'neutral_item'
-      );
+      const msg = isThai
+        ? `เตือนความจำ: ช่องไอเทมป่ายังว่างอยู่ มีเทียร์ ${unlockedTier} พร้อมให้เลือก`
+        : `Reminder: Neutral item slot is empty. Tier ${unlockedTier} is available.`;
+      audioService.speak(msg, undefined, 'neutral_item');
     } else {
-      audioService.speak(
-        `Reminder: Still using Tier ${equippedTier} neutral item. Tier ${unlockedTier} is available.`,
-        undefined,
-        'neutral_item'
-      );
+      const msg = isThai
+        ? `เตือนความจำ: ยังใช้ไอเทมป่าเทียร์ ${equippedTier} อยู่ มีเทียร์ ${unlockedTier} พร้อมให้เปลี่ยนแล้ว`
+        : `Reminder: Still using Tier ${equippedTier} neutral item. Tier ${unlockedTier} is available.`;
+      audioService.speak(msg, undefined, 'neutral_item');
     }
 
     return { alerted: true, type: alertType, tier: unlockedTier };

@@ -61,18 +61,27 @@ class BuybackService {
 
     this.lastSpokenClockTime = clockTime;
 
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    const objName = isThai
+      ? (objectiveLabel.toLowerCase().includes('wisdom')
+          ? 'รูน EXP'
+          : objectiveLabel.toLowerCase().includes('tormentor')
+          ? 'บอสทอร์เมนเตอร์'
+          : objectiveLabel.toLowerCase().includes('roshan')
+          ? 'โรชาน'
+          : objectiveLabel)
+      : objectiveLabel;
+
     if (status.cooldown > 0) {
-      audioService.speak(
-        `Caution: ${objectiveLabel} soon, and Buyback is on cooldown for ${status.cooldown} seconds.`,
-        undefined,
-        'roshan'
-      );
+      const msg = isThai
+        ? `ระวัง! ใกล้ถึงจังหวะ ${objName} แต่บายแบ็คยังติดคูลดาวน์อีก ${status.cooldown} วินาที`
+        : `Caution: ${objectiveLabel} soon, and Buyback is on cooldown for ${status.cooldown} seconds.`;
+      audioService.speak(msg, undefined, 'roshan');
     } else if (status.missingGold > 0) {
-      audioService.speak(
-        `Caution: ${objectiveLabel} soon, and Buyback is not ready. Missing ${status.missingGold} gold.`,
-        undefined,
-        'roshan'
-      );
+      const msg = isThai
+        ? `ระวัง! ใกล้ถึงจังหวะ ${objName} แต่บายแบ็คยังไม่พร้อม ขาดเงินอีก ${status.missingGold}`
+        : `Caution: ${objectiveLabel} soon, and Buyback is not ready. Missing ${status.missingGold} gold.`;
+      audioService.speak(msg, undefined, 'roshan');
     }
 
     return true;

@@ -455,79 +455,86 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 onClick={() => audioService.playWisdomShrineAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-purple-300 font-semibold transition text-left"
               >
-                🔮 Wisdom Shrine (7m)
+                {voiceLang === 'th-TH' ? '🔮 รูน EXP (7m)' : '🔮 Wisdom Shrine (7m)'}
               </button>
               <button
                 onClick={() => audioService.playPowerRuneAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-sky-300 font-semibold transition text-left"
               >
-                ⚡ Power Rune (2m)
+                {voiceLang === 'th-TH' ? '⚡ รูนแม่น้ำ (2m)' : '⚡ Power Rune (2m)'}
               </button>
               <button
                 onClick={() => audioService.playBountyRuneAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
-                💰 Bounty Rune (4m)
+                {voiceLang === 'th-TH' ? '💰 รูนทอง (4m)' : '💰 Bounty Rune (4m)'}
               </button>
               <button
                 onClick={() => audioService.playTormentorAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-blue-300 font-semibold transition text-left"
               >
-                🛡️ Tormentor (20m)
+                {voiceLang === 'th-TH' ? '🛡️ บอสทอร์เมนเตอร์ (20m)' : '🛡️ Tormentor (20m)'}
               </button>
               <button
                 onClick={() => audioService.playRoshanAlert('Roshan respawn window is active')}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-rose-300 font-semibold transition text-left"
               >
-                🐉 Roshan Warning
+                {voiceLang === 'th-TH' ? '🐉 เตือนโรชาน' : '🐉 Roshan Warning'}
               </button>
               <button
                 onClick={() => audioService.playAegisExpiringAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
-                ⏳ Aegis Expiring
+                {voiceLang === 'th-TH' ? '⏳ โล่เอจิสใกล้หมด' : '⏳ Aegis Expiring'}
               </button>
               <button
                 onClick={() => audioService.playNeutralTierAlert(1)}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
-                📦 Neutral Tier Alert
+                {voiceLang === 'th-TH' ? '📦 ปลดล็อกไอเทมป่า' : '📦 Neutral Tier Alert'}
               </button>
               <button
-                onClick={() => audioService.speak('Reminder: Neutral item slot is empty. Tier 1 is available.', undefined, 'neutral_item')}
+                onClick={() => {
+                  const isTh = voiceLang === 'th-TH';
+                  audioService.speak(
+                    isTh ? 'เตือนความจำ: ช่องไอเทมป่ายังว่างอยู่ มีเทียร์ 1 พร้อมให้เลือก' : 'Reminder: Neutral item slot is empty. Tier 1 is available.',
+                    undefined,
+                    'neutral_item'
+                  );
+                }}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-orange-300 font-semibold transition text-left"
               >
-                ⚠️ Missing Neutral Reminder
+                {voiceLang === 'th-TH' ? '⚠️ เตือนลืมใส่ไอเทมป่า' : '⚠️ Missing Neutral Reminder'}
               </button>
               <button
                 onClick={() => audioService.playCampStackAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
-                🌲 Camp Stacking
+                {voiceLang === 'th-TH' ? '🌲 ดึงซ้อนครีปป่า' : '🌲 Camp Stacking'}
               </button>
               <button
                 onClick={() => audioService.playEnemyUltimateReadyAlert('Enigma', 'Black Hole')}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-rose-300 font-semibold transition text-left"
               >
-                ⚔️ Enemy Ultimate Ready
+                {voiceLang === 'th-TH' ? '⚔️ สกิลอัลติศัตรูพร้อม' : '⚔️ Enemy Ultimate Ready'}
               </button>
               <button
                 onClick={() => audioService.playLaningMilestoneAlert(5, 28, 'on pace')}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
-                🌾 Laning Milestone (5m)
+                {voiceLang === 'th-TH' ? '🌾 ระยะยืนเลน 5 นาที' : '🌾 Laning Milestone (5m)'}
               </button>
               <button
                 onClick={() => audioService.playEnemyGlyphActivatedAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-sky-300 font-semibold transition text-left"
               >
-                ⚡ Glyph Activated (7s)
+                {voiceLang === 'th-TH' ? '⚡ ศัตรูกดป้อมอมตะ' : '⚡ Glyph Activated (7s)'}
               </button>
               <button
                 onClick={() => audioService.playEnemyGlyphReadyAlert()}
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
               >
-                🛡️ Glyph Ready
+                {voiceLang === 'th-TH' ? '🛡️ ป้อมอมตะพร้อมใช้' : '🛡️ Glyph Ready'}
               </button>
               <button
                 onClick={() => audioService.playNoTpScrollAlert(true)}

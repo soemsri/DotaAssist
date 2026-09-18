@@ -234,8 +234,8 @@ export class TacticalCoachEngine {
           const advice = talentTiers.find((t) => t.level === m);
           if (advice) {
             const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
-            // Speak English talent name (e.g. Plus 9 Strength) with Thai strategic reasoning as agreed in alignment
-            const talentText = advice.recommended === 'left' ? advice.left.en : advice.right.en;
+            const talentChoice = advice.recommended === 'left' ? advice.left : advice.right;
+            const talentText = isThai ? (talentChoice.th || talentChoice.en) : talentChoice.en;
             const reason = isThai ? advice.reasonTh : advice.reasonEn;
             audioService.playTalentAlert(m, advice.recommended, talentText, reason);
           }
