@@ -1,3 +1,6 @@
+import { OpenDotaStatus } from './OpenDotaStatus';
+import { apiService } from '../services/apiService';
+import { AlertProfileControls } from './AlertProfileControls';
 import React, { useState } from 'react';
 import { TimingEventAlert, PopularItem } from '../types/meta';
 import { GSIPayload } from '../types/gsi';
@@ -10,6 +13,7 @@ interface Props {
   isConnected: boolean;
   alerts: TimingEventAlert[];
   items: PopularItem[];
+  onRefreshItems: () => void;
   onOpenSettings: () => void;
   onExitOverlay: () => void;
 }
@@ -19,6 +23,7 @@ export const OverlayHUD: React.FC<Props> = ({
   isConnected,
   alerts,
   items,
+  onRefreshItems,
   onOpenSettings,
   onExitOverlay,
 }) => {
@@ -72,6 +77,7 @@ export const OverlayHUD: React.FC<Props> = ({
       className="w-full h-full flex flex-col justify-start items-center p-2 select-none"
       style={{ opacity: opacity / 100 }}
     >
+      <AlertProfileControls />
       {collapsed ? (
         /* Collapsed minimal badge */
         <button
@@ -228,6 +234,8 @@ export const OverlayHUD: React.FC<Props> = ({
             )}
           </div>
 
+          {payload?.hero?.name && apiService.getHeroByName(payload.hero.name) && <OpenDotaStatus
+            resource={`heroes/${apiService.getHeroByName(payload.hero.name)!.id}/itemPopularity`} onRefresh={onRefreshItems} />}
           {/* Popular item from OpenDota */}
           {popularItem && (
             <div className="pt-2 border-t border-slate-800/80">

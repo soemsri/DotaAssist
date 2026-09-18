@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { openDotaCache } from '../services/openDotaCache';
+import { OpenDotaStatus } from './OpenDotaStatus';
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { apiService } from "../services/apiService";
 import { PopularItem, HeroMetaInfo } from "../types/meta";
 import { Package, Coins, HelpCircle } from "lucide-react";
@@ -9,6 +11,7 @@ interface Props {
 }
 
 export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
+  const [refresh, setRefresh] = useState(0);
   const [manualHeroId, setManualHeroId] = useState<number | null>(null);
   const [allHeroes, setAllHeroes] = useState<HeroMetaInfo[]>(
     apiService.getAllHeroes(),
@@ -59,7 +62,16 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
     return () => {
       cancelled = true;
     };
-  }, [activeHero?.id]);
+  }, [activeHero?.id, refresh]);
+
+  const cachedHeroId = activeHero?.id;
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`));
+  useEffect(() => {
+    if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
+    let cancelled = false;
+    void apiService.getPopularItemsForHero(cachedHeroId, true).then(data => { if (!cancelled) { setItems(data); setLoadError(false); setLoading(false); } }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [cachedHeroId, cacheState]);
 
   const getTierBadge = (tier: PopularItem["tier"]) => {
     switch (tier) {
@@ -118,6 +130,8 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
           </div>
         </div>
       </div>
+
+      {activeHero && <OpenDotaStatus resource={`heroes/${activeHero.id}/itemPopularity`} onRefresh={() => setRefresh(n => n + 1)} />}
 
       {!activeHero ? (
         <div className="bg-slate-950/50 border border-dashed border-slate-800 rounded-lg p-5 text-center text-xs text-slate-400 flex flex-col items-center gap-2">

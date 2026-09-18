@@ -1,13 +1,10 @@
 import { TimingEventAlert } from '../types/meta';
 import { GSIEvent, GSIPayload } from '../types/gsi';
-import { audioService } from './audioService';
+import { audioService, ReminderContext } from './audioService';
 
-export const DOTA_RULESET_VERSION = '7.41e';
-
-const BOUNTY_RUNE_INTERVAL_SECONDS = 240;
-const WISDOM_SHRINE_INTERVAL_SECONDS = 420;
-const LOTUS_POOL_INTERVAL_SECONDS = 180;
-const DAY_NIGHT_INTERVAL_SECONDS = 300;
+import { TIMING_RULES as RULES } from '../data/timingRules';
+import { alertProfiles, Objective } from './alertProfiles';
+export const DOTA_RULESET_VERSION = RULES.patch;
 
 export interface RoshanTrackState {
   isDead: boolean;
@@ -35,16 +32,18 @@ export class TimingEngine {
       return;
     }
 
+    audioService.clearReminders('roshan');
     this.roshanState = {
       isDead: true,
       deathClockTime: time,
     };
     this.lastClockTime = time;
     this.clearPlayedAlerts(['audio_aegis_', 'audio_roshan_']);
-    audioService.playWarningBeep();
+    this.play('roshan', () => audioService.playWarningBeep());
   }
 
   public resetRoshan() {
+    audioService.clearReminders('roshan');
     this.roshanState = { isDead: false, deathClockTime: 0 };
   }
 
@@ -58,15 +57,17 @@ export class TimingEngine {
       return;
     }
 
+    audioService.clearReminders('tormentor');
     this.tormentorState = {
       isDead: true,
       deathClockTime: time,
     };
     this.clearPlayedAlerts(['audio_tormentor_respawn_']);
-    audioService.playWarningBeep();
+    this.play('tormentor', () => audioService.playWarningBeep());
   }
 
   public resetTormentor() {
+    audioService.clearReminders('tormentor');
     this.tormentorState = { isDead: false, deathClockTime: 0 };
   }
 
@@ -88,6 +89,7 @@ export class TimingEngine {
     const clockTime = Number.isFinite(map?.clock_time)
       ? Number(map?.clock_time)
       : this.lastClockTime;
+    if (Number.isFinite(map?.clock_time)) audioService.updateGameClock(clockTime);
     const roshanGSIState = map?.roshan_state?.toLowerCase() ?? null;
 
     if (roshanGSIState) {
@@ -138,6 +140,7 @@ export class TimingEngine {
   }
 
   public resetAll() {
+    audioService.clearReminders();
     this.playedAlerts.clear();
     this.roshanState = { isDead: false, deathClockTime: 0 };
     this.tormentorState = { isDead: false, deathClockTime: 0 };
@@ -156,15 +159,16 @@ export class TimingEngine {
       this.resetAll();
     }
     this.lastClockTime = roundedSec;
+    audioService.updateGameClock(clockTime);
 
     if (isPreGame) {
       const preGameSeconds = Math.max(0, -roundedSec);
       if (preGameSeconds <= 15 && preGameSeconds > 0 && !this.playedAlerts.has('pregame_bounty_audio')) {
-        audioService.playBountyRuneAlert();
+        this.play('rune_bounty', () => audioService.playBountyRuneAlert(), { id: 'pregame_bounty', target: 0, label: 'Bounty runes' });
         this.playedAlerts.add('pregame_bounty_audio');
       }
 
-      return [
+      return alertProfiles.enabled('rune_bounty') ? [
         {
           id: 'pregame_bounty',
           title: 'Initial Bounty Runes',
@@ -174,7 +178,7 @@ export class TimingEngine {
           type: 'rune_bounty',
           urgent: preGameSeconds <= 15,
         }
-      ];
+      ] : [];
     }
 
     const currentSec = Math.max(0, roundedSec);
@@ -183,7 +187,7 @@ export class TimingEngine {
     // 1. Bounty Runes (initial spawn at 0:00, then every 4 minutes)
     const nextBountyInterval = this.nextOccurrence(
       currentSec,
-      BOUNTY_RUNE_INTERVAL_SECONDS,
+      RULES.bountyInterval,
       0,
     );
     const bountyDiff = nextBountyInterval - currentSec;
@@ -199,7 +203,7 @@ export class TimingEngine {
       });
 
       if (bountyDiff <= 15 && bountyDiff > 0 && !this.playedAlerts.has(`audio_bounty_${nextBountyInterval}`)) {
-        audioService.playBountyRuneAlert();
+        this.play('rune_bounty', () => audioService.playBountyRuneAlert(), { id: `bounty_${nextBountyInterval}`, target: nextBountyInterval, label: 'Bounty runes' });
         this.playedAlerts.add(`audio_bounty_${nextBountyInterval}`);
       }
     }
@@ -211,14 +215,14 @@ export class TimingEngine {
     let isWaterRune = false;
     let powerLabel = 'Power Rune';
 
-    if (currentSec <= 360) {
-      nextPowerSec = currentSec <= 120 ? 120 : (currentSec <= 240 ? 240 : 360);
-      if (nextPowerSec < 360) {
+    if (currentSec <= RULES.powerFirst) {
+      nextPowerSec = currentSec <= RULES.riverInterval ? RULES.riverInterval : (currentSec <= RULES.riverInterval * 2 ? RULES.riverInterval * 2 : RULES.powerFirst);
+      if (nextPowerSec < RULES.powerFirst) {
         isWaterRune = true;
         powerLabel = 'Water Runes';
       }
     } else {
-      nextPowerSec = this.nextOccurrence(currentSec, 120, 360);
+      nextPowerSec = this.nextOccurrence(currentSec, RULES.riverInterval, RULES.powerFirst);
     }
 
     const powerDiff = nextPowerSec - currentSec;
@@ -234,7 +238,7 @@ export class TimingEngine {
       });
 
       if (powerDiff <= 20 && powerDiff > 0 && !this.playedAlerts.has(`audio_power_${nextPowerSec}`)) {
-        audioService.playPowerRuneAlert(isWaterRune);
+        this.play('rune_power', () => audioService.playPowerRuneAlert(isWaterRune), { id: `power_${nextPowerSec}`, target: nextPowerSec, label: powerLabel });
         this.playedAlerts.add(`audio_power_${nextPowerSec}`);
       }
     }
@@ -242,8 +246,8 @@ export class TimingEngine {
     // 3. Wisdom Shrines (first at 7:00, then every 7 minutes)
     const nextWisdomSec = this.nextOccurrence(
       currentSec,
-      WISDOM_SHRINE_INTERVAL_SECONDS,
-      WISDOM_SHRINE_INTERVAL_SECONDS,
+      RULES.wisdomInterval,
+      RULES.wisdomInterval,
     );
     const wisdomDiff = nextWisdomSec - currentSec;
     if (wisdomDiff <= 90 && wisdomDiff >= 0) {
@@ -258,14 +262,14 @@ export class TimingEngine {
       });
 
       if (wisdomDiff <= 30 && wisdomDiff > 0 && !this.playedAlerts.has(`audio_wisdom_${nextWisdomSec}`)) {
-        audioService.playWisdomShrineAlert();
+        this.play('rune_wisdom', () => audioService.playWisdomShrineAlert(), { id: `wisdom_${nextWisdomSec}`, target: nextWisdomSec, label: 'Wisdom shrine' });
         this.playedAlerts.add(`audio_wisdom_${nextWisdomSec}`);
       }
     }
 
     // 4. Tormentor (spawns at 20:00 = 1200s, respawns 10m = 600s after kill)
     if (this.tormentorState.isDead) {
-      const tormentorRespawnSec = this.tormentorState.deathClockTime + 600;
+      const tormentorRespawnSec = this.tormentorState.deathClockTime + RULES.tormentorRespawn;
       const tormentorDiff = tormentorRespawnSec - currentSec;
 
       if (tormentorDiff > 0) {
@@ -280,7 +284,7 @@ export class TimingEngine {
         });
 
         if (tormentorDiff <= 30 && !this.playedAlerts.has(`audio_tormentor_respawn_${tormentorRespawnSec}`)) {
-          audioService.playTormentorAlert();
+          this.play('tormentor', () => audioService.playTormentorAlert(), { id: `tormentor_${tormentorRespawnSec}`, target: tormentorRespawnSec, label: 'Tormentor ready' });
           this.playedAlerts.add(`audio_tormentor_respawn_${tormentorRespawnSec}`);
         }
       } else {
@@ -295,21 +299,21 @@ export class TimingEngine {
           urgent: true,
         });
       }
-    } else if (currentSec <= 1200) {
-      const tormentorDiff = 1200 - currentSec;
+    } else if (currentSec <= RULES.tormentorFirst) {
+      const tormentorDiff = RULES.tormentorFirst - currentSec;
       if (tormentorDiff <= 120 && tormentorDiff >= 0) {
         alerts.push({
           id: 'tormentor_initial',
           title: 'Tormentor Spawn',
-          subtitle: `Aghanim Shard Boss spawns at 20:00`,
-          targetSeconds: 1200,
+          subtitle: `Aghanim Shard Boss spawns at ${this.formatTime(RULES.tormentorFirst)}`,
+          targetSeconds: RULES.tormentorFirst,
           secondsRemaining: tormentorDiff,
           type: 'tormentor',
           urgent: tormentorDiff <= 30,
         });
 
         if (tormentorDiff <= 30 && tormentorDiff > 0 && !this.playedAlerts.has('audio_tormentor_initial')) {
-          audioService.playTormentorAlert();
+          this.play('tormentor', () => audioService.playTormentorAlert(), { id: 'tormentor_initial', target: RULES.tormentorFirst, label: 'Tormentor ready' });
           this.playedAlerts.add('audio_tormentor_initial');
         }
       }
@@ -318,8 +322,8 @@ export class TimingEngine {
     // 5. Lotus Pool (every 3 min = 180s: 3:00, 6:00, 9:00...)
     const nextLotusSec = this.nextOccurrence(
       currentSec,
-      LOTUS_POOL_INTERVAL_SECONDS,
-      LOTUS_POOL_INTERVAL_SECONDS,
+      RULES.lotusInterval,
+      RULES.lotusInterval,
     );
     const lotusDiff = nextLotusSec - currentSec;
     if (lotusDiff <= 40 && lotusDiff >= 0) {
@@ -337,11 +341,11 @@ export class TimingEngine {
     // 6. Day/Night Cycle (every 5 min = 300s: 5:00, 10:00, 15:00, 20:00...)
     const nextCycleSec = this.nextOccurrence(
       currentSec,
-      DAY_NIGHT_INTERVAL_SECONDS,
-      DAY_NIGHT_INTERVAL_SECONDS,
+      RULES.dayNightInterval,
+      RULES.dayNightInterval,
     );
     const cycleDiff = nextCycleSec - currentSec;
-    const isNightfall = Math.floor(nextCycleSec / DAY_NIGHT_INTERVAL_SECONDS) % 2 === 1;
+    const isNightfall = Math.floor(nextCycleSec / RULES.dayNightInterval) % 2 === 1;
     if (cycleDiff <= 30 && cycleDiff >= 0) {
       alerts.push({
         id: `cycle_${nextCycleSec}`,
@@ -354,16 +358,16 @@ export class TimingEngine {
       });
 
       if (cycleDiff <= 15 && cycleDiff > 0 && !this.playedAlerts.has(`audio_cycle_${nextCycleSec}`)) {
-        audioService.playDayNightAlert(isNightfall);
+        this.play('day_night', () => audioService.playDayNightAlert(isNightfall), { id: `cycle_${nextCycleSec}`, target: nextCycleSec, label: isNightfall ? 'Nightfall' : 'Daybreak' });
         this.playedAlerts.add(`audio_cycle_${nextCycleSec}`);
       }
     }
 
     // 7. Roshan & Aegis Tracking (if recorded dead)
     if (this.roshanState.isDead) {
-      const aegisExpiresSec = this.roshanState.deathClockTime + 300; // 5 min
-      const earliestRespawnSec = this.roshanState.deathClockTime + 480; // 8 min
-      const latestRespawnSec = this.roshanState.deathClockTime + 660; // 11 min
+      const aegisExpiresSec = this.roshanState.deathClockTime + RULES.aegisDuration; // 5 min
+      const earliestRespawnSec = this.roshanState.deathClockTime + RULES.roshanEarliest; // 8 min
+      const latestRespawnSec = this.roshanState.deathClockTime + RULES.roshanLatest; // 11 min
 
       if (currentSec < aegisExpiresSec) {
         const aegisDiff = aegisExpiresSec - currentSec;
@@ -378,7 +382,7 @@ export class TimingEngine {
         });
 
         if (aegisDiff <= 30 && aegisDiff > 0 && !this.playedAlerts.has('audio_aegis_expiring')) {
-          audioService.playAegisExpiringAlert();
+          this.play('roshan', () => audioService.playAegisExpiringAlert(), { id: 'aegis_expiring', target: aegisExpiresSec, label: 'Aegis expires' });
           this.playedAlerts.add('audio_aegis_expiring');
         }
       } else if (currentSec < earliestRespawnSec) {
@@ -405,7 +409,7 @@ export class TimingEngine {
         });
 
         if (!this.playedAlerts.has('audio_roshan_window_opened')) {
-          audioService.playRoshanAlert('Roshan respawn window is open');
+          this.play('roshan', () => audioService.playRoshanAlert('Roshan respawn window is open'), { id: 'roshan_window', target: currentSec, expiresAt: Math.min(latestRespawnSec, currentSec + 30) });
           this.playedAlerts.add('audio_roshan_window_opened');
         }
       } else {
@@ -421,13 +425,19 @@ export class TimingEngine {
         });
 
         if (!this.playedAlerts.has('audio_roshan_guaranteed_alive')) {
-          audioService.playRoshanAlert('Roshan is guaranteed alive');
+          this.play('roshan', () => audioService.playRoshanAlert('Roshan is guaranteed alive'), { id: 'roshan_alive', target: currentSec, expiresAt: currentSec + 30 });
           this.playedAlerts.add('audio_roshan_guaranteed_alive');
         }
       }
     }
 
-    return alerts.sort((a, b) => a.secondsRemaining - b.secondsRemaining);
+    return alerts.filter(alert => alertProfiles.enabled(alert.type)).sort((a, b) => a.secondsRemaining - b.secondsRemaining);
+  }
+
+  private play(objective: Objective, action: () => void, reminder?: Omit<ReminderContext, 'objective'>) {
+    if (!alertProfiles.enabled(objective)) return;
+    if (reminder) audioService.withReminder({ ...reminder, objective }, action);
+    else action();
   }
 
   public formatTime(totalSeconds: number): string {

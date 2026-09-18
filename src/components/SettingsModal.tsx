@@ -1,3 +1,4 @@
+import { AlertProfileControls } from './AlertProfileControls';
 import { DesktopSetup } from './DesktopSetup';
 import React, { useState } from 'react';
 import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe } from 'lucide-react';
@@ -91,6 +92,8 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
 
         {'__TAURI_INTERNALS__' in window && <DesktopSetup isConnected={isConnected} />}
 
+        <AlertProfileControls editor />
+
         {/* Section 1: Important Dota 2 Video Settings */}
         <div className="bg-amber-950/30 border border-amber-500/40 rounded-xl p-4 space-y-2">
           <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wide">
@@ -173,6 +176,12 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
               </select>
             </div>
           </div>
+
+          <p className="text-xs text-slate-400">
+            Voice reminders play one at a time, with the most urgent queued reminder first.
+            Countdowns use the latest game clock when speech starts. Expired reminders are skipped.
+            Disabling voice clears speech immediately; profile changes stop reminders for disabled objectives.
+          </p>
 
           {/* Audio Test Panel */}
           <div>

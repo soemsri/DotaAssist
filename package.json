@@ -12,14 +12,17 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "build": "tsc && vite build",
-    "test": "npm run test:verification && npm run test:gsi",
+    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache",
     "test:verification": "tsx tests/verification.test.ts",
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
     "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-desktop-shortcut.ps1",
     "tauri": "tauri",
     "dev:browser": "node scripts/start-app.cjs",
-    "build:windows": "tauri build --bundles nsis"
+    "build:windows": "tauri build --bundles nsis",
+    "test:profiles": "tsx tests/alert_profiles.test.ts",
+    "test:voice": "tsx tests/voice_queue.test.ts",
+    "test:cache": "tsx tests/opendota_cache.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

@@ -4,7 +4,7 @@ Date: 2026-09-03
 
 ## Status
 
-Accepted
+Accepted. The live-only outage policy below was superseded on 2026-09-18 by persistent, patch-tagged response caching; see [cache policy](../opendota-cache.md).
 
 ## Context
 

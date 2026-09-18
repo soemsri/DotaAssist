@@ -1,13 +1,11 @@
 # Design Alignment Summary
 
-Date: 2026-09-17T23:56:13.114384
+Date: 2026-09-18T00:41:34.224347
 
-Implemented all three decisions:
+Implemented the selected caching policy:
 
-- **Windows desktop:** native startup by default, NSIS installer configuration, and Windows build workflow.
-- **Click-through overlay:** configurable global hotkey, defaulting to `Ctrl+Shift+F10`, with persistent settings and conflict handling.
-- **Guided setup:** Steam detection, location confirmation, configuration backups, and live connection verification.
+- Language changes remained skipped.
+- Successful OpenDota responses persist across restarts, with fetch times, stale-data labels, and Refresh buttons.
+- Cache from another supported app patch is excluded; failed requests without matching data show unavailable.
 
-Frontend build, existing tests, Rust tests/build, and native startup/GSI checks passed on Linux. Windows installer and in-game interaction still need Windows testing.
-
-Run `npm start`. Build instructions are in [README.md](/root/Desktop/DotaAssist/README.md).
+Updated dashboard/HUD integration and documentation. Production build, existing tests, and new cache tests passed.

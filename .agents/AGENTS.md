@@ -77,3 +77,57 @@ Implemented all three decisions:
 Frontend build, existing tests, Rust tests/build, and native startup/GSI checks passed on Linux. Windows installer and in-game interaction still need Windows testing.
 
 Run `npm start`. Build instructions are in [README.md](/root/Desktop/DotaAssist/README.md).
+
+## Alert and rules alignment — 2026-09-18
+
+- Ship reviewed objective rules with app releases. `src/data/timingRules.ts` is the shared rules bundle; dashboard, HUD and Settings display its supported patch. There is no live patch detection or remote rules update.
+- Editable Carry, Mid, Offlane and Support presets control enabled objective reminders. The selected role and edits persist locally; Support initially preserves all reminders.
+- Suggest roles from bundled hero tags, explaining their limitations. Suggestions require confirmation or an explicit alternate selection; the previous profile remains active until then.
+- `npm test` covers persistence, confirmation/dismissal, visual/audio filtering, deduplication and gameplay timing boundaries. See [timing rules release review](docs/timing-rules-release.md).
+
+## Design Alignment & Workspace Preferences (2026-09-18)
+
+Implemented all three choices:
+
+- Centralized bundled timing rules and added prominent supported-patch labels.
+- Added editable, persistent Carry, Mid, Offlane, and Support presets.
+- Added hero-based role suggestions with confirmation; the previous profile stays active until accepted.
+
+Updated documentation and release-review instructions. `npm run build` and all tests passed, including new profile and timing-boundary tests. Windows in-game UI verification remains outstanding.
+
+## Voice queue alignment — 2026-09-18
+
+- Voice reminders queue by objective deadline, batching each synchronous game update and retaining stable order for ties. Already playing speech finishes unless it expires or is disabled.
+- Countdown wording is calculated from the latest received game clock when an utterance is submitted to the speech engine. Past-deadline reminders are removed; game time is not extrapolated during pauses.
+- Profile edits/changes immediately remove disabled objectives and cancel affected speech. Voice-off clears all queued/current speech; re-enabling never restores discarded reminders.
+- Match/tracker resets invalidate affected reminders, and disconnected GSI clears speech. Roshan state announcements expire after 30 game seconds; all queued entries have a 35-second wall-time freshness limit. A 15-second speech watchdog recovers from missing browser completion events.
+- Chimes remain immediate. Audio previews use the same serial voice queue and respect profile filtering, with their existing sample wording.
+- Verification: `npm run test:voice` covers urgency, deduplication, fresh countdowns, expiry, cancellation, mute/re-enable, late callbacks, pauses, and timing-engine integration. Real Windows speech output still requires a device test.
+
+## Design Alignment & Workspace Preferences (2026-09-18)
+
+Implemented all three choices:
+
+- Voice reminders queue by urgency and skip expired announcements.
+- Countdowns use the latest game clock when speech is submitted.
+- Profile changes immediately cancel disabled reminders; turning voice off stops speech and clears the queue.
+
+Added queue tests and updated Settings and documentation. `npm run build` and all tests pass. Actual Windows speech playback still needs device verification.
+
+## OpenDota cache alignment — 2026-09-18
+
+- Language work was skipped; existing language behavior is unchanged.
+- Validated successful hero-statistics, matchup and item-popularity responses persist in local storage with fetch timestamps. Each request attempts the network; failures use matching-patch saved data with a stale label. Concurrent requests for the same resource coalesce; requests time out after 15 seconds.
+- Cache records carry the app's supported rules patch at fetch time. Records tagged with another patch are excluded, so an outage without a matching entry shows unavailable. This tag does not imply OpenDota's underlying aggregate data is restricted to that patch.
+- Draft statistics, matchup panels, item guides and the HUD show fetch times and manual Refresh controls. Refreshing shared item data also updates the other visible view. Storage failures preserve in-session data and show a persistence notice.
+- This supersedes the earlier live-only outage policy; values are never synthesized. `npm run test:cache` checks restart fallback, patch exclusion, corruption, response validation, refresh, request coalescing and storage failure.
+
+## Design Alignment & Workspace Preferences (2026-09-18)
+
+Implemented the selected caching policy:
+
+- Language changes remained skipped.
+- Successful OpenDota responses persist across restarts, with fetch times, stale-data labels, and Refresh buttons.
+- Cache from another supported app patch is excluded; failed requests without matching data show unavailable.
+
+Updated dashboard/HUD integration and documentation. Production build, existing tests, and new cache tests passed.

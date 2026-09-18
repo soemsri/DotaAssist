@@ -49,6 +49,26 @@
 
 ## วิธีติดตั้งและเริ่มใช้งาน (Getting Started)
 
+### Timing rules and role profiles
+
+The dashboard, HUD and Settings display the **supported bundled patch**. This is not live game-patch detection. Rule changes ship in reviewed app releases; see the [release review process](docs/timing-rules-release.md).
+
+Choose Carry, Mid, Offlane or Support in the dashboard or HUD. Edit any preset's objective reminders in Settings, or reset that preset. Your selected profile and edits are saved across restarts. Master sound and voice controls still apply; Lotus reminders remain visual-only.
+
+When GSI identifies your hero, a role suggestion appears with its reasoning. Confirm it, choose another role, or select **Keep current**. Your previous profile remains active until you confirm. Hero tags are only a hint, since heroes can fill multiple roles. In the native HUD, enable interaction with your configured hotkey before using profile controls.
+
+### Voice reminders
+
+Voice reminders play one at a time, ordered by urgency. Countdown wording is refreshed from the latest received game clock when speech is submitted. Expired reminders are skipped. Disabling voice stops speech and clears the queue; switching or editing profiles immediately cancels reminders for objectives that are now disabled. Enabling voice again waits for new reminders.
+
+A match reset or loss of the GSI connection clears pending speech. The game clock is not extrapolated during pauses. Short chimes still play at the trigger. Settings audio tests share the voice queue and use sample wording.
+
+### OpenDota saved data
+
+Successful OpenDota responses are saved across restarts. If refreshing fails, a matching-patch saved response is shown with **Stale saved data** and its original fetch time. Use **Refresh** beside hero statistics, matchups, item popularity, or HUD item data to retry.
+
+Saved responses from another supported app patch are excluded. Without a matching saved response, the panel shows unavailable. The cache tag identifies the app's patch at fetch time, not the patch coverage of OpenDota's aggregate statistics. See the [cache policy](docs/opendota-cache.md).
+
 ### Windows desktop release
 
 Build on Windows with Node.js, Rust (MSVC), Visual Studio C++ Build Tools, and WebView2 available:

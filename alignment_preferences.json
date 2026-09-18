@@ -1,19 +1,19 @@
 {
   "project": "DotaAssist",
-  "timestamp": "2026-09-17T23:56:13.113948",
-  "summary": "Implemented all three decisions:\n\n- **Windows desktop:** native startup by default, NSIS installer configuration, and Windows build workflow.\n- **Click-through overlay:** configurable global hotkey, defaulting to `Ctrl+Shift+F10`, with persistent settings and conflict handling.\n- **Guided setup:** Steam detection, location confirmation, configuration backups, and live connection verification.\n\nFrontend build, existing tests, Rust tests/build, and native startup/GSI checks passed on Linux. Windows installer and in-game interaction still need Windows testing.\n\nRun `npm start`. Build instructions are in [README.md](/root/Desktop/DotaAssist/README.md).",
+  "timestamp": "2026-09-18T00:41:34.223829",
+  "summary": "Implemented the selected caching policy:\n\n- Language changes remained skipped.\n- Successful OpenDota responses persist across restarts, with fetch times, stale-data labels, and Refresh buttons.\n- Cache from another supported app patch is excluded; failed requests without matching data show unavailable.\n\nUpdated dashboard/HUD integration and documentation. Production build, existing tests, and new cache tests passed.",
   "answers": [
     {
       "step": 1,
-      "answer": "(Recommended) Windows Tauri desktop app — prioritize an installable app, reliable overlay behavior, and simple startup; keep browser mode for development."
+      "answer": "Skip"
     },
     {
       "step": 2,
-      "answer": "(Recommended) Click-through by default, with a configurable global hotkey to enable interaction — protect gameplay clicks while keeping timer controls accessible."
+      "answer": "(Recommended) Cache successful responses — show saved data with its fetch time and a stale-data label when refresh fails; provide a manual refresh button."
     },
     {
       "step": 3,
-      "answer": "(Recommended) Guided automatic setup — detect the Dota 2 installation, let the player confirm its location, back up any existing DotaAssist configuration before updating it, and verify the connection when the game sends data."
+      "answer": "(Recommended) Exclude previous-patch cache — fetch fresh data and show unavailable if the request fails; label all cached data with its fetch time."
     }
   ]
 }

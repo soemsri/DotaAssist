@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { openDotaCache } from '../services/openDotaCache';
+import { OpenDotaStatus } from './OpenDotaStatus';
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { GSIDraft, GSIPlayer } from "../types/gsi";
 import { apiService } from "../services/apiService";
 import { getEnemyPickClasses } from "../services/draftService";
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
+  const [refresh, setRefresh] = useState(0);
   const [allHeroes, setAllHeroes] = useState<HeroMetaInfo[]>([]);
   const [selectedEnemyHeroId, setSelectedEnemyHeroId] = useState<number | null>(null);
   const [counters, setCounters] = useState<HeroCounter[]>([]);
@@ -23,6 +26,11 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
       setAllHeroes(apiService.getAllHeroes());
     });
   }, []);
+
+  const heroStatsState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status('heroStats'));
+  useEffect(() => {
+    if (heroStatsState && heroStatsState.state !== 'loading') setAllHeroes(apiService.getAllHeroes());
+  }, [heroStatsState]);
 
   // Resolve the opposing side from the local player's actual GSI team.
   const enemyPickClasses = getEnemyPickClasses(draft, playerTeam);
@@ -69,7 +77,16 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
     return () => {
       cancelled = true;
     };
-  }, [selectedEnemyHeroId]);
+  }, [selectedEnemyHeroId, refresh]);
+
+  const cachedHeroId = selectedEnemyHeroId;
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/matchups`));
+  useEffect(() => {
+    if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
+    let cancelled = false;
+    void apiService.getCountersForHero(cachedHeroId, true).then(data => { if (!cancelled) { setCounters(data); setCounterError(false); setLoadingCounters(false); } }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [cachedHeroId, cacheState]);
 
   const selectedHeroInfo = selectedEnemyHeroId
     ? apiService.getHeroById(selectedEnemyHeroId)
@@ -104,6 +121,8 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
         </div>
       </div>
 
+      <OpenDotaStatus resource="heroStats" onRefresh={() => { void apiService.initData().then(() => setAllHeroes(apiService.getAllHeroes())); }} />
+      {selectedEnemyHeroId && <OpenDotaStatus resource={`heroes/${selectedEnemyHeroId}/matchups`} onRefresh={() => setRefresh(n => n + 1)} />}
       {/* Target enemy badge info */}
       {selectedHeroInfo ? (
         <div className="flex items-center justify-between bg-slate-950/70 border border-slate-800 rounded-lg px-3 py-2 mb-3">

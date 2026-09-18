@@ -1,4 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { openDotaCache } from './services/openDotaCache';
+import { alertProfiles } from './services/alertProfiles';
+import { AlertProfileControls } from './components/AlertProfileControls';
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { GSIPayload } from "./types/gsi";
 import { gsiService } from "./services/gsiService";
@@ -16,11 +19,13 @@ import { SettingsModal } from "./components/SettingsModal";
 import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink } from "lucide-react";
 
 export const App: React.FC = () => {
+  useSyncExternalStore(alertProfiles.subscribe, alertProfiles.getSnapshot);
   const [payload, setPayload] = useState<GSIPayload | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [overlayMode, setOverlayMode] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"timers" | "draft" | "items">("timers");
+  const [itemRefresh, setItemRefresh] = useState(0);
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
   const [isTauri, setIsTauri] = useState<boolean>(false);
   const [pipContainer, setPipContainer] = useState<HTMLElement | null>(null);
@@ -72,15 +77,20 @@ export const App: React.FC = () => {
     // Unlock audio context on startup
     audioService.initContext();
 
+    let hadConnection = gsiService.getIsConnected();
     // Subscribe to genuine GSI events from Dota 2
     const unsubscribe = gsiService.subscribe((data) => {
+      hadConnection = true;
       timingEngine.handleGSIPayload(data);
       setPayload(data);
       setIsConnected(true);
     });
 
     const connectionMonitor = window.setInterval(() => {
-      setIsConnected(gsiService.getIsConnected());
+      const connected = gsiService.getIsConnected();
+      setIsConnected(connected);
+      if (!connected && hadConnection) audioService.clearReminders();
+      hadConnection = connected;
     }, 1000);
 
     return () => {
@@ -96,6 +106,18 @@ export const App: React.FC = () => {
     ? timingEngine.calculateAlerts(clockTime, isPreGame)
     : [];
   const heroName = livePayload?.hero?.name;
+  const cachedHeroId = heroName ? apiService.getHeroByName(heroName)?.id : undefined;
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`));
+  useEffect(() => {
+    if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
+    let cancelled = false;
+    void apiService.getPopularItemsForHero(cachedHeroId, true).then(data => { if (!cancelled) setPopularItems(data); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [cachedHeroId, cacheState]);
+
+
+  const matchId = livePayload?.map?.matchid;
+  useEffect(() => { alertProfiles.observe(heroName, matchId); }, [heroName, matchId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,7 +141,7 @@ export const App: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [heroName]);
+  }, [heroName, itemRefresh]);
 
   const closePiP = useCallback(() => {
     const pipWindow = pipWindowRef.current;
@@ -185,6 +207,7 @@ export const App: React.FC = () => {
           payload={livePayload}
           isConnected={isConnected}
           alerts={alerts}
+          onRefreshItems={() => setItemRefresh(n => n + 1)}
           items={popularItems}
           onOpenSettings={() => {
             setSettingsOpen(true);
@@ -209,6 +232,7 @@ export const App: React.FC = () => {
             payload={livePayload}
             isConnected={isConnected}
             alerts={alerts}
+            onRefreshItems={() => setItemRefresh(n => n + 1)}
             items={popularItems}
             onOpenSettings={() => setSettingsOpen(true)}
             onExitOverlay={() => { void changeOverlay(false); }}
@@ -335,6 +359,7 @@ export const App: React.FC = () => {
       {(desktopError || desktop?.error) && <p role="alert" className="p-3 text-rose-300">{desktopError || desktop?.error}</p>}
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-5 space-y-5">
+        <AlertProfileControls />
         {/* Live GSI Status Bar */}
         <GSIStatusBadge
           payload={livePayload}

@@ -1,3 +1,4 @@
+import { openDotaCache } from './openDotaCache';
 import rawHeroes from "../data/dotaHeroes.json";
 import rawItems from "../data/dotaItems.json";
 import { HeroCounter, HeroMetaInfo, PopularItem } from "../types/meta";
@@ -57,8 +58,6 @@ function getRankedTotals(item: OpenDotaHeroStats): { wins: number; picks: number
 export class OpenDotaService {
   private heroCache: Map<number, HeroMetaInfo> = new Map();
   private nameToIdMap: Map<string, number> = new Map();
-  private matchupsCache: Map<number, HeroCounter[]> = new Map();
-  private popularItemsCache: Map<number, PopularItem[]> = new Map();
   private heroStatsRequest: Promise<boolean> | null = null;
 
   constructor() {
@@ -97,15 +96,13 @@ export class OpenDotaService {
 
   private async fetchHeroStats(): Promise<boolean> {
     try {
-      const res = await fetch("https://api.opendota.com/api/heroStats");
-      if (!res.ok) {
-        throw new Error(`OpenDota heroStats returned HTTP ${res.status}`);
-      }
-
-      const data: unknown = await res.json();
-      if (!Array.isArray(data)) {
-        throw new Error("OpenDota heroStats returned an invalid payload");
-      }
+      const data = await openDotaCache.load('heroStats', (value): value is OpenDotaHeroStats[] =>
+        Array.isArray(value) && value.every(item => item && Number.isInteger(item.id) &&
+          typeof item.name === 'string' && typeof item.localized_name === 'string' &&
+          Array.isArray(item.roles) && item.roles.every((role: unknown) => typeof role === 'string')));
+      this.heroCache.clear();
+      this.nameToIdMap.clear();
+      this.loadHeroCatalog();
 
       data.forEach((rawItem: unknown) => {
         const item = rawItem as OpenDotaHeroStats;
@@ -139,6 +136,9 @@ export class OpenDotaService {
 
       return true;
     } catch (error) {
+      this.heroCache.clear();
+      this.nameToIdMap.clear();
+      this.loadHeroCatalog();
       console.warn("[OpenDota] Hero statistics unavailable:", error);
       return false;
     }
@@ -170,19 +170,11 @@ export class OpenDotaService {
   }
 
   /** Fetch counter win rates directly from OpenDota matchup records. */
-  public async getCountersForHero(heroId: number): Promise<HeroCounter[]> {
-    const cached = this.matchupsCache.get(heroId);
-    if (cached) return cached;
-
-    const res = await fetch(`https://api.opendota.com/api/heroes/${heroId}/matchups`);
-    if (!res.ok) {
-      throw new Error(`OpenDota matchups returned HTTP ${res.status}`);
-    }
-
-    const data: unknown = await res.json();
-    if (!Array.isArray(data)) {
-      throw new Error("OpenDota matchups returned an invalid payload");
-    }
+  public async getCountersForHero(heroId: number, cachedOnly = false): Promise<HeroCounter[]> {
+    const load = cachedOnly ? openDotaCache.peek.bind(openDotaCache) : openDotaCache.load.bind(openDotaCache);
+    const data = await load(`heroes/${heroId}/matchups`, (value): value is OpenDotaMatchup[] =>
+      Array.isArray(value) && value.every(item => item && Number.isInteger(item.hero_id) &&
+        isFiniteNonNegative(item.games_played) && isFiniteNonNegative(item.wins) && item.wins <= item.games_played));
 
     const counters: HeroCounter[] = (data as OpenDotaMatchup[])
       .filter(
@@ -210,7 +202,6 @@ export class OpenDotaService {
       .sort((a, b) => b.winRateAgainst - a.winRateAgainst)
       .slice(0, 6);
 
-    this.matchupsCache.set(heroId, counters);
     return counters;
   }
 
@@ -218,23 +209,17 @@ export class OpenDotaService {
    * Build an item list only from OpenDota's per-hero itemPopularity buckets.
    * The bundled item catalog is used solely to resolve item IDs to names/costs.
    */
-  public async getPopularItemsForHero(heroId: number): Promise<PopularItem[]> {
-    const cached = this.popularItemsCache.get(heroId);
-    if (cached) return cached;
-
-    const res = await fetch(
-      `https://api.opendota.com/api/heroes/${heroId}/itemPopularity`,
-    );
-    if (!res.ok) {
-      throw new Error(`OpenDota itemPopularity returned HTTP ${res.status}`);
-    }
-
-    const data: unknown = await res.json();
-    if (!data || typeof data !== "object" || Array.isArray(data)) {
-      throw new Error("OpenDota itemPopularity returned an invalid payload");
-    }
-
-    const popularity = data as OpenDotaItemPopularity;
+  public async getPopularItemsForHero(heroId: number, cachedOnly = false): Promise<PopularItem[]> {
+    const load = cachedOnly ? openDotaCache.peek.bind(openDotaCache) : openDotaCache.load.bind(openDotaCache);
+    const popularity = await load(`heroes/${heroId}/itemPopularity`, (value): value is OpenDotaItemPopularity => {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+      const record = value as Record<string, unknown>;
+      const keys = ['start_game_items', 'early_game_items', 'mid_game_items', 'late_game_items'];
+      return keys.some(key => key in record) && keys.every(key => {
+        const bucket = record[key];
+        return bucket === undefined || (!!bucket && typeof bucket === 'object' && !Array.isArray(bucket) && Object.values(bucket).every(isFiniteNonNegative));
+      });
+    });
     const phases: Array<{
       bucket: Record<string, number> | undefined;
       tier: PopularItem["tier"];
@@ -305,7 +290,6 @@ export class OpenDotaService {
       items.push(...phaseItems);
     });
 
-    this.popularItemsCache.set(heroId, items);
     return items;
   }
 
