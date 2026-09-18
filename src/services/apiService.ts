@@ -1,6 +1,15 @@
 import rawHeroes from "../data/dotaHeroes.json";
 import rawItems from "../data/dotaItems.json";
-import { HeroCounter, HeroMetaInfo, PopularItem } from "../types/meta";
+import rawTalents from "../data/dotaTalents.json";
+import rawSkillBuilds from "../data/dotaSkillBuilds.json";
+import { HeroCounter, HeroMetaInfo, PopularItem, RawTalentTier, HeroSkillInfo, SkillProgressionStep, SituationalSkillRule } from "../types/meta";
+
+export interface RawSkillBuild {
+  heroName: string;
+  abilities: HeroSkillInfo[];
+  progression: SkillProgressionStep[];
+  situationalRules?: SituationalSkillRule[];
+}
 
 interface DotaItemRecord {
   id: number;
@@ -59,10 +68,15 @@ export class OpenDotaService {
   private nameToIdMap: Map<string, number> = new Map();
   private matchupsCache: Map<number, HeroCounter[]> = new Map();
   private popularItemsCache: Map<number, PopularItem[]> = new Map();
+  private talentCache: Map<string, RawTalentTier[]> = new Map();
+  private skillBuildCache: Map<string, RawSkillBuild> = new Map();
   private heroStatsRequest: Promise<boolean> | null = null;
+  private dynamicTalentsLoading: Promise<boolean> | null = null;
 
   constructor() {
     this.loadHeroCatalog();
+    this.loadBundledTalents();
+    this.loadBundledSkillBuilds();
   }
 
   /**
@@ -314,6 +328,104 @@ export class OpenDotaService {
       return ITEMS_MAP[itemIdOrKey.toString()];
     }
     return Object.values(ITEMS_MAP).find((item) => item.key === itemIdOrKey);
+  }
+
+  private loadBundledTalents() {
+    const talentsMap = rawTalents as unknown as Record<string, RawTalentTier[]>;
+    for (const [heroKey, tiers] of Object.entries(talentsMap)) {
+      this.talentCache.set(heroKey.toLowerCase(), tiers);
+    }
+  }
+
+  private loadBundledSkillBuilds() {
+    const buildsMap = rawSkillBuilds as unknown as Record<string, RawSkillBuild>;
+    for (const [heroKey, build] of Object.entries(buildsMap)) {
+      this.skillBuildCache.set(heroKey.toLowerCase(), build);
+    }
+  }
+
+  /**
+   * Returns talent tiers for a hero. Uses in-memory cache / bundled fallback immediately.
+   */
+  public getHeroTalents(heroNameOrKey: string): RawTalentTier[] | null {
+    const cleanKey = heroNameOrKey.replace(/^npc_dota_hero_/, "").toLowerCase();
+    return this.talentCache.get(cleanKey) || null;
+  }
+
+  /**
+   * Returns standard skill build progression for a hero. Uses in-memory cache / bundled fallback immediately.
+   */
+  public getHeroSkillBuild(heroNameOrKey: string): RawSkillBuild | null {
+    const cleanKey = heroNameOrKey.replace(/^npc_dota_hero_/, "").toLowerCase();
+    return this.skillBuildCache.get(cleanKey) || null;
+  }
+
+  /**
+   * Fetches latest abilities/talents dynamically from OpenDota / dotaconstants.
+   * If network fails or is offline, gracefully retains the bundled cache.
+   */
+  public async refreshTalentsFromAPI(): Promise<boolean> {
+    if (this.dynamicTalentsLoading) return this.dynamicTalentsLoading;
+
+    this.dynamicTalentsLoading = (async () => {
+      try {
+        const [haRes, abRes] = await Promise.all([
+          fetch("https://raw.githubusercontent.com/odota/dotaconstants/master/build/hero_abilities.json"),
+          fetch("https://raw.githubusercontent.com/odota/dotaconstants/master/build/abilities.json"),
+        ]);
+        if (!haRes.ok || !abRes.ok) return false;
+
+        const heroAbilities = await haRes.json() as Record<string, { talents?: Array<{ name: string; level: number }> }>;
+        const abilities = await abRes.json() as Record<string, { dname?: string }>;
+
+        const levelMap: Record<number, 10 | 15 | 20 | 25> = { 1: 10, 2: 15, 3: 20, 4: 25 };
+
+        for (const [heroKey, data] of Object.entries(heroAbilities)) {
+          if (!heroKey.startsWith("npc_dota_hero_")) continue;
+          const cleanKey = heroKey.replace(/^npc_dota_hero_/, "").toLowerCase();
+          const talents = data.talents || [];
+          if (talents.length < 8) continue;
+
+          const tiers: RawTalentTier[] = [];
+          for (let lvl = 1; lvl <= 4; lvl++) {
+            const lvlTalents = talents.filter((t) => t.level === lvl);
+            if (lvlTalents.length < 2) continue;
+
+            const leftRaw = abilities[lvlTalents[0].name]?.dname || lvlTalents[0].name;
+            const rightRaw = abilities[lvlTalents[1].name]?.dname || lvlTalents[1].name;
+
+            const leftEn = leftRaw
+              .replace(/\{s:bonus_[a-zA-Z0-9_]+\}/g, "Bonus")
+              .replace(/\{s:[a-zA-Z0-9_]+\}/g, "Bonus")
+              .trim();
+            const rightEn = rightRaw
+              .replace(/\{s:bonus_[a-zA-Z0-9_]+\}/g, "Bonus")
+              .replace(/\{s:[a-zA-Z0-9_]+\}/g, "Bonus")
+              .trim();
+
+            tiers.push({
+              level: levelMap[lvl],
+              left: { en: leftEn, th: leftEn },
+              right: { en: rightEn, th: rightEn },
+              defaultPick: "right",
+              defaultReasonEn: "Updated talent from live OpenDota database.",
+              defaultReasonTh: "ทักษะอัปเดตล่าสุดจากฐานข้อมูลออนไลน์",
+            });
+          }
+
+          if (tiers.length === 4) {
+            this.talentCache.set(cleanKey, tiers);
+          }
+        }
+        return true;
+      } catch {
+        return false;
+      } finally {
+        this.dynamicTalentsLoading = null;
+      }
+    })();
+
+    return this.dynamicTalentsLoading;
   }
 }
 
