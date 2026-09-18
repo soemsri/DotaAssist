@@ -1,3 +1,10 @@
+## Desktop alignment — 2026-09-17
+
+- Windows Tauri is the primary release. `npm start` runs native development; `npm run dev:browser` explicitly starts the browser bridge. `npm run build:windows` produces an NSIS installer on Windows.
+- Overlay entry defaults to click-through. The configurable global hotkey (default `Ctrl+Shift+F10`) toggles mouse interaction without requesting focus. Registration failure blocks overlay entry and appears in Settings. Hotkey and installation path persist in the app configuration directory.
+- First launch opens Settings. Steam registry/default locations and `libraryfolders.vdf` provide installation candidates. The user selects or pastes a folder and confirms before installation. Existing DotaAssist GSI configuration receives a unique `.bak.N` backup. Connection verification requires incoming Dota 2 data; saving a file alone does not verify a connection.
+- Windows installer, global hotkey behavior over Dota 2, and FPS impact require testing on a Windows gaming machine.
+
 # DotaAssist — Project Context & Architecture Guide
 
 ## 1. Project Vision

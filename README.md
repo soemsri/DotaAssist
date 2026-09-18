@@ -49,42 +49,44 @@
 
 ## วิธีติดตั้งและเริ่มใช้งาน (Getting Started)
 
-### 1. การตั้งค่า Dota 2 GSI Configuration
-คัดลอกไฟล์ `gamestate_integration_dotaassist.cfg` ไปไว้ในโฟลเดอร์เกม Dota 2:
-- **Windows**:
-  `C:\Program Files (x86)\Steam\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration\`
-- **Linux**:
-  `~/.steam/steam/steamapps/common/dota 2 beta/game/dota/cfg/gamestate_integration/`
-- **macOS**:
-  `~/Library/Application Support/Steam/steamapps/common/dota 2 beta/game/dota/cfg/gamestate_integration/`
+### Windows desktop release
 
-### 2. วิธีเริ่มใช้งานแอป
-- **Windows**: ดับเบิลคลิกที่ไฟล์ `DotaAssist.bat`
-- **Command Line**:
-```bash
-# รัน GSI Bridge + Web App (รองรับ Always-On-Top PiP Floating HUD)
-npm start
-
-# หรือรันในโหมด Tauri Desktop App
-npm run tauri:dev
-```
-
-### 3. ตรวจสอบก่อน Build/Release
-
-บน Ubuntu/Debian ให้ติดตั้ง build และ AppImage media dependencies ก่อน:
+Build on Windows with Node.js, Rust (MSVC), Visual Studio C++ Build Tools, and WebView2 available:
 
 ```bash
-sudo apt install pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev librsvg2-dev \
-  patchelf gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good
-```
-
-หากต้องการเปิด smoke test แบบไม่มี desktop session ให้เพิ่ม `xvfb` และ `dbus-x11` ด้วย ตัวเลือก `bundleMediaFramework` ใน Tauri config จะรวม GStreamer ที่จำเป็นสำหรับเสียงไว้ใน AppImage
-
-```bash
+npm ci
 npm test
 npm run build
-cargo check --locked --manifest-path src-tauri/Cargo.toml
-npm run tauri:build
+cargo test --locked --manifest-path src-tauri/Cargo.toml
+npm run build:windows
 ```
 
-`npm start` ใช้ Node GSI bridge + SSE สำหรับโหมดเว็บ ส่วน `npm run tauri:dev` ใช้ Rust GSI listener + Tauri IPC โดยตรง ทั้งสองโหมดไม่ควรรันพร้อมกันเพราะใช้พอร์ต `3001` เดียวกัน
+The NSIS installer is written to `src-tauri/target/release/bundle/nsis/`. Install it and launch DotaAssist from the Start menu. End users do not need Node.js or Rust. Windows remains the release target; Linux can be used for frontend and Rust development checks.
+
+### First launch
+
+1. Settings opens automatically until a Dota 2 installation has been configured.
+2. Choose a detected Steam installation, or paste the Dota 2 installation folder from Steam's **Manage → Browse local files**.
+3. Confirm the location and click **Install GSI configuration**. Existing `gamestate_integration_dotaassist.cfg` files are preserved as uniquely numbered `.bak.N` files in the same folder. A validation or write failure is shown in Settings.
+4. Add `-gamestateintegration` to Dota 2's Steam launch options, restart Dota 2, and enter a match. Settings reports **Connection verified** only when the app receives game data. It returns to waiting when the feed expires.
+5. Set Dota 2 to **Borderless Window**, then enter the overlay. It starts click-through. Press **Ctrl+Shift+F10** to interact with timer buttons, dragging, or settings; press again to restore click-through. Change the shortcut in Settings. If the shortcut is unavailable, choose another before entering the overlay.
+
+The installation path and hotkey persist in Tauri's app configuration directory as `desktop.json`. The setup wizard changes only the DotaAssist GSI file, not Steam launch options or other integrations. Manual configuration remains available in Settings for browser development.
+
+### Development
+
+```bash
+npm ci
+npm start              # Tauri app with embedded Rust GSI listener
+npm run dev:browser    # Browser/PiP development with Node GSI bridge
+npm run build          # TypeScript and frontend production build
+npm test
+cargo check --locked --manifest-path src-tauri/Cargo.toml
+cargo test --locked --manifest-path src-tauri/Cargo.toml
+```
+
+Run one mode at a time: both listeners use port 3001. `DotaAssist.bat` launches a local release executable if present, otherwise starts native development with its Vite server. It never launches a debug executable without the development server.
+
+On Ubuntu/Debian, native development checks require `pkg-config`, `libgtk-3-dev`, `libwebkit2gtk-4.1-dev`, and `librsvg2-dev`. To build a native executable for a development smoke test without the Windows installer target, run `npm run tauri:build -- --no-bundle`.
+
+Before shipping, test the installer, Steam detection across libraries, hotkey conflicts and persistence, click-through over a borderless Dota 2 match, manual timer controls, setup backups, and connection loss on Windows. Measure FPS and memory on the target machine.

@@ -9,19 +9,47 @@ use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use tiny_http::{Method, Response, Server, StatusCode};
 
+mod desktop;
+
 #[tauri::command]
 fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), String> {
-    if overlay {
-        let _ = window.set_always_on_top(true);
-        let _ = window.set_decorations(false);
-        let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize::new(360.0, 520.0)));
-    } else {
-        let _ = window.set_always_on_top(true);
-        let _ = window.set_decorations(true);
-        let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize::new(1280.0, 840.0)));
-        let _ = window.center();
+    let state = window.state::<desktop::DesktopState>();
+    let mut s = state.0.lock().unwrap();
+    if overlay && !s.hotkey_ready {
+        return Err(
+            "Configure an available interaction hotkey in Settings before entering the overlay."
+                .into(),
+        );
     }
-    let _ = window.set_focus();
+    window
+        .set_ignore_cursor_events(false)
+        .map_err(|e| e.to_string())?;
+    window
+        .set_always_on_top(overlay)
+        .map_err(|e| e.to_string())?;
+    window
+        .set_decorations(!overlay)
+        .map_err(|e| e.to_string())?;
+    let (width, height) = if overlay {
+        (360.0, 520.0)
+    } else {
+        (1280.0, 840.0)
+    };
+    window
+        .set_size(tauri::Size::Logical(tauri::LogicalSize::new(width, height)))
+        .map_err(|e| e.to_string())?;
+    window
+        .set_ignore_cursor_events(overlay)
+        .map_err(|e| e.to_string())?;
+    s.overlay = overlay;
+    s.interactive = !overlay;
+    drop(s);
+    window
+        .emit(
+            "desktop-status",
+            desktop::desktop_status(window.app_handle().clone()),
+        )
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -37,6 +65,12 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                 eprintln!(
                     "[DotaAssist Rust GSI] Failed to bind to {}: {}",
                     address, err
+                );
+                app_handle.state::<desktop::DesktopState>().0.lock().unwrap().gsi_error =
+                    Some(format!("GSI listener could not start on {address}: {err}. Close other DotaAssist instances or the browser development bridge, then restart."));
+                let _ = app_handle.emit(
+                    "desktop-status",
+                    desktop::desktop_status(app_handle.clone()),
                 );
                 return;
             }
@@ -57,7 +91,8 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                         );
                         let _ = request.respond(response);
                     } else if request.method() == &Method::Get && url == "/health" {
-                        let response = Response::from_string("OK").with_status_code(StatusCode(200));
+                        let response =
+                            Response::from_string("OK").with_status_code(StatusCode(200));
                         let _ = request.respond(response);
                     } else if request.method() == &Method::Post && (url == "/gsi" || url == "/") {
                         let mut body_str = String::new();
@@ -85,6 +120,19 @@ fn start_gsi_http_server(app_handle: AppHandle, running: Arc<AtomicBool>) {
                                 continue;
                             }
                         };
+
+                        if payload
+                            .get("provider")
+                            .and_then(|p| p.get("appid"))
+                            .and_then(Value::as_u64)
+                            != Some(570)
+                        {
+                            let _ = request.respond(
+                                Response::from_string("Expected Dota 2 GSI provider appid 570")
+                                    .with_status_code(StatusCode(400)),
+                            );
+                            continue;
+                        }
 
                         if let Err(e) = app_handle.emit("gsi-update", payload) {
                             eprintln!("[DotaAssist Rust GSI] Error emitting payload: {}", e);
@@ -124,15 +172,24 @@ fn main() {
     let running_clone = running.clone();
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![toggle_overlay_window])
+        .manage(desktop::DesktopState::default())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+        .invoke_handler(tauri::generate_handler![
+            toggle_overlay_window,
+            desktop::desktop_status,
+            desktop::set_overlay_hotkey,
+            desktop::detect_dota_installations,
+            desktop::install_gsi_config
+        ])
         .setup(move |app| {
+            desktop::initialize(app.handle());
             let app_handle = app.handle().clone();
             start_gsi_http_server(app_handle, running_clone);
 
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.show();
                 let _ = window.set_focus();
-                let _ = window.set_always_on_top(true);
+                let _ = window.set_always_on_top(false);
             }
 
             Ok(())

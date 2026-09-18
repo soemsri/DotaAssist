@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node scripts/start-app.cjs",
-    "app": "node scripts/start-app.cjs",
-    "dev": "node scripts/start-app.cjs",
+    "start": "tauri dev",
+    "app": "tauri dev",
+    "dev": "tauri dev",
     "dev:vite": "vite",
     "gsi-bridge": "node scripts/gsi-bridge.cjs",
     "tauri:dev": "tauri dev",
@@ -17,7 +17,9 @@
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
     "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-desktop-shortcut.ps1",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "dev:browser": "node scripts/start-app.cjs",
+    "build:windows": "tauri build --bundles nsis"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

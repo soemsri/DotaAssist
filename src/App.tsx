@@ -11,6 +11,7 @@ import { TimingAlerts } from "./components/TimingAlerts";
 import { DraftAdvisor } from "./components/DraftAdvisor";
 import { ItemGuide } from "./components/ItemGuide";
 import { OverlayHUD } from "./components/OverlayHUD";
+import { DesktopStatus } from "./components/DesktopSetup";
 import { SettingsModal } from "./components/SettingsModal";
 import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink } from "lucide-react";
 
@@ -23,6 +24,8 @@ export const App: React.FC = () => {
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
   const [isTauri, setIsTauri] = useState<boolean>(false);
   const [pipContainer, setPipContainer] = useState<HTMLElement | null>(null);
+  const [desktop, setDesktop] = useState<DesktopStatus | null>(null);
+  const [desktopError, setDesktopError] = useState("");
   const pipWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
@@ -30,14 +33,37 @@ export const App: React.FC = () => {
     setIsTauri(hasTauri);
   }, []);
 
-  // Sync window Always-on-top, size, and decorations with Tauri backend
   useEffect(() => {
-    if (isTauri) {
-      import("@tauri-apps/api/core").then(({ invoke }) => {
-        invoke("toggle_overlay_window", { overlay: overlayMode }).catch(console.error);
-      });
+    if (!isTauri) return;
+    let disposed = false;
+    let unlisten: (() => void) | undefined;
+    async function initialize() {
+      const { listen } = await import('@tauri-apps/api/event');
+      const stop = await listen<DesktopStatus>('desktop-status', event => setDesktop(event.payload));
+      if (disposed) { stop(); return; }
+      unlisten = stop;
+      const { invoke } = await import('@tauri-apps/api/core');
+      const status = await invoke<DesktopStatus>('desktop_status');
+      if (!disposed) {
+        setDesktop(status);
+        if (!status.dota_path || !status.hotkey_ready) setSettingsOpen(true);
+      }
     }
-  }, [overlayMode, isTauri]);
+    initialize().catch(e => setDesktopError(String(e)));
+    return () => { disposed = true; unlisten?.(); };
+  }, [isTauri]);
+
+  const changeOverlay = async (overlay: boolean) => {
+    try {
+      if (isTauri) {
+        const { invoke } = await import('@tauri-apps/api/core');
+        await invoke('toggle_overlay_window', { overlay });
+      }
+      setSettingsOpen(false);
+      setOverlayMode(overlay);
+      setDesktopError('');
+    } catch (e) { setDesktopError(String(e)); }
+  };
 
   useEffect(() => {
     // Initial data load for heroes and live stats
@@ -174,16 +200,20 @@ export const App: React.FC = () => {
   if (overlayMode) {
     return (
       <>
-        <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative">
+        <div className="w-screen h-screen bg-transparent select-none overflow-auto relative">
+          {isTauri && <div className="bg-slate-900 text-amber-200 text-xs p-2" role="status">
+            {desktop?.interactive ? 'HUD interaction enabled' : 'Click-through'} · {desktop?.hotkey} to toggle
+            {(desktopError || desktop?.error) && <p>{desktopError || desktop?.error}</p>}
+          </div>}
           <OverlayHUD
             payload={livePayload}
             isConnected={isConnected}
             alerts={alerts}
             items={popularItems}
             onOpenSettings={() => setSettingsOpen(true)}
-            onExitOverlay={() => setOverlayMode(false)}
+            onExitOverlay={() => { void changeOverlay(false); }}
           />
-          <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+          <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
         </div>
         {pipOverlay}
       </>
@@ -232,7 +262,7 @@ export const App: React.FC = () => {
             {/* Switch to Overlay HUD */}
             {isTauri ? (
               <button
-                onClick={() => setOverlayMode(true)}
+                onClick={() => { void changeOverlay(true); }}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95"
               >
                 <Monitor className="w-3.5 h-3.5" />
@@ -302,6 +332,7 @@ export const App: React.FC = () => {
         </div>
       </div>
 
+      {(desktopError || desktop?.error) && <p role="alert" className="p-3 text-rose-300">{desktopError || desktop?.error}</p>}
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-5 space-y-5">
         {/* Live GSI Status Bar */}
@@ -392,7 +423,7 @@ export const App: React.FC = () => {
       </footer>
 
       {/* Settings Modal */}
-      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
       {pipOverlay}
     </div>
   );

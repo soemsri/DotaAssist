@@ -65,3 +65,15 @@
 
 - **Frontend Assets**: ผ่านการคอมไพล์ TypeScript และ Vite (`npm run build`) สำเร็จ 100%
 - **Rust Backend**: ผ่านการตรวจสอบโครงสร้างโค้ดด้วย [`cargo check`](file:///root/Desktop/DotaAssist/src-tauri) สำเร็จ 100% พร้อมเชื่อมโยงระบบ GSI และหน้าต่างโปร่งแสงเรียบร้อยแล้ว
+
+## Design Alignment & Workspace Preferences (2026-09-17)
+
+Implemented all three decisions:
+
+- **Windows desktop:** native startup by default, NSIS installer configuration, and Windows build workflow.
+- **Click-through overlay:** configurable global hotkey, defaulting to `Ctrl+Shift+F10`, with persistent settings and conflict handling.
+- **Guided setup:** Steam detection, location confirmation, configuration backups, and live connection verification.
+
+Frontend build, existing tests, Rust tests/build, and native startup/GSI checks passed on Linux. Windows installer and in-game interaction still need Windows testing.
+
+Run `npm start`. Build instructions are in [README.md](/root/Desktop/DotaAssist/README.md).

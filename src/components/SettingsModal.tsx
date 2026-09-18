@@ -1,9 +1,11 @@
+import { DesktopSetup } from './DesktopSetup';
 import React, { useState } from 'react';
 import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe } from 'lucide-react';
 import { audioService } from '../services/audioService';
 
 interface Props {
   isOpen: boolean;
+  isConnected: boolean;
   onClose: () => void;
 }
 
@@ -29,7 +31,7 @@ const GSI_CFG_CONTENT = `"Dota 2 Integration Configuration"
     }
 }`;
 
-export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
+export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected }) => {
   const [copied, setCopied] = useState(false);
   const currentSettings = audioService.getSettings();
   const [volume, setVolume] = useState(Math.round(currentSettings.masterVolume * 100));
@@ -86,6 +88,8 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {'__TAURI_INTERNALS__' in window && <DesktopSetup isConnected={isConnected} />}
 
         {/* Section 1: Important Dota 2 Video Settings */}
         <div className="bg-amber-950/30 border border-amber-500/40 rounded-xl p-4 space-y-2">

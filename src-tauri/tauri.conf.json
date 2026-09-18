@@ -36,8 +36,8 @@
         "resizable": true,
         "fullscreen": false,
         "transparent": true,
-        "decorations": false,
-        "alwaysOnTop": true,
+        "decorations": true,
+        "alwaysOnTop": false,
         "center": true,
         "focus": true
       }
@@ -45,7 +45,9 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "nsis"
+    ],
     "linux": {
       "appimage": {
         "bundleMediaFramework": true
