@@ -404,7 +404,7 @@ fn scan_minimap(
     #[cfg(target_os = "windows")]
     {
         let pos = position.unwrap_or_else(|| "left".to_string());
-        let team_str = player_team.unwrap_or_default().to_lowercase();
+        let _team_str = player_team.unwrap_or_default().to_lowercase();
         if let Some((buffer, width, height)) = win_capture::capture_minimap(&pos) {
             let (min_x, max_x, min_y, max_y) = get_inner_minimap_bounds(&pos, width, height);
             let inner_w = (max_x.saturating_sub(min_x)).max(1);
