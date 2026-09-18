@@ -157,7 +157,8 @@ export const App: React.FC = () => {
     : [];
   const heroName = livePayload?.hero?.name;
   const cachedHeroId = heroName ? apiService.getHeroByName(heroName)?.id : undefined;
-  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`));
+  const getCacheStatus = useCallback(() => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`), [cachedHeroId]);
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, getCacheStatus);
   useEffect(() => {
     if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
     let cancelled = false;

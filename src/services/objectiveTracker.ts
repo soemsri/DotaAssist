@@ -138,7 +138,10 @@ class ObjectiveTrackerService {
     return () => this.listeners.delete(listener);
   };
 
+  private snapshot: ObjectiveUndoState | null = null;
+
   private notify() {
+    this.snapshot = null;
     this.listeners.forEach(fn => fn());
   }
 
@@ -160,11 +163,13 @@ class ObjectiveTrackerService {
   }
 
   public getSnapshot = (): ObjectiveUndoState => {
+    if (this.snapshot) return this.snapshot;
+
     const now = Date.now();
     const roshanRemaining = Math.max(0, Math.ceil((this.roshanUndoExpiry - now) / 1000));
     const tormentorRemaining = Math.max(0, Math.ceil((this.tormentorUndoExpiry - now) / 1000));
 
-    return {
+    this.snapshot = {
       roshanActive: roshanRemaining > 0,
       roshanRemainingSec: roshanRemaining,
       tormentorActive: tormentorRemaining > 0,
@@ -174,6 +179,7 @@ class ObjectiveTrackerService {
       roshanHotkey: this.roshanHotkey,
       tormentorHotkey: this.tormentorHotkey,
     };
+    return this.snapshot;
   };
 
   public formatRoshanSummary(clockTime: number): string {

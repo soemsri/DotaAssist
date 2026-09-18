@@ -1,7 +1,8 @@
-import { useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { openDotaCache } from '../services/openDotaCache';
 export function OpenDotaStatus({ resource, onRefresh }: { resource: string; onRefresh: () => void }) {
-  const status = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(resource));
+  const getStatus = useCallback(() => openDotaCache.status(resource), [resource]);
+  const status = useSyncExternalStore(openDotaCache.subscribe, getStatus);
   return <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 my-2" role="status">
     <span className={status?.state === 'stale' ? 'text-amber-300' : ''}>
       {status?.state === 'stale' ? 'Stale saved data — refresh failed.' : status?.state === 'fresh' ? 'OpenDota data.' : status?.state === 'loading' ? 'Refreshing OpenDota…' : 'OpenDota data unavailable.'}

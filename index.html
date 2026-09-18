@@ -8,6 +8,22 @@
   </head>
   <body class="bg-transparent select-none antialiased text-slate-100">
     <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(e) {
+        var el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#0f172a;color:#f87171;padding:24px;font-family:sans-serif;font-size:14px;z-index:999999;overflow:auto;';
+        el.innerHTML = '<h2 style="color:#ef4444;margin-top:0;">DotaAssist Startup Error</h2>' +
+          '<pre style="white-space:pre-wrap;background:#1e293b;padding:12px;border-radius:6px;">' + (e.error ? (e.error.stack || e.error) : e.message) + '</pre>';
+        document.body.appendChild(el);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#0f172a;color:#f87171;padding:24px;font-family:sans-serif;font-size:14px;z-index:999999;overflow:auto;';
+        el.innerHTML = '<h2 style="color:#ef4444;margin-top:0;">DotaAssist Promise Rejection</h2>' +
+          '<pre style="white-space:pre-wrap;background:#1e293b;padding:12px;border-radius:6px;">' + (e.reason && e.reason.stack ? e.reason.stack : e.reason) + '</pre>';
+        document.body.appendChild(el);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 import { openDotaCache } from '../services/openDotaCache';
 import { OpenDotaStatus } from './OpenDotaStatus';
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { apiService } from "../services/apiService";
 import { audioService } from "../services/audioService";
 import { PopularItem, HeroMetaInfo } from "../types/meta";
@@ -69,7 +69,8 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
   }, [activeHero?.id, refresh]);
 
   const cachedHeroId = activeHero?.id;
-  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`));
+  const getCacheStatus = useCallback(() => openDotaCache.status(`heroes/${cachedHeroId}/itemPopularity`), [cachedHeroId]);
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, getCacheStatus);
   useEffect(() => {
     if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
     let cancelled = false;

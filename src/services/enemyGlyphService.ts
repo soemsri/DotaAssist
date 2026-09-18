@@ -31,15 +31,17 @@ export class EnemyGlyphService {
     return () => this.listeners.delete(listener);
   };
 
+  private snapshot: EnemyGlyphSnapshot | null = null;
+
   private notify() {
+    this.snapshot = null;
     this.listeners.forEach((fn) => fn());
   }
 
   public getSnapshot = (): EnemyGlyphSnapshot => {
-    const clock = this.activatedClockTime !== null ? this.activatedClockTime : 0;
-    void clock; // avoid unused warning
+    if (this.snapshot) return this.snapshot;
 
-    return {
+    this.snapshot = {
       isReady: this.isReady,
       isActive: this.isActive,
       activeRemainingSeconds: this.calculateActiveRemaining(),
@@ -49,6 +51,7 @@ export class EnemyGlyphService {
       firstT1Destroyed: this.firstT1Destroyed,
       enemyTeam: this.enemyTeam,
     };
+    return this.snapshot;
   };
 
   private lastClockTime: number = 0;

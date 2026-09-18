@@ -1,6 +1,6 @@
 import { openDotaCache } from '../services/openDotaCache';
 import { OpenDotaStatus } from './OpenDotaStatus';
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { GSIDraft, GSIPlayer } from "../types/gsi";
 import { apiService } from "../services/apiService";
 import { getEnemyPickClasses } from "../services/draftService";
@@ -27,7 +27,8 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
     });
   }, []);
 
-  const heroStatsState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status('heroStats'));
+  const getHeroStatsStatus = useCallback(() => openDotaCache.status('heroStats'), []);
+  const heroStatsState = useSyncExternalStore(openDotaCache.subscribe, getHeroStatsStatus);
   useEffect(() => {
     if (heroStatsState && heroStatsState.state !== 'loading') setAllHeroes(apiService.getAllHeroes());
   }, [heroStatsState]);
@@ -80,7 +81,8 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
   }, [selectedEnemyHeroId, refresh]);
 
   const cachedHeroId = selectedEnemyHeroId;
-  const cacheState = useSyncExternalStore(openDotaCache.subscribe, () => openDotaCache.status(`heroes/${cachedHeroId}/matchups`));
+  const getMatchupsStatus = useCallback(() => openDotaCache.status(`heroes/${cachedHeroId}/matchups`), [cachedHeroId]);
+  const cacheState = useSyncExternalStore(openDotaCache.subscribe, getMatchupsStatus);
   useEffect(() => {
     if (!cachedHeroId || (cacheState?.state !== 'fresh' && cacheState?.state !== 'stale')) return;
     let cancelled = false;

@@ -404,7 +404,8 @@ fn scan_minimap(
     #[cfg(target_os = "windows")]
     {
         let pos = position.unwrap_or_else(|| "left".to_string());
-        let _team_str = player_team.unwrap_or_default().to_lowercase();
+        #[allow(unused_variables)]
+        let team_str = player_team.unwrap_or_default().to_lowercase();
         if let Some((buffer, width, height)) = win_capture::capture_minimap(&pos) {
             let (min_x, max_x, min_y, max_y) = get_inner_minimap_bounds(&pos, width, height);
             let inner_w = (max_x.saturating_sub(min_x)).max(1);
@@ -891,6 +892,8 @@ fn main() {
                 let _ = window.show();
                 let _ = window.set_focus();
                 let _ = window.set_always_on_top(false);
+                #[cfg(debug_assertions)]
+                let _ = window.open_devtools();
             }
 
             Ok(())
