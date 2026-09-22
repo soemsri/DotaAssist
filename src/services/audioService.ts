@@ -37,6 +37,7 @@ interface VoicePhrases {
   waterRune: string;
   bountyRune: string;
   tormentor: string;
+  healingLotus: string;
   roshanWindow: string;
   roshanGuaranteed: string;
   aegisExpiring: string;
@@ -80,6 +81,7 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     waterRune: 'Water Runes in twenty seconds',
     bountyRune: 'Bounty Runes in fifteen seconds',
     tormentor: 'Tormentor ready in thirty seconds',
+    healingLotus: 'Healing Lotus in fifteen seconds',
     roshanWindow: 'Roshan respawn window is active',
     roshanGuaranteed: 'Roshan is guaranteed alive',
     aegisExpiring: 'Aegis expires in thirty seconds',
@@ -138,6 +140,7 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     waterRune: 'รูนน้ำ ในอีก 20 วินาที',
     bountyRune: 'รูนทอง ในอีก 15 วินาที',
     tormentor: 'บอสทอร์เมนเตอร์ พร้อมเกิดใน 30 วินาที',
+    healingLotus: 'ดอกบัวฟื้นฟู ในอีก 15 วินาที',
     roshanWindow: 'ช่วงเวลาเกิดโรชานเริ่มแล้ว',
     roshanGuaranteed: 'โรชานเกิดแล้ว',
     aegisExpiring: 'โล่เอจิส จะหมดอายุในอีก 30 วินาที',
@@ -209,6 +212,9 @@ export function formatThaiCountdown(label: string, seconds: number, objective?: 
   if (norm.includes('tormentor') || objective === 'tormentor') {
     return `บอสทอร์เมนเตอร์ เกิดใน ${seconds} วินาที`;
   }
+  if (norm.includes('lotus') || objective === 'lotus') {
+    return `ดอกบัวฟื้นฟู ในอีก ${seconds} วินาที`;
+  }
   if (norm.includes('stack') || objective === 'camp_stack') {
     return `ดึงซ้อนครีปป่า ในอีก ${seconds} วินาที`;
   }
@@ -256,7 +262,8 @@ export function normalizeThaiSpeech(text: string): string {
     .replace(/หวอร์ด/g, 'วอร์ด')
     .replace(/ใบวาป/g, 'ใบวาร์ป')
     .replace(/พูลครีปใหญ่/g, 'ดึงครีปใหญ่')
-    .replace(/พูลครีป/g, 'ดึงครีปเลน')
+    .replace(/พูลครีป/g, 'ดึง ครีป เลน')
+    .replace(/ดึงครีปเลน/g, 'ดึง ครีป เลน')
     .replace(/สแต็กครีปป่า/g, 'ดึงซ้อนครีปป่า');
 }
 
@@ -623,6 +630,8 @@ class AudioNotificationService {
       case 'power_rune': return phrases.powerRune;
       case 'water_rune': return phrases.waterRune;
       case 'bounty_rune': return phrases.bountyRune;
+      case 'healing_lotus':
+      case 'lotus': return phrases.healingLotus;
       case 'tormentor': return phrases.tormentor;
       case 'roshan_window': return phrases.roshanWindow;
       case 'roshan_guaranteed': return phrases.roshanGuaranteed;
@@ -680,6 +689,18 @@ class AudioNotificationService {
     }
     const lang = this.settings.voiceLanguage;
     this.speak(PHRASES[lang].bountyRune, undefined, 'rune_bounty');
+  }
+
+  public playLotusAlert() {
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.12, 'sine');
+      this.playTone(659.25, now + 0.08, 0.12, 'sine');
+      this.playTone(783.99, now + 0.16, 0.2, 'sine');
+    }
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].healingLotus, undefined, 'lotus');
   }
 
   public playTormentorAlert() {

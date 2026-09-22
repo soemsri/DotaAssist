@@ -436,6 +436,16 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
               >
                 🎙️ "{voiceLang === 'th-TH' ? 'ไอเทมต่อไป' : 'next item'}"
               </button>
+              <button
+                onClick={() =>
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'เวลาดอกบัว' : 'lotus time'
+                  )
+                }
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'เวลาดอกบัว' : 'lotus time'}"
+              </button>
             </div>
           </div>
 
@@ -468,6 +478,12 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-amber-300 font-semibold transition text-left"
               >
                 {voiceLang === 'th-TH' ? '💰 รูนทอง (4m)' : '💰 Bounty Rune (4m)'}
+              </button>
+              <button
+                onClick={() => audioService.playLotusAlert()}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-emerald-300 font-semibold transition text-left"
+              >
+                {voiceLang === 'th-TH' ? '🪷 ดอกบัวฟื้นฟู (3m)' : '🪷 Healing Lotus (3m)'}
               </button>
               <button
                 onClick={() => audioService.playTormentorAlert()}

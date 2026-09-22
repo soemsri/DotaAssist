@@ -423,13 +423,22 @@ export class TimingEngine {
     if (lotusDiff <= 40 && lotusDiff >= 0) {
       alerts.push({
         id: `lotus_${nextLotusSec}`,
-        title: 'Lotus Pool Fruits',
+        title: 'Healing Lotus',
         subtitle: `Harvest at sides at ${this.formatTime(nextLotusSec)}`,
         targetSeconds: nextLotusSec,
         secondsRemaining: lotusDiff,
         type: 'lotus',
         urgent: lotusDiff <= 15,
       });
+
+      if (lotusDiff <= 15 && lotusDiff > 0 && !this.playedAlerts.has(`audio_lotus_${nextLotusSec}`)) {
+        this.play('lotus', () => audioService.playLotusAlert(), {
+          id: `lotus_${nextLotusSec}`,
+          target: nextLotusSec,
+          label: 'Healing Lotus',
+        });
+        this.playedAlerts.add(`audio_lotus_${nextLotusSec}`);
+      }
     }
 
     // 6. Day/Night Cycle (every 5 min = 300s: 5:00, 10:00, 15:00, 20:00...)

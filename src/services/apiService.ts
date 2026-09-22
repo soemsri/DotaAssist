@@ -375,8 +375,11 @@ export class OpenDotaService {
             const lvlTalents = talents.filter((t) => t.level === lvl);
             if (lvlTalents.length < 2) continue;
 
-            const leftRaw = abilities[lvlTalents[0].name]?.dname || lvlTalents[0].name;
-            const rightRaw = abilities[lvlTalents[1].name]?.dname || lvlTalents[1].name;
+            // In Dota 2 game definitions (npc_heroes.txt) and Valve UI:
+            // Index 1 (e.g. Ability11, Ability13...) is the LEFT talent branch
+            // Index 0 (e.g. Ability10, Ability12...) is the RIGHT talent branch
+            const leftRaw = abilities[lvlTalents[1].name]?.dname || lvlTalents[1].name;
+            const rightRaw = abilities[lvlTalents[0].name]?.dname || lvlTalents[0].name;
 
             const leftEn = leftRaw
               .replace(/\{s:bonus_[a-zA-Z0-9_]+\}/g, "Bonus")

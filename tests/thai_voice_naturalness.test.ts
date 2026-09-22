@@ -1,4 +1,4 @@
-﻿import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import { audioService, formatThaiCountdown, normalizeThaiSpeech, PHRASES } from '../src/services/audioService';
 import { objectiveTracker } from '../src/services/objectiveTracker';
 
@@ -22,6 +22,8 @@ assert.equal(formatThaiCountdown('Water runes', 19), 'รูนน้ำ ใน�
 assert.equal(formatThaiCountdown('Power Rune', 19), 'รูนแม่น้ำ ในอีก 19 วินาที');
 assert.equal(formatThaiCountdown('Bounty runes', 14), 'รูนทอง ในอีก 14 วินาที');
 assert.equal(formatThaiCountdown('Tormentor ready', 30), 'บอสทอร์เมนเตอร์ เกิดใน 30 วินาที');
+assert.equal(formatThaiCountdown('Healing Lotus', 15), 'ดอกบัวฟื้นฟู ในอีก 15 วินาที');
+assert.equal(formatThaiCountdown('Lotus Pool', 15, 'lotus'), 'ดอกบัวฟื้นฟู ในอีก 15 วินาที');
 assert.equal(formatThaiCountdown('Stack camp', 10), 'ดึงซ้อนครีปป่า ในอีก 10 วินาที');
 assert.equal(formatThaiCountdown('Aegis expires', 30), 'โล่เอจิส จะหมดอายุในอีก 30 วินาที');
 assert.equal(formatThaiCountdown('Nightfall', 25), 'กำลังจะเข้าสู่เวลากลางคืน ในอีก 25 วินาที');
@@ -34,7 +36,8 @@ assert.equal(normalizeThaiSpeech('รูน EXP ในอีก 30 วินา�
 assert.equal(normalizeThaiSpeech('ไอเทม BKB ศัตรู'), 'ไอเทม บีเคบี ศัตรู');
 assert.equal(normalizeThaiSpeech('หวอร์ดหมดอายุแล้ว'), 'วอร์ดหมดอายุแล้ว');
 assert.equal(normalizeThaiSpeech('ไม่มีใบวาป'), 'ไม่มีใบวาร์ป');
-assert.equal(normalizeThaiSpeech('พูลครีป'), 'ดึงครีปเลน');
+assert.equal(normalizeThaiSpeech('พูลครีป'), 'ดึง ครีป เลน');
+assert.equal(normalizeThaiSpeech('ดึงครีปเลน'), 'ดึง ครีป เลน');
 assert.equal(normalizeThaiSpeech('พูลครีปใหญ่'), 'ดึงครีปใหญ่');
 assert.equal(normalizeThaiSpeech('สแต็กครีปป่า'), 'ดึงซ้อนครีปป่า');
 assert.equal(normalizeThaiSpeech('สำหรับ Anti-Mage แนะนำ Tango'), 'สำหรับ แอนตี้เมจ แนะนำ แทงโก้');
@@ -60,6 +63,11 @@ assert.ok(spoken.some(s => s.includes('ปลดล็อกไอเทมป�
 spoken.length = 0;
 audioService.playCampStackAlert();
 assert.ok(spoken.some(s => s.includes('ดึงซ้อนครีปป่า')));
+
+// Healing Lotus
+spoken.length = 0;
+audioService.playLotusAlert();
+assert.ok(spoken.some(s => s.includes('ดอกบัวฟื้นฟู ในอีก 15 วินาที')));
 
 // Enemy Glyph
 spoken.length = 0;

@@ -125,6 +125,13 @@ const COMMAND_RULES: VoiceCommandRule[] = [
     phrasesEn: ['buyback status', 'is buyback ready', 'how much buyback', 'buyback check', 'check buyback'],
     actionType: 'query',
   },
+  // 11. Query Healing Lotus
+  {
+    intent: 'query_lotus',
+    phrasesTh: ['เวลาดอกบัว', 'ดอกบัวเกิดตอนไหน', 'ดอกบัวเกิดเมื่อไหร่', 'ดูดอกบัว', 'ดอกบัว', 'บัว', 'บัวฟื้นฟู'],
+    phrasesEn: ['lotus time', 'when is lotus', 'check lotus', 'next lotus', 'lotus spawn', 'healing lotus', 'lotus'],
+    actionType: 'query',
+  },
 ];
 
 type ResultListener = (res: VoiceRecognitionResult) => void;
@@ -572,6 +579,21 @@ class VoiceCommandService {
               ? 'ไม่สามารถตรวจสอบบายแบ็คได้ในขณะนี้'
               : 'Buyback status currently unavailable';
         }
+        audioService.speakVoiceFeedback(feedbackText);
+        break;
+      }
+
+      case 'query_lotus': {
+        const nextLotusSec = clockTime <= 180 ? 180 : 180 + Math.ceil((clockTime - 180) / 180) * 180;
+        const sec = Math.max(0, Math.ceil(nextLotusSec - clockTime));
+        feedbackText =
+          lang === 'th-TH'
+            ? sec <= 5
+              ? 'ดอกบัวฟื้นฟู กำลังเกิดแล้ว!'
+              : `ดอกบัวฟื้นฟู ในอีก ${sec} วินาที`
+            : sec <= 5
+            ? 'Healing Lotus is spawning now!'
+            : `Healing Lotus in ${sec} seconds`;
         audioService.speakVoiceFeedback(feedbackText);
         break;
       }

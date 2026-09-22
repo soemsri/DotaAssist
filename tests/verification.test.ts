@@ -809,28 +809,28 @@ console.log('[Test 25] ✓ Lane Assistant Creep Pull & Stack alert engine passed
 // Test 26: Adaptive Talent Tree Advisor Engine (Pillar 6)
 import { talentAdvisor } from '../src/services/talentAdvisor';
 
-// 26a: Anti-Mage against magic burst threat -> Recommend Left (+9 Strength) at level 10
+// 26a: Anti-Mage against magic burst threat -> Recommend Right (+9 Strength) at level 10
 const amMagicBurstTiers = talentAdvisor.getTalentRecommendations('npc_dota_hero_antimage', [{ threatType: 'magic_burst' } as any]);
 if (!amMagicBurstTiers || amMagicBurstTiers.length !== 4) {
   throw new Error('Test 26a Failed: Expected 4 talent tiers for Anti-Mage');
 }
 const amTier10 = amMagicBurstTiers.find((t) => t.level === 10);
-if (!amTier10 || amTier10.recommended !== 'left' || !amTier10.reasonEn.includes('magic') || !amTier10.reasonTh.includes('เลือด')) {
-  throw new Error(`Test 26a Failed: Expected Left (+9 Strength) recommendation for AM against magic burst, got ${amTier10?.recommended}`);
+if (!amTier10 || amTier10.recommended !== 'right' || !amTier10.reasonEn.includes('magic') || !amTier10.reasonTh.includes('เลือด')) {
+  throw new Error(`Test 26a Failed: Expected Right (+9 Strength) recommendation for AM against magic burst, got ${amTier10?.recommended}`);
 }
 
-// 26b: Anti-Mage with no threats -> Default to Right (+9 Attack Speed) at level 10
+// 26b: Anti-Mage with no threats -> Default to Left (+9 Attack Speed) at level 10
 const amDefaultTiers = talentAdvisor.getTalentRecommendations('npc_dota_hero_antimage', []);
 const amDefaultTier10 = amDefaultTiers.find((t) => t.level === 10);
-if (!amDefaultTier10 || amDefaultTier10.recommended !== 'right') {
-  throw new Error(`Test 26b Failed: Expected Right (+9 Attack Speed) default recommendation for AM, got ${amDefaultTier10?.recommended}`);
+if (!amDefaultTier10 || amDefaultTier10.recommended !== 'left') {
+  throw new Error(`Test 26b Failed: Expected Left (+9 Attack Speed) default recommendation for AM, got ${amDefaultTier10?.recommended}`);
 }
 
-// 26c: Juggernaut against illusion threat -> Recommend Right (+150 Blade Fury DPS) at level 10
+// 26c: Juggernaut against illusion threat -> Recommend Left (+150 Blade Fury DPS) at level 10
 const juggIllusionTiers = talentAdvisor.getTalentRecommendations('npc_dota_hero_juggernaut', [{ threatType: 'illusions' } as any]);
 const juggTier10 = juggIllusionTiers.find((t) => t.level === 10);
-if (!juggTier10 || juggTier10.recommended !== 'right' || !juggTier10.reasonEn.includes('illusion')) {
-  throw new Error(`Test 26c Failed: Expected Right (+150 Blade Fury DPS) for Juggernaut against illusions, got ${juggTier10?.recommended}`);
+if (!juggTier10 || juggTier10.recommended !== 'left' || !juggTier10.reasonEn.includes('illusion')) {
+  throw new Error(`Test 26c Failed: Expected Left (+150 Blade Fury DPS) for Juggernaut against illusions, got ${juggTier10?.recommended}`);
 }
 
 // 26d: Generic heuristic for uncurated hero (e.g. Pudge)
@@ -839,8 +839,8 @@ if (!pudgeTiers || pudgeTiers.length !== 4) {
   throw new Error('Test 26d Failed: Expected 4 talent tiers generated for uncurated hero');
 }
 const pudgeTier10 = pudgeTiers.find((t) => t.level === 10);
-if (!pudgeTier10 || pudgeTier10.recommended !== 'left') {
-  throw new Error('Test 26d Failed: Fallback heuristic should recommend Left (survival) against magic burst');
+if (!pudgeTier10 || pudgeTier10.recommended !== 'right') {
+  throw new Error('Test 26d Failed: Fallback heuristic should recommend Right (survival) against magic burst');
 }
 
 // 26e: Bilingual phrase formatting
@@ -941,7 +941,7 @@ if (!sniperTiers || sniperTiers.length !== 4) {
   throw new Error('Test 28b Failed: Sniper talent tiers missing or incomplete');
 }
 const sniperLvl10 = sniperTiers.find((t) => t.level === 10);
-if (!sniperLvl10?.right.en.includes('Headshot') && !sniperLvl10?.left.en.includes('Take Aim')) {
+if (!sniperLvl10?.left.en.includes('Headshot') && !sniperLvl10?.right.en.includes('Take Aim')) {
   throw new Error('Test 28b Failed: Sniper level 10 real talent names mismatch');
 }
 
@@ -950,7 +950,7 @@ if (!invokerTiers || invokerTiers.length !== 4) {
   throw new Error('Test 28b Failed: Invoker talent tiers missing or incomplete');
 }
 const invokerLvl10 = invokerTiers.find((t) => t.level === 10);
-if (!invokerLvl10?.right.en.includes('Tornado') && !invokerLvl10?.left.en.includes('Ice Wall')) {
+if (!invokerLvl10?.left.en.includes('Tornado') && !invokerLvl10?.right.en.includes('Ice Wall')) {
   throw new Error('Test 28b Failed: Invoker level 10 real talent names mismatch');
 }
 
@@ -959,7 +959,7 @@ if (!pudgeTiersFromApi || pudgeTiersFromApi.length !== 4) {
   throw new Error('Test 28b Failed: Pudge talent tiers missing or incomplete');
 }
 const pudgeLvl10 = pudgeTiersFromApi.find((t) => t.level === 10);
-if (!pudgeLvl10?.left.en.includes('Armor') && !pudgeLvl10?.right.en.includes('Rot')) {
+if (!pudgeLvl10?.right.en.includes('Armor') && !pudgeLvl10?.left.en.includes('Rot')) {
   throw new Error('Test 28b Failed: Pudge level 10 real talent names mismatch');
 }
 

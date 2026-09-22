@@ -8,7 +8,8 @@ export type VoiceCommandIntent =
   | 'query_rune'
   | 'query_roshan'
   | 'query_next_item'
-  | 'query_buyback';
+  | 'query_buyback'
+  | 'query_lotus';
 
 export type VoiceAssistantStatus =
   | 'listening'
