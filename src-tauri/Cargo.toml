@@ -1,6 +1,6 @@
 [package]
 name = "dota-assist"
-version = "1.0.0"
+version = "1.0.1"
 description = "DotaAssist Real-Time In-Game Overlay & Real-Time Assistant"
 authors = ["DotaAssist Team"]
 edition = "2021"
