@@ -3,7 +3,7 @@ import rawHeroes from "../data/dotaHeroes.json";
 import rawItems from "../data/dotaItems.json";
 import rawTalents from "../data/dotaTalents.json";
 import rawSkillBuilds from "../data/dotaSkillBuilds.json";
-import { HeroCounter, HeroMetaInfo, PopularItem, RawTalentTier, HeroSkillInfo, SkillProgressionStep, SituationalSkillRule } from "../types/meta";
+import { HeroCounter, HeroMetaInfo, PopularItem, RawTalentTier, HeroSkillInfo, SkillProgressionStep, SituationalSkillRule, RankBracket, HighRankItem, HighRankItemBuild } from "../types/meta";
 
 export interface RawSkillBuild {
   heroName: string;
@@ -312,6 +312,216 @@ export class OpenDotaService {
       return ITEMS_MAP[itemIdOrKey.toString()];
     }
     return Object.values(ITEMS_MAP).find((item) => item.key === itemIdOrKey);
+  }
+
+  // ---------------------------------------------------------------------------
+  // High-Rank Item Builds via OpenDota Explorer API
+  // ---------------------------------------------------------------------------
+
+  private static readonly RANK_BRACKET_CONFIG: Record<RankBracket, { minTier: number; label: string }> = {
+    all: { minTier: 0, label: 'All Ranks' },
+    ancient_plus: { minTier: 50, label: 'Ancient+' },
+    divine_plus: { minTier: 70, label: 'Divine+' },
+    immortal: { minTier: 80, label: 'Immortal' },
+  };
+
+  /** Build the Explorer SQL query for hero item purchases in a rank bracket. */
+  public static buildExplorerSQL(heroId: number, minRankTier: number): string {
+    return `SELECT pm.purchase_log, pm.win, m.avg_rank_tier FROM player_matches pm JOIN matches m ON m.match_id = pm.match_id WHERE pm.hero_id = ${heroId} AND m.avg_rank_tier >= ${minRankTier} AND m.start_time > extract(epoch from now())::int - 2592000 AND pm.purchase_log IS NOT NULL LIMIT 200`;
+  }
+
+  /** Classify item purchase time into game phase tier. */
+  public static classifyItemTier(purchaseTimeSec: number): HighRankItem['tier'] {
+    if (purchaseTimeSec < 0) return 'starting';
+    if (purchaseTimeSec < 600) return 'early';      // < 10 min
+    if (purchaseTimeSec < 1800) return 'core';       // 10–30 min
+    return 'luxury';                                  // > 30 min
+  }
+
+  /**
+   * Fetch item builds for a hero filtered by rank bracket using the Explorer API.
+   * Falls back to the standard itemPopularity endpoint if Explorer fails.
+   */
+  public async getHighRankItemsForHero(
+    heroId: number,
+    bracket: RankBracket = 'divine_plus',
+  ): Promise<HighRankItemBuild> {
+    const hero = this.getHeroById(heroId);
+    const heroName = hero?.localized_name ?? `Hero #${heroId}`;
+    const config = OpenDotaService.RANK_BRACKET_CONFIG[bracket];
+    const cacheKey = `explorer/hero-items/${heroId}/${bracket}`;
+
+    // If bracket is "all", skip Explorer and go straight to itemPopularity
+    if (bracket === 'all') {
+      return this.buildFallbackItemBuild(heroId, heroName, bracket, config.label);
+    }
+
+    try {
+      const sql = OpenDotaService.buildExplorerSQL(heroId, config.minTier);
+      const url = `https://api.opendota.com/api/explorer?sql=${encodeURIComponent(sql)}`;
+
+      interface ExplorerRow {
+        purchase_log: Array<{ time: number; key: string }> | null;
+        win: boolean | number;
+        avg_rank_tier: number;
+      }
+      interface ExplorerResponse {
+        rows: ExplorerRow[];
+        rowCount?: number;
+      }
+
+      const result = await openDotaCache.loadCustom<ExplorerResponse>(
+        cacheKey,
+        url,
+        (data): data is ExplorerResponse =>
+          !!data &&
+          typeof data === 'object' &&
+          'rows' in (data as Record<string, unknown>) &&
+          Array.isArray((data as ExplorerResponse).rows),
+      );
+
+      const items = this.parseExplorerRows(result.rows as ExplorerRow[]);
+      return {
+        heroId,
+        heroName,
+        rankBracket: bracket,
+        rankLabel: config.label,
+        sampleSize: result.rows.length,
+        items,
+        fetchedAt: new Date().toISOString(),
+        isExplorerData: true,
+      };
+    } catch (error) {
+      console.warn(`[OpenDota] Explorer query failed for hero ${heroId}, falling back to itemPopularity:`, error);
+      return this.buildFallbackItemBuild(heroId, heroName, bracket, config.label);
+    }
+  }
+
+  /** Parse Explorer rows into aggregated HighRankItem list. */
+  private parseExplorerRows(
+    rows: Array<{ purchase_log: Array<{ time: number; key: string }> | null; win: boolean | number }>,
+  ): HighRankItem[] {
+    const itemAgg = new Map<string, {
+      tier: HighRankItem['tier'];
+      totalTime: number;
+      count: number;
+      wins: number;
+      matches: number;
+    }>();
+
+    const totalMatches = rows.length;
+
+    for (const row of rows) {
+      if (!Array.isArray(row.purchase_log)) continue;
+      const isWin = row.win === true || row.win === 1;
+      const seenInMatch = new Set<string>();
+
+      for (const purchase of row.purchase_log) {
+        if (!purchase.key || typeof purchase.time !== 'number') continue;
+        // Skip recipes and common consumables from aggregation
+        if (purchase.key.startsWith('recipe_')) continue;
+
+        const itemKey = purchase.key;
+        const tier = OpenDotaService.classifyItemTier(purchase.time);
+
+        if (!seenInMatch.has(itemKey)) {
+          seenInMatch.add(itemKey);
+          const agg = itemAgg.get(itemKey) ?? { tier, totalTime: 0, count: 0, wins: 0, matches: 0 };
+          agg.count += 1;
+          agg.totalTime += purchase.time;
+          if (isWin) agg.wins += 1;
+          agg.matches = totalMatches;
+          // Assign tier based on earliest common purchase time
+          if (tier < agg.tier || agg.count === 1) agg.tier = tier;
+          itemAgg.set(itemKey, agg);
+        }
+      }
+    }
+
+    // Convert to HighRankItem array, filter low-count items, sort by purchase count
+    const items: HighRankItem[] = [];
+    const minCount = Math.max(2, Math.floor(totalMatches * 0.05)); // at least 5% usage
+
+    for (const [itemKey, agg] of itemAgg) {
+      if (agg.count < minCount) continue;
+
+      const details = Object.values(ITEMS_MAP).find(i => i.key === itemKey);
+      if (!details) continue;
+
+      items.push({
+        name: details.key,
+        displayName: details.displayName,
+        cost: details.cost,
+        tier: agg.tier,
+        purchaseCount: agg.count,
+        winRate: Number(((agg.wins / agg.count) * 100).toFixed(1)),
+        avgPurchaseTime: Math.round(agg.totalTime / agg.count),
+        matchCount: agg.matches,
+      });
+    }
+
+    // Sort: starting items first, then by purchase count descending within each tier
+    const tierOrder: Record<HighRankItem['tier'], number> = { starting: 0, early: 1, core: 2, luxury: 3 };
+    items.sort((a, b) => {
+      const tierDiff = tierOrder[a.tier] - tierOrder[b.tier];
+      if (tierDiff !== 0) return tierDiff;
+      return b.purchaseCount - a.purchaseCount;
+    });
+
+    // Limit to top 3 per tier
+    const result: HighRankItem[] = [];
+    const countByTier: Record<string, number> = {};
+    for (const item of items) {
+      const tierCount = countByTier[item.tier] ?? 0;
+      if (tierCount < 3) {
+        result.push(item);
+        countByTier[item.tier] = tierCount + 1;
+      }
+    }
+
+    return result;
+  }
+
+  /** Build a fallback HighRankItemBuild from the standard itemPopularity endpoint. */
+  private async buildFallbackItemBuild(
+    heroId: number,
+    heroName: string,
+    bracket: RankBracket,
+    rankLabel: string,
+  ): Promise<HighRankItemBuild> {
+    try {
+      const popularItems = await this.getPopularItemsForHero(heroId);
+      const items: HighRankItem[] = popularItems.map(pi => ({
+        name: pi.name,
+        displayName: pi.displayName,
+        cost: pi.cost,
+        tier: pi.tier === 'early' ? 'early' as const : pi.tier === 'core' ? 'core' as const : 'luxury' as const,
+        purchaseCount: pi.popularityCount,
+        matchCount: 0,
+      }));
+
+      return {
+        heroId,
+        heroName,
+        rankBracket: bracket,
+        rankLabel: bracket === 'all' ? 'All Ranks' : `${rankLabel} (fallback)`,
+        sampleSize: 0,
+        items,
+        fetchedAt: new Date().toISOString(),
+        isExplorerData: false,
+      };
+    } catch {
+      return {
+        heroId,
+        heroName,
+        rankBracket: bracket,
+        rankLabel: `${rankLabel} (unavailable)`,
+        sampleSize: 0,
+        items: [],
+        fetchedAt: new Date().toISOString(),
+        isExplorerData: false,
+      };
+    }
   }
 
   private loadBundledTalents() {

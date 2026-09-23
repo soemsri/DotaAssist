@@ -24,6 +24,30 @@ export interface PopularItem {
   dataSource: 'OpenDota itemPopularity';
 }
 
+export type RankBracket = 'all' | 'ancient_plus' | 'divine_plus' | 'immortal';
+
+export interface HighRankItem {
+  name: string;
+  displayName: string;
+  cost: number | null;
+  tier: 'starting' | 'early' | 'core' | 'luxury';
+  purchaseCount: number;
+  winRate?: number;
+  avgPurchaseTime?: number;
+  matchCount: number;
+}
+
+export interface HighRankItemBuild {
+  heroId: number;
+  heroName: string;
+  rankBracket: RankBracket;
+  rankLabel: string;
+  sampleSize: number;
+  items: HighRankItem[];
+  fetchedAt: string;
+  isExplorerData: boolean;
+}
+
 export interface TimingEventAlert {
   id: string;
   title: string;

@@ -6,6 +6,7 @@ import { apiService } from "../services/apiService";
 import { getEnemyPickClasses } from "../services/draftService";
 import { HeroCounter, HeroMetaInfo } from "../types/meta";
 import { TrendingUp, Crosshair, Sparkles, AlertCircle } from "lucide-react";
+import { DraftItemRecommendation } from "./DraftItemRecommendation";
 
 interface Props {
   draft?: GSIDraft;
@@ -211,6 +212,14 @@ export const DraftAdvisor: React.FC<Props> = ({ draft, playerTeam }) => {
           )}
         </div>
       )}
+
+      {/* High Rank Item Builds for Draft Phase */}
+      <div className="mt-4">
+        <DraftItemRecommendation
+          draft={draft}
+          playerTeam={playerTeam}
+        />
+      </div>
     </div>
   );
 };

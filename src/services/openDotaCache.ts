@@ -62,5 +62,46 @@ export class OpenDotaCache {
       throw error;
     } finally { clearTimeout(timeout); }
   }
+  /** Load data from a custom URL (e.g. Explorer API) using the same cache/fallback logic. */
+  loadCustom<T>(key: string, url: string, valid: (data: unknown) => data is T): Promise<T> {
+    const pending = this.requests.get(key);
+    if (pending) return pending as Promise<T>;
+    const promise = this.fetchCustom(key, url, valid).finally(() => this.requests.delete(key));
+    this.requests.set(key, promise);
+    return promise;
+  }
+  private async fetchCustom<T>(key: string, url: string, valid: (data: unknown) => data is T): Promise<T> {
+    let cached = this.entries.get(key);
+    if (!cached) {
+      try { cached = JSON.parse(this.storage?.getItem(`dotaassist.opendota.v1:${key}`) ?? 'null') ?? undefined; } catch { /* Ignore */ }
+    }
+    if (cached && (cached.patch !== this.patch || !Number.isFinite(Date.parse(cached.fetchedAt)) || !valid(cached.data))) cached = undefined;
+    this.update(key, { state: 'loading', fetchedAt: cached?.fetchedAt });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await this.request(url, { signal: controller.signal, cache: 'no-store' });
+      if (!response.ok) throw new Error(`OpenDota HTTP ${response.status}`);
+      const data: unknown = await response.json();
+      if (!valid(data)) throw new Error('Invalid OpenDota Explorer response');
+      const entry = { patch: this.patch, fetchedAt: new Date().toISOString(), data };
+      this.entries.set(key, entry);
+      let storageError = false;
+      try {
+        if (!this.storage) throw new Error('Storage unavailable');
+        this.storage.setItem(`dotaassist.opendota.v1:${key}`, JSON.stringify(entry));
+      } catch { storageError = true; }
+      this.update(key, { state: 'fresh', fetchedAt: entry.fetchedAt, storageError });
+      return data;
+    } catch (error) {
+      if (cached) {
+        this.entries.set(key, cached);
+        this.update(key, { state: 'stale', fetchedAt: cached.fetchedAt });
+        return cached.data as T;
+      }
+      this.update(key, { state: 'unavailable' });
+      throw error;
+    } finally { clearTimeout(timeout); }
+  }
 }
 export const openDotaCache = new OpenDotaCache();

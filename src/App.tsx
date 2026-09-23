@@ -170,6 +170,23 @@ export const App: React.FC = () => {
   const matchId = livePayload?.map?.matchid;
   useEffect(() => { alertProfiles.observe(heroName, matchId); }, [heroName, matchId]);
 
+  // Auto-switch to Draft tab during hero selection / strategy phase
+  const gameState = livePayload?.map?.game_state;
+  const prevGameStateRef = useRef<string | null>(null);
+  useEffect(() => {
+    const isDraftPhase =
+      gameState === 'DOTA_GAMERULES_STATE_HERO_SELECTION' ||
+      gameState === 'DOTA_GAMERULES_STATE_STRATEGY_TIME';
+    const wasDraftPhase =
+      prevGameStateRef.current === 'DOTA_GAMERULES_STATE_HERO_SELECTION' ||
+      prevGameStateRef.current === 'DOTA_GAMERULES_STATE_STRATEGY_TIME';
+
+    if (isDraftPhase && !wasDraftPhase) {
+      setActiveTab('draft');
+    }
+    prevGameStateRef.current = gameState ?? null;
+  }, [gameState]);
+
   const coachState = tacticalCoach.process(livePayload, minimapResult);
 
   useEffect(() => {
