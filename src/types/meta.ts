@@ -24,6 +24,30 @@ export interface PopularItem {
   dataSource: 'OpenDota itemPopularity';
 }
 
+export interface ProItemEntry {
+  name: string;
+  displayName: string;
+  cost: number | null;
+  phase: 'starting' | 'early' | 'core' | 'luxury' | 'situational';
+  notesTh?: string;
+  notesEn?: string;
+}
+
+export interface ProHeroItemBuild {
+  heroId: number;
+  heroName: string;
+  heroSlug: string;
+  proPlayer: string;
+  team: string;
+  role: string;
+  starting: ProItemEntry[];
+  early: ProItemEntry[];
+  core: ProItemEntry[];
+  luxury: ProItemEntry[];
+  situational: ProItemEntry[];
+}
+
+
 export interface TimingEventAlert {
   id: string;
   title: string;

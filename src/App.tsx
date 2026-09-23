@@ -524,6 +524,7 @@ export const App: React.FC = () => {
               <DraftAdvisor
                 draft={livePayload?.draft}
                 playerTeam={livePayload?.player?.team_name}
+                localPlayerHero={heroName}
               />
               <TimingAlerts alerts={alerts} clockTime={clockTime} />
             </div>
@@ -538,9 +539,11 @@ export const App: React.FC = () => {
               <DraftAdvisor
                 draft={livePayload?.draft}
                 playerTeam={livePayload?.player?.team_name}
+                localPlayerHero={heroName}
               />
             </div>
           )}
+
 
           {activeTab === "vision" && (
             <div className="space-y-5">

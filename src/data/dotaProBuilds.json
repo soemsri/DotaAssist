@@ -1,0 +1,5019 @@
+{
+  "npc_dota_hero_antimage": {
+    "heroId": 1,
+    "heroName": "Anti-Mage",
+    "heroSlug": "npc_dota_hero_antimage",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads",
+      "cornucopia"
+    ],
+    "core": [
+      "bfury",
+      "manta",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "abyssal_blade",
+      "butterfly",
+      "satanic",
+      "skadi",
+      "swift_blink"
+    ],
+    "situational": [
+      "nullifier",
+      "sphere",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_axe": {
+    "heroId": 2,
+    "heroName": "Axe",
+    "heroSlug": "npc_dota_hero_axe",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "ring_of_protection",
+      "branches",
+      "branches",
+      "quelling_blade"
+    ],
+    "early": [
+      "phase_boots",
+      "magic_wand",
+      "bracer",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "heart",
+      "overwhelming_blink",
+      "shivas_guard",
+      "octarine_core"
+    ],
+    "situational": [
+      "pipe",
+      "lotus_orb",
+      "assault"
+    ]
+  },
+  "npc_dota_hero_bane": {
+    "heroId": 3,
+    "heroName": "Bane",
+    "heroSlug": "npc_dota_hero_bane",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_bloodseeker": {
+    "heroId": 4,
+    "heroName": "Bloodseeker",
+    "heroSlug": "npc_dota_hero_bloodseeker",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Safelane Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_crystal_maiden": {
+    "heroId": 5,
+    "heroName": "Crystal Maiden",
+    "heroSlug": "npc_dota_hero_crystal_maiden",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "tango",
+      "blood_grenade",
+      "ward_observer",
+      "ward_sentry",
+      "clarity"
+    ],
+    "early": [
+      "tranquil_boots",
+      "magic_wand",
+      "wind_lace",
+      "bracer"
+    ],
+    "core": [
+      "glimmer_cape",
+      "force_staff",
+      "aghanims_shard",
+      "black_king_bar"
+    ],
+    "luxury": [
+      "blink",
+      "ghost",
+      "aeon_disk",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "solar_crest",
+      "octarine_core"
+    ]
+  },
+  "npc_dota_hero_drow_ranger": {
+    "heroId": 6,
+    "heroName": "Drow Ranger",
+    "heroSlug": "npc_dota_hero_drow_ranger",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_earthshaker": {
+    "heroId": 7,
+    "heroName": "Earthshaker",
+    "heroSlug": "npc_dota_hero_earthshaker",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Roamer / Soft Support",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_juggernaut": {
+    "heroId": 8,
+    "heroName": "Juggernaut",
+    "heroSlug": "npc_dota_hero_juggernaut",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Safelane Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "phase_boots"
+    ],
+    "core": [
+      "maelstrom",
+      "manta",
+      "black_king_bar",
+      "diffusal_blade"
+    ],
+    "luxury": [
+      "mjollnir",
+      "butterfly",
+      "swift_blink",
+      "abyssal_blade",
+      "skadi"
+    ],
+    "situational": [
+      "nullifier",
+      "satanic",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_mirana": {
+    "heroId": 9,
+    "heroName": "Mirana",
+    "heroSlug": "npc_dota_hero_mirana",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support / Roamer",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_morphling": {
+    "heroId": 10,
+    "heroName": "Morphling",
+    "heroSlug": "npc_dota_hero_morphling",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_nevermore": {
+    "heroId": 11,
+    "heroName": "Shadow Fiend",
+    "heroSlug": "npc_dota_hero_nevermore",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_phantom_lancer": {
+    "heroId": 12,
+    "heroName": "Phantom Lancer",
+    "heroSlug": "npc_dota_hero_phantom_lancer",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Illusion Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_puck": {
+    "heroId": 13,
+    "heroName": "Puck",
+    "heroSlug": "npc_dota_hero_puck",
+    "proPlayer": "bzm",
+    "team": "OG",
+    "role": "Mid Tempo Initiator",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_pudge": {
+    "heroId": 14,
+    "heroName": "Pudge",
+    "heroSlug": "npc_dota_hero_pudge",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Roamer / Support",
+    "starting": [
+      "tango",
+      "blood_grenade",
+      "wind_lace",
+      "branches",
+      "clarity"
+    ],
+    "early": [
+      "tranquil_boots",
+      "magic_wand",
+      "urn_of_shadows",
+      "bracer"
+    ],
+    "core": [
+      "blink",
+      "spirit_vessel",
+      "aghanims_shard",
+      "aether_lens"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "black_king_bar",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "force_staff",
+      "glimmer_cape",
+      "pipe"
+    ]
+  },
+  "npc_dota_hero_razor": {
+    "heroId": 15,
+    "heroName": "Razor",
+    "heroSlug": "npc_dota_hero_razor",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Anti-Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_sand_king": {
+    "heroId": 16,
+    "heroName": "Sand King",
+    "heroSlug": "npc_dota_hero_sand_king",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_storm_spirit": {
+    "heroId": 17,
+    "heroName": "Storm Spirit",
+    "heroSlug": "npc_dota_hero_storm_spirit",
+    "proPlayer": "bzm",
+    "team": "OG",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_sven": {
+    "heroId": 18,
+    "heroName": "Sven",
+    "heroSlug": "npc_dota_hero_sven",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_tiny": {
+    "heroId": 19,
+    "heroName": "Tiny",
+    "heroSlug": "npc_dota_hero_tiny",
+    "proPlayer": "TORONTOTOKYO",
+    "team": "BetBoom",
+    "role": "Support / Mid",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_vengefulspirit": {
+    "heroId": 20,
+    "heroName": "Vengeful Spirit",
+    "heroSlug": "npc_dota_hero_vengefulspirit",
+    "proPlayer": "Save-",
+    "team": "BetBoom",
+    "role": "Support",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_windrunner": {
+    "heroId": 21,
+    "heroName": "Windranger",
+    "heroSlug": "npc_dota_hero_windrunner",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane / Mid",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_zuus": {
+    "heroId": 22,
+    "heroName": "Zeus",
+    "heroSlug": "npc_dota_hero_zuus",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid Nuker",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_kunkka": {
+    "heroId": 23,
+    "heroName": "Kunkka",
+    "heroSlug": "npc_dota_hero_kunkka",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid / Offlane",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_lina": {
+    "heroId": 25,
+    "heroName": "Lina",
+    "heroSlug": "npc_dota_hero_lina",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Mid / Carry",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_lion": {
+    "heroId": 26,
+    "heroName": "Lion",
+    "heroSlug": "npc_dota_hero_lion",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_shadow_shaman": {
+    "heroId": 27,
+    "heroName": "Shadow Shaman",
+    "heroSlug": "npc_dota_hero_shadow_shaman",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support Pusher",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_slardar": {
+    "heroId": 28,
+    "heroName": "Slardar",
+    "heroSlug": "npc_dota_hero_slardar",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane Brawler",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_tidehunter": {
+    "heroId": 29,
+    "heroName": "Tidehunter",
+    "heroSlug": "npc_dota_hero_tidehunter",
+    "proPlayer": "Faith_bian",
+    "team": "Azure Ray",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_witch_doctor": {
+    "heroId": 30,
+    "heroName": "Witch Doctor",
+    "heroSlug": "npc_dota_hero_witch_doctor",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_lich": {
+    "heroId": 31,
+    "heroName": "Lich",
+    "heroSlug": "npc_dota_hero_lich",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_riki": {
+    "heroId": 32,
+    "heroName": "Riki",
+    "heroSlug": "npc_dota_hero_riki",
+    "proPlayer": "dyrachyo",
+    "team": "Gaimin Gladiators",
+    "role": "Carry / Roamer",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_enigma": {
+    "heroId": 33,
+    "heroName": "Enigma",
+    "heroSlug": "npc_dota_hero_enigma",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane / Jungler",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_tinker": {
+    "heroId": 34,
+    "heroName": "Tinker",
+    "heroSlug": "npc_dota_hero_tinker",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid / Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_sniper": {
+    "heroId": 35,
+    "heroName": "Sniper",
+    "heroSlug": "npc_dota_hero_sniper",
+    "proPlayer": "MiCKe",
+    "team": "Team Liquid",
+    "role": "Mid / Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_necrolyte": {
+    "heroId": 36,
+    "heroName": "Necrophos",
+    "heroSlug": "npc_dota_hero_necrolyte",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid / Offlane",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_warlock": {
+    "heroId": 37,
+    "heroName": "Warlock",
+    "heroSlug": "npc_dota_hero_warlock",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_beastmaster": {
+    "heroId": 38,
+    "heroName": "Beastmaster",
+    "heroSlug": "npc_dota_hero_beastmaster",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Aura Pusher",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_queenofpain": {
+    "heroId": 39,
+    "heroName": "Queen of Pain",
+    "heroSlug": "npc_dota_hero_queenofpain",
+    "proPlayer": "Quinn",
+    "team": "Gaimin Gladiators",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_venomancer": {
+    "heroId": 40,
+    "heroName": "Venomancer",
+    "heroSlug": "npc_dota_hero_venomancer",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support / Offlane",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_faceless_void": {
+    "heroId": 41,
+    "heroName": "Faceless Void",
+    "heroSlug": "npc_dota_hero_faceless_void",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_skeleton_king": {
+    "heroId": 42,
+    "heroName": "Wraith King",
+    "heroSlug": "npc_dota_hero_skeleton_king",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_death_prophet": {
+    "heroId": 43,
+    "heroName": "Death Prophet",
+    "heroSlug": "npc_dota_hero_death_prophet",
+    "proPlayer": "Fata",
+    "team": "Coach",
+    "role": "Mid / Offlane Pusher",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_phantom_assassin": {
+    "heroId": 44,
+    "heroName": "Phantom Assassin",
+    "heroSlug": "npc_dota_hero_phantom_assassin",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_pugna": {
+    "heroId": 45,
+    "heroName": "Pugna",
+    "heroSlug": "npc_dota_hero_pugna",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support / Mid",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_templar_assassin": {
+    "heroId": 46,
+    "heroName": "Templar Assassin",
+    "heroSlug": "npc_dota_hero_templar_assassin",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Mid / Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_viper": {
+    "heroId": 47,
+    "heroName": "Viper",
+    "heroSlug": "npc_dota_hero_viper",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane / Mid",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_luna": {
+    "heroId": 48,
+    "heroName": "Luna",
+    "heroSlug": "npc_dota_hero_luna",
+    "proPlayer": "MiCKe",
+    "team": "Team Liquid",
+    "role": "Safelane Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_dragon_knight": {
+    "heroId": 49,
+    "heroName": "Dragon Knight",
+    "heroSlug": "npc_dota_hero_dragon_knight",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Mid / Offlane",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_dazzle": {
+    "heroId": 50,
+    "heroName": "Dazzle",
+    "heroSlug": "npc_dota_hero_dazzle",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_rattletrap": {
+    "heroId": 51,
+    "heroName": "Clockwerk",
+    "heroSlug": "npc_dota_hero_rattletrap",
+    "proPlayer": "Save-",
+    "team": "BetBoom",
+    "role": "Support Initiator",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_leshrac": {
+    "heroId": 52,
+    "heroName": "Leshrac",
+    "heroSlug": "npc_dota_hero_leshrac",
+    "proPlayer": "Quinn",
+    "team": "Gaimin Gladiators",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_furion": {
+    "heroId": 53,
+    "heroName": "Nature's Prophet",
+    "heroSlug": "npc_dota_hero_furion",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane / Support Global Pusher",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_life_stealer": {
+    "heroId": 54,
+    "heroName": "Lifestealer",
+    "heroSlug": "npc_dota_hero_life_stealer",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Safelane Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_dark_seer": {
+    "heroId": 55,
+    "heroName": "Dark Seer",
+    "heroSlug": "npc_dota_hero_dark_seer",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Teamfighter",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_clinkz": {
+    "heroId": 56,
+    "heroName": "Clinkz",
+    "heroSlug": "npc_dota_hero_clinkz",
+    "proPlayer": "dyrachyo",
+    "team": "Gaimin Gladiators",
+    "role": "Carry / Roamer",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_omniknight": {
+    "heroId": 57,
+    "heroName": "Omniknight",
+    "heroSlug": "npc_dota_hero_omniknight",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane / Support",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_enchantress": {
+    "heroId": 58,
+    "heroName": "Enchantress",
+    "heroSlug": "npc_dota_hero_enchantress",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support Jungler",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "branches",
+      "branches",
+      "circlet"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "arcane_boots",
+      "headdress"
+    ],
+    "core": [
+      "pipe",
+      "crimson_guard",
+      "guardian_greaves",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "lotus_orb",
+      "shivas_guard",
+      "assault",
+      "octarine_core"
+    ],
+    "situational": [
+      "blink",
+      "heavens_halberd",
+      "solar_crest"
+    ]
+  },
+  "npc_dota_hero_huskar": {
+    "heroId": 59,
+    "heroName": "Huskar",
+    "heroSlug": "npc_dota_hero_huskar",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_night_stalker": {
+    "heroId": 60,
+    "heroName": "Night Stalker",
+    "heroSlug": "npc_dota_hero_night_stalker",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Hunter",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_broodmother": {
+    "heroId": 61,
+    "heroName": "Broodmother",
+    "heroSlug": "npc_dota_hero_broodmother",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Specialist",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_bounty_hunter": {
+    "heroId": 62,
+    "heroName": "Bounty Hunter",
+    "heroSlug": "npc_dota_hero_bounty_hunter",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Roamer / Support",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_weaver": {
+    "heroId": 63,
+    "heroName": "Weaver",
+    "heroSlug": "npc_dota_hero_weaver",
+    "proPlayer": "dyrachyo",
+    "team": "Gaimin Gladiators",
+    "role": "Carry / Support",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_jakiro": {
+    "heroId": 64,
+    "heroName": "Jakiro",
+    "heroSlug": "npc_dota_hero_jakiro",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support Pusher",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_batrider": {
+    "heroId": 65,
+    "heroName": "Batrider",
+    "heroSlug": "npc_dota_hero_batrider",
+    "proPlayer": "Bach",
+    "team": "Azure Ray",
+    "role": "Mid / Offlane Initiator",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_chen": {
+    "heroId": 66,
+    "heroName": "Chen",
+    "heroSlug": "npc_dota_hero_chen",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Micro Support",
+    "starting": [
+      "tango",
+      "blood_grenade",
+      "wind_lace",
+      "branches",
+      "branches",
+      "clarity"
+    ],
+    "early": [
+      "arcane_boots",
+      "magic_wand",
+      "urn_of_shadows",
+      "bracer"
+    ],
+    "core": [
+      "spirit_vessel",
+      "blink",
+      "aghanims_shard",
+      "force_staff"
+    ],
+    "luxury": [
+      "black_king_bar",
+      "octarine_core",
+      "shivas_guard",
+      "lotus_orb"
+    ],
+    "situational": [
+      "glimmer_cape",
+      "aeon_disk",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_spectre": {
+    "heroId": 67,
+    "heroName": "Spectre",
+    "heroSlug": "npc_dota_hero_spectre",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_ancient_apparition": {
+    "heroId": 68,
+    "heroName": "Ancient Apparition",
+    "heroSlug": "npc_dota_hero_ancient_apparition",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_doom_bringer": {
+    "heroId": 69,
+    "heroName": "Doom",
+    "heroSlug": "npc_dota_hero_doom_bringer",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Aura Doom",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_ursa": {
+    "heroId": 70,
+    "heroName": "Ursa",
+    "heroSlug": "npc_dota_hero_ursa",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Aggressive Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_spirit_breaker": {
+    "heroId": 71,
+    "heroName": "Spirit Breaker",
+    "heroSlug": "npc_dota_hero_spirit_breaker",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane / Roamer Space Creator",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_gyrocopter": {
+    "heroId": 72,
+    "heroName": "Gyrocopter",
+    "heroSlug": "npc_dota_hero_gyrocopter",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Carry / Support",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_alchemist": {
+    "heroId": 73,
+    "heroName": "Alchemist",
+    "heroSlug": "npc_dota_hero_alchemist",
+    "proPlayer": "MiCKe",
+    "team": "Team Liquid",
+    "role": "Mid / Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_invoker": {
+    "heroId": 74,
+    "heroName": "Invoker",
+    "heroSlug": "npc_dota_hero_invoker",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "circlet",
+      "branches",
+      "branches",
+      "mantle",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "boots",
+      "magic_wand",
+      "urn_of_shadows",
+      "power_treads"
+    ],
+    "core": [
+      "spirit_vessel",
+      "blink",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "octarine_core",
+      "refresher",
+      "sheepstick",
+      "arcane_blink"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_silencer": {
+    "heroId": 75,
+    "heroName": "Silencer",
+    "heroSlug": "npc_dota_hero_silencer",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support / Counter-Initiator",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_obsidian_destroyer": {
+    "heroId": 76,
+    "heroName": "Outworld Devourer",
+    "heroSlug": "npc_dota_hero_obsidian_destroyer",
+    "proPlayer": "bzm",
+    "team": "OG",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_lycan": {
+    "heroId": 77,
+    "heroName": "Lycan",
+    "heroSlug": "npc_dota_hero_lycan",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Pusher",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_brewmaster": {
+    "heroId": 78,
+    "heroName": "Brewmaster",
+    "heroSlug": "npc_dota_hero_brewmaster",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Teamfighter",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_shadow_demon": {
+    "heroId": 79,
+    "heroName": "Shadow Demon",
+    "heroSlug": "npc_dota_hero_shadow_demon",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Save Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_lone_druid": {
+    "heroId": 80,
+    "heroName": "Lone Druid",
+    "heroSlug": "npc_dota_hero_lone_druid",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Mid / Carry Specialist",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_chaos_knight": {
+    "heroId": 81,
+    "heroName": "Chaos Knight",
+    "heroSlug": "npc_dota_hero_chaos_knight",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Safelane Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_meepo": {
+    "heroId": 82,
+    "heroName": "Meepo",
+    "heroSlug": "npc_dota_hero_meepo",
+    "proPlayer": "Abed",
+    "team": "Shopify",
+    "role": "Mid Specialist",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_treant": {
+    "heroId": 83,
+    "heroName": "Treant Protector",
+    "heroSlug": "npc_dota_hero_treant",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support / Healer",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_ogre_magi": {
+    "heroId": 84,
+    "heroName": "Ogre Magi",
+    "heroSlug": "npc_dota_hero_ogre_magi",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support / Offlane",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_undying": {
+    "heroId": 85,
+    "heroName": "Undying",
+    "heroSlug": "npc_dota_hero_undying",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Lane Dominator Support",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_rubick": {
+    "heroId": 86,
+    "heroName": "Rubick",
+    "heroSlug": "npc_dota_hero_rubick",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Playmaker Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_disruptor": {
+    "heroId": 87,
+    "heroName": "Disruptor",
+    "heroSlug": "npc_dota_hero_disruptor",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Catch Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_nyx_assassin": {
+    "heroId": 88,
+    "heroName": "Nyx Assassin",
+    "heroSlug": "npc_dota_hero_nyx_assassin",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Roamer / Nuker",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_naga_siren": {
+    "heroId": 89,
+    "heroName": "Naga Siren",
+    "heroSlug": "npc_dota_hero_naga_siren",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Illusion Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_keeper_of_the_light": {
+    "heroId": 90,
+    "heroName": "Keeper of the Light",
+    "heroSlug": "npc_dota_hero_keeper_of_the_light",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid / Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_wisp": {
+    "heroId": 91,
+    "heroName": "Io",
+    "heroSlug": "npc_dota_hero_wisp",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support Tether",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_visage": {
+    "heroId": 92,
+    "heroName": "Visage",
+    "heroSlug": "npc_dota_hero_visage",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Specialist",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_slark": {
+    "heroId": 93,
+    "heroName": "Slark",
+    "heroSlug": "npc_dota_hero_slark",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Carry Skirmisher",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_medusa": {
+    "heroId": 94,
+    "heroName": "Medusa",
+    "heroSlug": "npc_dota_hero_medusa",
+    "proPlayer": "Skiter",
+    "team": "Team Falcons",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_troll_warlord": {
+    "heroId": 95,
+    "heroName": "Troll Warlord",
+    "heroSlug": "npc_dota_hero_troll_warlord",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_centaur": {
+    "heroId": 96,
+    "heroName": "Centaur Warrunner",
+    "heroSlug": "npc_dota_hero_centaur",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_magnataur": {
+    "heroId": 97,
+    "heroName": "Magnus",
+    "heroSlug": "npc_dota_hero_magnataur",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_shredder": {
+    "heroId": 98,
+    "heroName": "Timbersaw",
+    "heroSlug": "npc_dota_hero_shredder",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane / Mid",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_bristleback": {
+    "heroId": 99,
+    "heroName": "Bristleback",
+    "heroSlug": "npc_dota_hero_bristleback",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Carry / Offlane",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_tusk": {
+    "heroId": 100,
+    "heroName": "Tusk",
+    "heroSlug": "npc_dota_hero_tusk",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Roamer Initiator",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_skywrath_mage": {
+    "heroId": 101,
+    "heroName": "Skywrath Mage",
+    "heroSlug": "npc_dota_hero_skywrath_mage",
+    "proPlayer": "Save-",
+    "team": "BetBoom",
+    "role": "Support Nuker",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_abaddon": {
+    "heroId": 102,
+    "heroName": "Abaddon",
+    "heroSlug": "npc_dota_hero_abaddon",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support / Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_elder_titan": {
+    "heroId": 103,
+    "heroName": "Elder Titan",
+    "heroSlug": "npc_dota_hero_elder_titan",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Support / Teamfighter",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_legion_commander": {
+    "heroId": 104,
+    "heroName": "Legion Commander",
+    "heroSlug": "npc_dota_hero_legion_commander",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Duelist",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_techies": {
+    "heroId": 105,
+    "heroName": "Techies",
+    "heroSlug": "npc_dota_hero_techies",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Support Nuker",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_ember_spirit": {
+    "heroId": 106,
+    "heroName": "Ember Spirit",
+    "heroSlug": "npc_dota_hero_ember_spirit",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_earth_spirit": {
+    "heroId": 107,
+    "heroName": "Earth Spirit",
+    "heroSlug": "npc_dota_hero_earth_spirit",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Playmaker Roamer",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_abyssal_underlord": {
+    "heroId": 108,
+    "heroName": "Underlord",
+    "heroSlug": "npc_dota_hero_abyssal_underlord",
+    "proPlayer": "33",
+    "team": "Tundra Esports",
+    "role": "Offlane Aura Tank",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_terrorblade": {
+    "heroId": 109,
+    "heroName": "Terrorblade",
+    "heroSlug": "npc_dota_hero_terrorblade",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Hard Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_phoenix": {
+    "heroId": 110,
+    "heroName": "Phoenix",
+    "heroSlug": "npc_dota_hero_phoenix",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support Teamfighter",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_oracle": {
+    "heroId": 111,
+    "heroName": "Oracle",
+    "heroSlug": "npc_dota_hero_oracle",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Hard Support / Save",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_winter_wyvern": {
+    "heroId": 112,
+    "heroName": "Winter Wyvern",
+    "heroSlug": "npc_dota_hero_winter_wyvern",
+    "proPlayer": "Sneyking",
+    "team": "Team Falcons",
+    "role": "Support Counter-Initiator",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_arc_warden": {
+    "heroId": 113,
+    "heroName": "Arc Warden",
+    "heroSlug": "npc_dota_hero_arc_warden",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid Specialist",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_monkey_king": {
+    "heroId": 114,
+    "heroName": "Monkey King",
+    "heroSlug": "npc_dota_hero_monkey_king",
+    "proPlayer": "Topson",
+    "team": "Tundra Esports",
+    "role": "Mid / Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_dark_willow": {
+    "heroId": 119,
+    "heroName": "Dark Willow",
+    "heroSlug": "npc_dota_hero_dark_willow",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support / Carry",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_pangolier": {
+    "heroId": 120,
+    "heroName": "Pangolier",
+    "heroSlug": "npc_dota_hero_pangolier",
+    "proPlayer": "Quinn",
+    "team": "Gaimin Gladiators",
+    "role": "Mid / Offlane",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_grimstroke": {
+    "heroId": 121,
+    "heroName": "Grimstroke",
+    "heroSlug": "npc_dota_hero_grimstroke",
+    "proPlayer": "Miposhka",
+    "team": "Team Spirit",
+    "role": "Support Combo",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_hoodwink": {
+    "heroId": 123,
+    "heroName": "Hoodwink",
+    "heroSlug": "npc_dota_hero_hoodwink",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support Roamer",
+    "starting": [
+      "tango",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "wraith_band",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "diffusal_blade",
+      "manta",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "skadi",
+      "butterfly",
+      "swift_blink",
+      "sheepstick"
+    ],
+    "situational": [
+      "sphere",
+      "nullifier",
+      "monkey_king_bar"
+    ]
+  },
+  "npc_dota_hero_void_spirit": {
+    "heroId": 126,
+    "heroName": "Void Spirit",
+    "heroSlug": "npc_dota_hero_void_spirit",
+    "proPlayer": "bzm",
+    "team": "OG",
+    "role": "Midlaner",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_snapfire": {
+    "heroId": 128,
+    "heroName": "Snapfire",
+    "heroSlug": "npc_dota_hero_snapfire",
+    "proPlayer": "XinQ",
+    "team": "Xtreme Gaming",
+    "role": "Support / Mid",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_mars": {
+    "heroId": 129,
+    "heroName": "Mars",
+    "heroSlug": "npc_dota_hero_mars",
+    "proPlayer": "Collapse",
+    "team": "Team Spirit",
+    "role": "Offlane Initiator",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_ringmaster": {
+    "heroId": 131,
+    "heroName": "Ring Master",
+    "heroSlug": "npc_dota_hero_ringmaster",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support Disabler",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_dawnbreaker": {
+    "heroId": 135,
+    "heroName": "Dawnbreaker",
+    "heroSlug": "npc_dota_hero_dawnbreaker",
+    "proPlayer": "ATF",
+    "team": "Team Falcons",
+    "role": "Offlane Global Fighter",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_marci": {
+    "heroId": 136,
+    "heroName": "Marci",
+    "heroSlug": "npc_dota_hero_marci",
+    "proPlayer": "Cr1t-",
+    "team": "Team Falcons",
+    "role": "Support / Carry Brawler",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "gauntlets",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "armlet",
+      "echo_sabre",
+      "black_king_bar",
+      "blink"
+    ],
+    "luxury": [
+      "heart",
+      "assault",
+      "overwhelming_blink",
+      "satanic"
+    ],
+    "situational": [
+      "nullifier",
+      "heavens_halberd",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_primal_beast": {
+    "heroId": 137,
+    "heroName": "Primal Beast",
+    "heroSlug": "npc_dota_hero_primal_beast",
+    "proPlayer": "Malr1ne",
+    "team": "Team Falcons",
+    "role": "Mid / Offlane",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "gauntlets",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "phase_boots",
+      "chainmail"
+    ],
+    "core": [
+      "blink",
+      "blade_mail",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart",
+      "lotus_orb"
+    ],
+    "situational": [
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
+    ]
+  },
+  "npc_dota_hero_muerta": {
+    "heroId": 138,
+    "heroName": "Muerta",
+    "heroSlug": "npc_dota_hero_muerta",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Carry / Support",
+    "starting": [
+      "tango",
+      "mantle",
+      "circlet",
+      "branches",
+      "branches",
+      "faerie_fire"
+    ],
+    "early": [
+      "null_talisman",
+      "bottle",
+      "boots",
+      "magic_wand",
+      "arcane_boots"
+    ],
+    "core": [
+      "blink",
+      "kaya_and_sange",
+      "black_king_bar",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "shivas_guard",
+      "octarine_core",
+      "refresher",
+      "sheepstick"
+    ],
+    "situational": [
+      "aeon_disk",
+      "sphere",
+      "cyclone"
+    ]
+  },
+  "npc_dota_hero_kez": {
+    "heroId": 145,
+    "heroName": "Kez",
+    "heroSlug": "npc_dota_hero_kez",
+    "proPlayer": "Yatoro",
+    "team": "Team Spirit",
+    "role": "Agility Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "slippers",
+      "circlet",
+      "branches",
+      "branches"
+    ],
+    "early": [
+      "wraith_band",
+      "boots",
+      "magic_wand",
+      "power_treads"
+    ],
+    "core": [
+      "manta",
+      "diffusal_blade",
+      "black_king_bar",
+      "basher"
+    ],
+    "luxury": [
+      "butterfly",
+      "abyssal_blade",
+      "swift_blink",
+      "skadi"
+    ],
+    "situational": [
+      "satanic",
+      "nullifier",
+      "sphere"
+    ]
+  },
+  "npc_dota_hero_largo": {
+    "heroId": 155,
+    "heroName": "Largo",
+    "heroSlug": "npc_dota_hero_largo",
+    "proPlayer": "Ame",
+    "team": "Xtreme Gaming",
+    "role": "Carry",
+    "starting": [
+      "tango",
+      "quelling_blade",
+      "ring_of_protection",
+      "branches",
+      "branches",
+      "circlet"
+    ],
+    "early": [
+      "bracer",
+      "boots",
+      "magic_wand",
+      "arcane_boots",
+      "headdress"
+    ],
+    "core": [
+      "pipe",
+      "crimson_guard",
+      "guardian_greaves",
+      "aghanims_shard"
+    ],
+    "luxury": [
+      "lotus_orb",
+      "shivas_guard",
+      "assault",
+      "octarine_core"
+    ],
+    "situational": [
+      "blink",
+      "heavens_halberd",
+      "solar_crest"
+    ]
+  }
+}

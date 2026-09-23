@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState, useSyncExternalStore } from "r
 import { apiService } from "../services/apiService";
 import { audioService } from "../services/audioService";
 import { PopularItem, HeroMetaInfo } from "../types/meta";
-import { Package, Coins, HelpCircle, Volume2, Sparkles } from "lucide-react";
+import { Package, Coins, HelpCircle, Volume2, Sparkles, Crown } from "lucide-react";
 import { neutralAdvisor, getHeroArchetype } from "../services/neutralAdvisor";
 
 interface Props {
@@ -21,8 +21,9 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
   const [items, setItems] = useState<PopularItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
-  const [itemSection, setItemSection] = useState<"shop" | "neutral">("shop");
+  const [itemSection, setItemSection] = useState<"pro" | "shop" | "neutral">("pro");
   const [selectedNeutralTier, setSelectedNeutralTier] = useState<number>(1);
+
 
   useEffect(() => {
     apiService.initData().then(() => setAllHeroes(apiService.getAllHeroes()));
@@ -156,14 +157,26 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
       {/* Sub-tab Switcher */}
       <div className="flex items-center gap-2 mb-3 border-b border-slate-800/80 pb-2">
         <button
-          onClick={() => setItemSection("shop")}
+          onClick={() => setItemSection("pro")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-            itemSection === "shop"
-              ? "bg-amber-500/15 text-amber-300 border border-amber-500/40"
+            itemSection === "pro"
+              ? "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm"
               : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
           }`}
         >
-          <Package className="w-3.5 h-3.5" />
+          <Crown className="w-3.5 h-3.5 text-amber-400" />
+          <span>Pro Player Builds</span>
+        </button>
+
+        <button
+          onClick={() => setItemSection("shop")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            itemSection === "shop"
+              ? "bg-sky-500/15 text-sky-300 border border-sky-500/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+          }`}
+        >
+          <Package className="w-3.5 h-3.5 text-sky-400" />
           <span>Shop Items (OpenDota)</span>
         </button>
 
@@ -179,6 +192,7 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
           <span>Neutral Creep Items (Tier 1-5)</span>
         </button>
       </div>
+
 
       {itemSection === "shop" && activeHero && (
         <OpenDotaStatus resource={`heroes/${activeHero.id}/itemPopularity`} onRefresh={() => setRefresh(n => n + 1)} />
@@ -305,6 +319,150 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
             })()}
           </div>
         )
+      ) : itemSection === "pro" ? (
+        !activeHero ? (
+          <div className="bg-slate-950/50 border border-dashed border-slate-800 rounded-lg p-5 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
+            <HelpCircle className="w-6 h-6 text-slate-500" />
+            <p>No active hero detected.</p>
+            <p className="text-slate-500 text-[11px]">
+              Pick a hero in Dota 2 or choose one above to view pro player item builds.
+            </p>
+          </div>
+        ) : (() => {
+          const proBuild = apiService.getProItemBuildForHero(activeHero.name);
+          if (!proBuild) {
+            return (
+              <div className="py-6 text-center text-xs text-slate-400 bg-slate-950/50 rounded-lg border border-slate-800">
+                No pro build template available for {activeHero.localized_name}.
+              </div>
+            );
+          }
+
+          const renderItemRow = (item: { name: string; displayName: string; cost: number | null }) => {
+            const hasPrice = item.cost !== null;
+            const hasWallet = currentGold !== undefined;
+            const goldNeeded = hasPrice && hasWallet ? Math.max(0, item.cost! - currentGold) : null;
+            const canAfford = goldNeeded === 0;
+
+            return (
+              <div
+                key={`pro-${item.name}`}
+                className="flex items-center justify-between text-xs py-1.5 px-2 rounded bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition"
+              >
+                <div className="flex items-center gap-2 truncate mr-2">
+                  <span className="text-slate-200 font-medium truncate">{item.displayName}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-mono text-[11px] text-amber-400">
+                    {item.cost ? `${item.cost}g` : 'Free'}
+                  </span>
+                  {hasWallet && (
+                    <span
+                      className={`text-[9px] px-1 py-0.2 rounded font-mono font-bold ${
+                        canAfford ? 'bg-emerald-950 text-emerald-300' : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {canAfford ? 'OK' : `-${goldNeeded}g`}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          };
+
+          return (
+            <div className="space-y-4">
+              {/* Pro Banner */}
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-gradient-to-r from-amber-950/30 to-slate-950 border border-amber-500/40">
+                <div className="flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span className="text-xs font-bold text-slate-100">{proBuild.heroName}</span>
+                  <span className="text-amber-400 font-semibold text-xs">
+                    ({proBuild.proPlayer} — {proBuild.team})
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-900/50 text-amber-300 border border-amber-700/50 font-medium">
+                    {proBuild.role}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (proBuild.starting.length > 0) {
+                        audioService.playItemAdvice(proBuild.heroName, 'starting', proBuild.starting, true);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-semibold transition"
+                    title="Speak starting items advice"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Speak Starting</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (proBuild.core.length > 0) {
+                        audioService.playItemAdvice(proBuild.heroName, 'core', proBuild.core, true);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition"
+                    title="Speak core items advice"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Speak Core</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 Build Stages */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* 1. Starting Items */}
+                <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/60 space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wide">Starting Items</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 font-mono">0:00 - Fountain</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {proBuild.starting.map(renderItemRow)}
+                  </div>
+                </div>
+
+                {/* 2. Early Game */}
+                <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/60 space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span className="text-xs font-bold text-sky-400 uppercase tracking-wide">Early Game</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 font-mono">Laning Stage</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {proBuild.early.map(renderItemRow)}
+                  </div>
+                </div>
+
+                {/* 3. Core Items */}
+                <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/60 space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide">Core Progression</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 font-mono">Power Spikes</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {proBuild.core.map(renderItemRow)}
+                  </div>
+                </div>
+
+                {/* 4. Luxury & Situational */}
+                <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/60 space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span className="text-xs font-bold text-purple-400 uppercase tracking-wide">Luxury &amp; Situational</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 font-mono">Late Game</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {[...proBuild.luxury, ...proBuild.situational].map(renderItemRow)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()
       ) : !activeHero ? (
         <div className="bg-slate-950/50 border border-dashed border-slate-800 rounded-lg p-5 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
           <HelpCircle className="w-6 h-6 text-slate-500" />
@@ -326,6 +484,7 @@ export const ItemGuide: React.FC<Props> = ({ heroName, currentGold }) => {
           OpenDota returned no item-popularity records for this hero.
         </div>
       ) : (
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
           {items.map((item) => {
             const hasPrice = item.cost !== null;

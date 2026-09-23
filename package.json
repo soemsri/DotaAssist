@@ -12,7 +12,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "scripts\\build-windows.bat",
     "build": "tsc && vite build",
-    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus",
+    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus && npm run test:pro_builds",
     "test:verification": "tsx tests/verification.test.ts",
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
@@ -31,7 +31,8 @@
     "test:laning": "tsx tests/laning_benchmark.test.ts",
     "test:glyph": "tsx tests/enemy_glyph.test.ts",
     "test:thai": "tsx tests/thai_voice_naturalness.test.ts",
-    "test:lotus": "tsx tests/healing_lotus.test.ts"
+    "test:lotus": "tsx tests/healing_lotus.test.ts",
+    "test:pro_builds": "tsx tests/pro_builds.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

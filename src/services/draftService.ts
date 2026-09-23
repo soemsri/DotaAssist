@@ -21,3 +21,13 @@ export function getEnemyPickClasses(
   if (!draft || !playerTeam) return [];
   return getPickClasses(playerTeam === 'radiant' ? draft.team3 : draft.team2);
 }
+
+/** Resolve ally picks for the local player's team during draft phase. */
+export function getAllyPickClasses(
+  draft?: GSIDraft,
+  playerTeam?: GSIPlayer['team_name'],
+): string[] {
+  if (!draft || !playerTeam) return [];
+  return getPickClasses(playerTeam === 'radiant' ? draft.team2 : draft.team3);
+}
+

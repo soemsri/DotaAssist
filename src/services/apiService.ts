@@ -3,7 +3,23 @@ import rawHeroes from "../data/dotaHeroes.json";
 import rawItems from "../data/dotaItems.json";
 import rawTalents from "../data/dotaTalents.json";
 import rawSkillBuilds from "../data/dotaSkillBuilds.json";
-import { HeroCounter, HeroMetaInfo, PopularItem, RawTalentTier, HeroSkillInfo, SkillProgressionStep, SituationalSkillRule } from "../types/meta";
+import rawProBuilds from "../data/dotaProBuilds.json";
+import { HeroCounter, HeroMetaInfo, PopularItem, RawTalentTier, HeroSkillInfo, SkillProgressionStep, SituationalSkillRule, ProHeroItemBuild, ProItemEntry } from "../types/meta";
+
+export interface RawProBuild {
+  heroId: number;
+  heroName: string;
+  heroSlug: string;
+  proPlayer: string;
+  team: string;
+  role: string;
+  starting: string[];
+  early: string[];
+  core: string[];
+  luxury: string[];
+  situational: string[];
+}
+
 
 export interface RawSkillBuild {
   heroName: string;
@@ -69,6 +85,7 @@ export class OpenDotaService {
   private nameToIdMap: Map<string, number> = new Map();
   private talentCache: Map<string, RawTalentTier[]> = new Map();
   private skillBuildCache: Map<string, RawSkillBuild> = new Map();
+  private proBuildCache: Map<string, RawProBuild> = new Map();
   private heroStatsRequest: Promise<boolean> | null = null;
   private dynamicTalentsLoading: Promise<boolean> | null = null;
 
@@ -76,7 +93,9 @@ export class OpenDotaService {
     this.loadHeroCatalog();
     this.loadBundledTalents();
     this.loadBundledSkillBuilds();
+    this.loadBundledProBuilds();
   }
+
 
   /**
    * The bundled catalog contains identity and role metadata only. Runtime
@@ -327,6 +346,53 @@ export class OpenDotaService {
       this.skillBuildCache.set(heroKey.toLowerCase(), build);
     }
   }
+
+  private loadBundledProBuilds() {
+    const proMap = rawProBuilds as unknown as Record<string, RawProBuild>;
+    for (const [heroKey, build] of Object.entries(proMap)) {
+      this.proBuildCache.set(heroKey.toLowerCase(), build);
+      this.proBuildCache.set(heroKey.replace("npc_dota_hero_", "").toLowerCase(), build);
+    }
+  }
+
+  /**
+   * Get pro player item recommendations for a given hero.
+   * Resolves item details (display name, cost) for each item key.
+   */
+  public getProItemBuildForHero(heroNameOrKey: string): ProHeroItemBuild | null {
+    if (!heroNameOrKey) return null;
+    const cleanKey = heroNameOrKey.toLowerCase().trim();
+    const raw = this.proBuildCache.get(cleanKey) ||
+      this.proBuildCache.get(cleanKey.replace(/^npc_dota_hero_/, "")) ||
+      this.proBuildCache.get(`npc_dota_hero_${cleanKey.replace(/^npc_dota_hero_/, "")}`);
+
+    if (!raw) return null;
+
+    const mapEntry = (key: string, phase: ProItemEntry['phase']): ProItemEntry => {
+      const details = this.getItemDetails(key);
+      return {
+        name: key,
+        displayName: details?.displayName || key.replace(/_/g, ' '),
+        cost: details?.cost ?? null,
+        phase,
+      };
+    };
+
+    return {
+      heroId: raw.heroId,
+      heroName: raw.heroName,
+      heroSlug: raw.heroSlug,
+      proPlayer: raw.proPlayer,
+      team: raw.team,
+      role: raw.role,
+      starting: raw.starting.map((k) => mapEntry(k, 'starting')),
+      early: raw.early.map((k) => mapEntry(k, 'early')),
+      core: raw.core.map((k) => mapEntry(k, 'core')),
+      luxury: raw.luxury.map((k) => mapEntry(k, 'luxury')),
+      situational: raw.situational.map((k) => mapEntry(k, 'situational')),
+    };
+  }
+
 
   /**
    * Returns talent tiers for a hero. Uses in-memory cache / bundled fallback immediately.
