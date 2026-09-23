@@ -22,14 +22,17 @@ export function getEnemyPickClasses(
   return getPickClasses(playerTeam === 'radiant' ? draft.team3 : draft.team2);
 }
 
-/** Resolve allied picks when the local player's team is known. */
-export function getAlliedPickClasses(
+/** Resolve ally picks for the local player's team during draft phase. */
+export function getAllyPickClasses(
   draft?: GSIDraft,
   playerTeam?: GSIPlayer['team_name'],
 ): string[] {
   if (!draft || !playerTeam) return [];
   return getPickClasses(playerTeam === 'radiant' ? draft.team2 : draft.team3);
 }
+
+/** Resolve allied picks when the local player's team is known (alias for getAllyPickClasses). */
+export const getAlliedPickClasses = getAllyPickClasses;
 
 /** Resolve allied pick hero IDs from the draft. */
 export function getAlliedPickIds(
@@ -47,3 +50,4 @@ export function getAlliedPickIds(
     team.pick4_id,
   ].filter((id): id is number => typeof id === 'number' && id > 0);
 }
+
