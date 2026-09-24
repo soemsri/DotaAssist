@@ -52,6 +52,11 @@ export class VoiceQueue {
     this.enabled = enabled;
     if (!enabled) this.clear();
   }
+  cancelId(id: string) {
+    this.pending = this.pending.filter(item => item.id !== id);
+    if (this.active?.id === id) { this.active = null; this.driver.cancel(); }
+    this.schedule();
+  }
   clear(objective?: Objective) {
     this.pending = objective ? this.pending.filter(item => item.objective !== objective) : [];
     if (this.active && (!objective || this.active.objective === objective)) {

@@ -120,3 +120,25 @@ Before shipping, test the installer, Steam detection across libraries, hotkey co
 Use **Select hero** under any empty enemy slot when draft data is unavailable. In the native overlay, enable mouse interaction first. Selected heroes are marked **Manual**. Incoming draft data fills other empty slots without moving existing heroes or changing their timers, corrections, or hotkeys.
 
 Use **Clear selection** to fix a manual pick. If it has an active timer or manual corrections, choose **Confirm clear** to discard them or **Cancel** to keep them. The cleared slot stays available for your replacement selection. Match/tracker reset clears the lineup; selections are not saved between matches.
+
+### Calibrated minimap scanning
+
+Minimap scanning is a core Windows feature, enabled by default for new settings. Existing saved enable/disable preferences remain respected. First launch opens Settings when calibration is missing or the display layout has changed.
+
+In **Desktop Setup → Minimap setup**, select the game monitor and enter the minimap's left, top, width and height in physical pixels relative to that monitor. Click **Capture preview in 5 seconds**, switch to the borderless Dota 2 game, then return to inspect the preview. Confirm only when the complete minimap is visible without other panels. Use standard red enemy markers. The monitor layout, rectangle, and coarse reference signature are saved locally in `minimap.json` in the app configuration directory; raw screenshots are not saved.
+
+Scanning runs every ten seconds during a live match while Dota 2 is foreground. Monitor, resolution, position, or scaling changes invalidate calibration and require a new confirmed preview. After changing in-game minimap size/layout, repeat calibration manually.
+
+Blank frames, substantial differences from the reference, ambiguous marker counts, capture failures and inactive game state produce **Scan unavailable**. These results clear previous missing-enemy state and suppress missing-enemy alerts. Settings and the HUD direct users to uncover the minimap or recalibrate. A fresh visible-to-missing transition is required before alerts resume.
+
+Confidence uses conservative spatial image consistency, not a trained recognition model or calibrated probability. Marker detection remains heuristic; fog, map skins and unusual marker settings may require recalibration. Windows multi-monitor capture, mixed DPI, preview accuracy, false alerts and performance must be validated in actual matches before release.
+
+### Late-game teamfight plans
+
+From 30:00 during a connected active match, **Tactical Coach** and the expanded HUD show a teamfight plan in the selected voice language (Thai/English). The selected alert role and bundled hero tags determine the default duty. Choose **Initiate**, **Follow up**, **Protect**, or **Counter-initiate** to override it; choices persist separately per role. Native HUD controls require interaction mode.
+
+Plans describe your task, a conditional target, engage/wait and retreat conditions, and up to two situational item options with reasons. Inventory ownership includes backpack/stash and recognized upgrades, so these items are not suggested again. Buyback reserve is shown separately; prices and affordability are not inferred. These are transparent coaching rules, not OpenDota statistics or an optimal build prediction.
+
+Enemy candidates come from the known opposing GSI draft and explicitly selected manual tracker heroes. Targets use bundled hero tags, not enemy net worth or live position. Recorded ultimate cooldowns are labeled estimates. Missing data gives a conservative hold/check message; the minimap scanner never authorizes an engage. Low health/death, pause and unavailable relevant active items affect readiness. Disconnects, pre-30-minute games and post-game state remove the active plan.
+
+Plan speech has its own checkbox and respects global voice, volume, tactical-coach and danger-profile settings. Only duty/readiness changes trigger speech, at most once per 120 game seconds; countdown ticks do not repeat it. Obsolete speech is cancelled independently from objective reminders, and pending plans expire after 12 game seconds. Validate recommendations and readability during Windows gameplay before release.

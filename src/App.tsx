@@ -1,3 +1,5 @@
+import { useFightPlan } from './hooks/useFightPlan';
+import { FightVoiceGate } from './services/teamfightAdvisor';
 import { openDotaCache } from './services/openDotaCache';
 import { alertProfiles } from './services/alertProfiles';
 import { AlertProfileControls } from './components/AlertProfileControls';
@@ -80,6 +82,7 @@ export const App: React.FC = () => {
           objectiveTracker.setAutoCopyClipboard(status.auto_copy_clipboard);
         }
         if (!status.dota_path || !status.hotkey_ready) setSettingsOpen(true);
+        invoke('minimap_calibration_status').catch(() => { if (!disposed) setSettingsOpen(true); });
       }
     }
     initialize().catch(e => setDesktopError(String(e)));
@@ -188,6 +191,20 @@ export const App: React.FC = () => {
   }, [gameState]);
 
   const coachState = tacticalCoach.process(livePayload, minimapResult);
+  const { plan: fightPlan, preferences: fightPrefs } = useFightPlan(livePayload, isConnected);
+  const fightVoiceGate = useRef(new FightVoiceGate());
+  const fightSettings = audioService.getSettings();
+  const fightVoiceEnabled = fightPrefs.voice && fightSettings.voiceEnabled && fightSettings.masterVolume > 0
+    && fightSettings.tacticalCoachEnabled && alertProfiles.enabled('danger') && !livePayload?.map?.paused;
+  const fightSpeechKey = fightPlan ? `${fightPlan.duty}:${fightPlan.status}:${fightSettings.voiceLanguage}` : '';
+  useEffect(() => {
+    audioService.clearTeamfightVoice();
+    const spoken = fightVoiceGate.current.update(`${matchId ?? ''}:${heroName ?? ''}`, fightPlan, clockTime, fightVoiceEnabled);
+    if (spoken) audioService.speakTeamfight(spoken, clockTime);
+    return () => audioService.clearTeamfightVoice();
+    // Countdown changes must not restart or cancel a spoken plan.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fightSpeechKey, fightVoiceEnabled, matchId, heroName]);
 
   useEffect(() => {
     let cancelled = false;

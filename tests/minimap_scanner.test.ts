@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import { minimapScanner, MinimapScanResult } from '../src/services/minimapScanner';
+import { gsiService } from '../src/services/gsiService';
+import { audioService } from '../src/services/audioService';
+import type { GSIPayload } from '../src/types/gsi';
+
+let result: MinimapScanResult = { scanned: true, all_missing: false, enemies_visible_count: 2, message: 'visible' };
+let fail = false;
+let alerts = 0;
+Object.assign(globalThis, { window: { __TAURI_INTERNALS__: { invoke: async () => {
+  if (fail) throw new Error('capture failed');
+  return result;
+} } } });
+audioService.setMinimapScannerEnabled(true);
+audioService.playAllEnemiesMissingAlert = () => { alerts++; };
+gsiService.handlePayload({ map: { game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 120, matchid: '1' } } as GSIPayload);
+await minimapScanner.scanOnce();
+result = { scanned: false, all_missing: true, enemies_visible_count: 0, message: 'Low confidence; recalibrate' };
+await minimapScanner.scanOnce();
+assert.equal(minimapScanner.getLastResult()?.all_missing, false);
+assert.equal(alerts, 0);
+result = { scanned: true, all_missing: true, enemies_visible_count: 0, message: 'missing' };
+await minimapScanner.scanOnce();
+assert.equal(alerts, 0, 'Uncertain scan must reset the previous visible-enemy evidence');
+result = { ...result, all_missing: false, enemies_visible_count: 1 };
+await minimapScanner.scanOnce();
+result = { ...result, all_missing: true, enemies_visible_count: 0 };
+await minimapScanner.scanOnce();
+assert.equal(alerts, 1, 'Reliable visible-to-missing transition should alert');
+fail = true;
+await minimapScanner.scanOnce();
+assert.equal(minimapScanner.getLastResult()?.scanned, false);
+assert.equal(minimapScanner.getLastResult()?.all_missing, false);
+assert.match(minimapScanner.getLastResult()!.message, /unavailable/);
+minimapScanner.resetState();
+assert.equal(minimapScanner.getLastResult()?.scanned, false);
+console.log('Minimap uncertainty, recovery, capture failure and reset tests passed.');

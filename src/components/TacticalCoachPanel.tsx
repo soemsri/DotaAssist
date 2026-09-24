@@ -1,3 +1,4 @@
+import { TeamfightPlan } from './TeamfightPlan';
 import React from "react";
 import { TacticalCoachState } from "../types/meta";
 import { GSIPayload } from "../types/gsi";
@@ -91,6 +92,7 @@ export const TacticalCoachPanel: React.FC<Props> = ({
 
   return (
     <div className="space-y-5">
+      <TeamfightPlan payload={payload} connected={isConnected} />
       {/* 1. Tactical Danger & Lane Status Banner */}
       <div className={`p-4 rounded-2xl border shadow-xl backdrop-blur transition-all ${dangerBadge.bg}`}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

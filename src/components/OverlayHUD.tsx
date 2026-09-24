@@ -1,3 +1,4 @@
+import { TeamfightPlan } from './TeamfightPlan';
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { OpenDotaStatus } from './OpenDotaStatus';
 import { apiService } from '../services/apiService';
@@ -225,6 +226,7 @@ export const OverlayHUD: React.FC<Props> = ({
       style={{ opacity: opacity / 100 }}
     >
       <AlertProfileControls />
+      {!collapsed && <TeamfightPlan payload={payload} connected={isConnected} interactive={interactive} />}
       {collapsed ? (
         /* Collapsed minimal badge */
         <button
@@ -426,6 +428,7 @@ export const OverlayHUD: React.FC<Props> = ({
               <span className="font-mono text-xs font-bold text-slate-200 bg-slate-800 px-1.5 py-0.5 rounded">
                 {formattedTime}
               </span>
+              {scanResult && !scanResult.scanned && <span className="text-[10px] text-amber-300" title={scanResult.message}>Scan unavailable · check Settings</span>}
               {scanResult?.scanned && (
                 <span
                   className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 ${

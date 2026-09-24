@@ -99,3 +99,20 @@ assert.equal(nativeCancels, 3, 'Resetting match must cancel active speech');
 for (const utterance of utterances) utterance.onend?.();
 await flush();
 console.log('Voice urgency, countdown freshness, expiry, cancellation, mute, stale callbacks, and timing integration passed.');
+
+// Cancelling a plan must preserve unrelated queued objective reminders.
+const targetedSpoken: string[] = [];
+let targetedCancels = 0;
+const targeted = new VoiceQueue({ speak: text => { targetedSpoken.push(text); }, cancel: () => { targetedCancels++; } }, () => 1800, () => true);
+targeted.enqueue({ id: 'teamfight-plan', text: () => 'old plan' });
+await flush();
+targeted.enqueue({ id: 'objective', text: () => 'keep objective' });
+targeted.cancelId('teamfight-plan');
+await flush();
+assert.equal(targetedCancels, 1);
+assert.deepEqual(targetedSpoken, ['old plan', 'keep objective']);
+targeted.enqueue({ id: 'teamfight-plan', text: () => 'stale pending plan' });
+targeted.cancelId('teamfight-plan');
+targeted.clear();
+await flush();
+assert.equal(targetedSpoken.length, 2);

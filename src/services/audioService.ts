@@ -291,7 +291,7 @@ class AudioNotificationService {
     sfxEnabled: true,
     voiceEnabled: true,
     itemAdviceEnabled: true,
-    minimapScannerEnabled: false,
+    minimapScannerEnabled: true,
     gankAlertsEnabled: true,
     minimapPosition: 'left',
     voiceLanguage: 'en-US',
@@ -495,6 +495,14 @@ class AudioNotificationService {
         window.speechSynthesis.cancel();
       } catch {}
     }
+  }
+
+  public clearTeamfightVoice() { this.voiceQueue.cancelId('teamfight-plan'); }
+  public speakTeamfight(text: string, clock: number) {
+    this.clearTeamfightVoice();
+    if (!this.settings.voiceEnabled || this.settings.masterVolume <= 0 || !this.settings.tacticalCoachEnabled) return;
+    this.voiceQueue.enqueue({ id: 'teamfight-plan', objective: 'danger', expiresAt: clock + 12,
+      language: this.settings.voiceLanguage, text: () => text });
   }
 
   /** Preview speech and game reminders use the same serial queue. */

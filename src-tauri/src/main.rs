@@ -10,6 +10,7 @@ use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use tiny_http::{Method, Response, Server, StatusCode};
 
 mod desktop;
+mod minimap;
 
 #[tauri::command]
 fn toggle_overlay_window(window: WebviewWindow, overlay: bool) -> Result<(), String> {
@@ -81,8 +82,6 @@ mod win_capture {
     const CAPTUREBLT: u32 = 0x40000000;
     const BI_RGB: u32 = 0;
     const DIB_RGB_COLORS: u32 = 0;
-    const SM_CXSCREEN: i32 = 0;
-    const SM_CYSCREEN: i32 = 1;
 
     #[repr(C)]
     #[allow(non_snake_case)]
@@ -111,7 +110,6 @@ mod win_capture {
     extern "system" {
         fn GetDC(hWnd: HWND) -> HDC;
         fn ReleaseDC(hWnd: HWND, hDC: HDC) -> i32;
-        fn GetSystemMetrics(nIndex: i32) -> i32;
     }
 
     #[link(name = "gdi32")]
@@ -143,39 +141,45 @@ mod win_capture {
         fn DeleteObject(ho: HGDIOBJ) -> BOOL;
     }
 
-    pub fn capture_minimap(position: &str) -> Option<(Vec<u8>, usize, usize)> {
+    pub fn game_foreground() -> bool {
+        #[link(name = "user32")]
+        extern "system" {
+            fn GetForegroundWindow() -> HWND;
+            fn GetWindowTextW(hwnd: HWND, text: *mut u16, count: i32) -> i32;
+        }
+        let mut title = [0u16; 512];
         unsafe {
-            let screen_w = GetSystemMetrics(SM_CXSCREEN);
-            let screen_h = GetSystemMetrics(SM_CYSCREEN);
-            if screen_w <= 0 || screen_h <= 0 {
-                return None;
-            }
-
-            // The Dota minimap is square. The old width/height percentages
-            // diverged on ultrawide displays and caused the scan to sample
-            // outside the minimap. Keep the height-based size, but use it for
-            // both axes so the ROI remains square across aspect ratios.
-            let map_size = ((screen_h as f32 * 0.235).round() as i32)
-                .clamp(160, 480)
-                .min(screen_w);
-            let map_w = map_size;
-            let map_h = map_size;
-            let start_x = if position == "right" {
-                screen_w - map_w
-            } else {
-                0
-            };
-            let start_y = screen_h - map_h;
-
+            let n = GetWindowTextW(GetForegroundWindow(), title.as_mut_ptr(), 512);
+            n > 0
+                && String::from_utf16_lossy(&title[..n as usize])
+                    .to_lowercase()
+                    .starts_with("dota 2")
+        }
+    }
+    pub fn capture_rect(
+        start_x: i32,
+        start_y: i32,
+        map_w: i32,
+        map_h: i32,
+    ) -> Option<(Vec<u8>, usize, usize)> {
+        unsafe {
             #[link(name = "user32")]
             extern "system" {
-                fn OpenInputDesktop(dwFlags: u32, fInherit: BOOL, dwDesiredAccess: u32) -> *mut c_void;
+                fn OpenInputDesktop(
+                    dwFlags: u32,
+                    fInherit: BOOL,
+                    dwDesiredAccess: u32,
+                ) -> *mut c_void;
                 fn SetThreadDesktop(hDesktop: *mut c_void) -> BOOL;
                 fn CloseDesktop(hDesktop: *mut c_void) -> BOOL;
             }
 
             // Ensure Tauri threadpool worker threads are attached to the interactive input desktop
-            let input_desk = OpenInputDesktop(0, 0, 0x0100 /* DESKTOP_SWITCHDESKTOP */ | 0x0001 /* DESKTOP_READOBJECTS */ | 0x0004 /* DESKTOP_WRITEOBJECTS */);
+            let input_desk = OpenInputDesktop(
+                0,
+                0,
+                0x0100 /* DESKTOP_SWITCHDESKTOP */ | 0x0001 /* DESKTOP_READOBJECTS */ | 0x0004, /* DESKTOP_WRITEOBJECTS */
+            );
             if !input_desk.is_null() {
                 SetThreadDesktop(input_desk);
                 CloseDesktop(input_desk);
@@ -202,15 +206,7 @@ mod win_capture {
             let old_obj = SelectObject(hdc_mem, hbm);
             // Try standard SRCCOPY first without CAPTUREBLT to avoid DWM GPU presentation stall and DirectX stutter
             let mut blt_res = BitBlt(
-                hdc_mem,
-                0,
-                0,
-                map_w,
-                map_h,
-                hdc_screen,
-                start_x,
-                start_y,
-                SRCCOPY,
+                hdc_mem, 0, 0, map_w, map_h, hdc_screen, start_x, start_y, SRCCOPY,
             );
 
             if blt_res == 0 {
@@ -254,6 +250,7 @@ mod win_capture {
             };
 
             let mut buffer = vec![0u8; (map_w * map_h * 4) as usize];
+            SelectObject(hdc_mem, old_obj);
             let dib_res = GetDIBits(
                 hdc_mem,
                 hbm,
@@ -269,7 +266,7 @@ mod win_capture {
             DeleteDC(hdc_mem);
             ReleaseDC(std::ptr::null_mut(), hdc_screen);
 
-            if dib_res == 0 {
+            if dib_res != map_h {
                 None
             } else {
                 Some((buffer, map_w as usize, map_h as usize))
@@ -278,7 +275,12 @@ mod win_capture {
     }
 
     #[cfg(debug_assertions)]
-    pub fn save_debug_bmp(buffer: &[u8], width: usize, height: usize, path: &Path) -> std::io::Result<()> {
+    pub fn save_debug_bmp(
+        buffer: &[u8],
+        width: usize,
+        height: usize,
+        path: &Path,
+    ) -> std::io::Result<()> {
         let pixel_bytes = (width * height * 4) as u32;
         let file_size = 14u32 + 40u32 + pixel_bytes;
         let mut file = File::create(path)?;
@@ -388,16 +390,14 @@ mod minimap_tests {
     }
 
     #[test]
-    fn test_live_scan_minimap() {
-        let result = scan_minimap(Some("left".to_string()), Some("radiant".to_string()));
-        println!("scan_minimap result: {:?}", result);
+    fn test_blank_marker() {
+        assert!(!is_enemy_marker_pixel(0, 0, 0));
     }
 }
 
-
-
 #[tauri::command]
 fn scan_minimap(
+    app: AppHandle,
     position: Option<String>,
     player_team: Option<String>,
 ) -> Result<MinimapScanResult, String> {
@@ -406,7 +406,8 @@ fn scan_minimap(
         let pos = position.unwrap_or_else(|| "left".to_string());
         #[allow(unused_variables)]
         let team_str = player_team.unwrap_or_default().to_lowercase();
-        if let Some((buffer, width, height)) = win_capture::capture_minimap(&pos) {
+        let captured = minimap::calibrated_capture(&app);
+        if let Ok((buffer, width, height)) = captured {
             let (min_x, max_x, min_y, max_y) = get_inner_minimap_bounds(&pos, width, height);
             let inner_w = (max_x.saturating_sub(min_x)).max(1);
             let inner_h = (max_y.saturating_sub(min_y)).max(1);
@@ -527,7 +528,11 @@ fn scan_minimap(
                 }
             }
 
-            let enemies_count = hero_clusters_count.min(5);
+            if hero_clusters_count > 5 {
+                return Ok(MinimapScanResult { enemies_visible_count: 0, all_missing: false, scanned: false,
+                    message: "Ambiguous minimap markers. Recalibrate in Settings using standard red enemy markers.".into() });
+            }
+            let enemies_count = hero_clusters_count;
             let all_missing = enemies_count == 0;
 
             Ok(MinimapScanResult {
@@ -544,22 +549,23 @@ fn scan_minimap(
             #[cfg(debug_assertions)]
             println!(
                 "[DotaAssist Minimap] capture failed position={} player_team={}",
-                pos,
-                team_str
+                pos, team_str
             );
 
             Ok(MinimapScanResult {
                 enemies_visible_count: 0,
                 all_missing: false,
                 scanned: false,
-                message: "Failed to capture screen".to_string(),
+                message: captured
+                    .err()
+                    .unwrap_or_else(|| "Scanning unavailable. Recalibrate in Settings.".into()),
             })
         }
     }
 
     #[cfg(not(target_os = "windows"))]
     {
-        let _ = (position, player_team);
+        let _ = (app, position, player_team);
         Ok(MinimapScanResult {
             enemies_visible_count: 0,
             all_missing: false,
@@ -881,6 +887,10 @@ fn main() {
             desktop::detect_dota_installations,
             desktop::install_gsi_config,
             scan_minimap,
+            minimap::minimap_displays,
+            minimap::preview_minimap,
+            minimap::confirm_minimap,
+            minimap::minimap_calibration_status,
             fetch_tts_audio
         ])
         .setup(move |app| {

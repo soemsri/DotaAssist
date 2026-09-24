@@ -45,7 +45,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
   const [tpScrollAlertEnabled, setTpScrollAlertEnabled] = useState(currentSettings.tpScrollAlertEnabled);
   const [laneAssistantMode, setLaneAssistantMode] = useState<'auto' | 'always' | 'disabled'>(currentSettings.laneAssistantMode || 'auto');
   const [talentAlertsEnabled, setTalentAlertsEnabled] = useState(currentSettings.talentAlertsEnabled ?? true);
-  const [minimapScannerEnabled, setMinimapScannerEnabled] = useState(currentSettings.minimapScannerEnabled ?? false);
+  const [minimapScannerEnabled, setMinimapScannerEnabled] = useState(currentSettings.minimapScannerEnabled ?? true);
   const [minimapPosition, setMinimapPosition] = useState<'left' | 'right'>(currentSettings.minimapPosition || 'left');
 
   const trackerState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
@@ -339,7 +339,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                   className="accent-amber-500 rounded"
                 />
                 <Eye className="w-3.5 h-3.5 text-rose-400" />
-                <span>MIA Scanner (Exp)</span>
+                <span>Minimap Scanner</span>
               </label>
             </div>
 
@@ -362,8 +362,8 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
 
           {/* Performance Optimization Note */}
           <div className="text-[11px] text-slate-400 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 flex items-center gap-2">
-            <span className="text-amber-400 font-bold">💡 Performance Tip:</span>
-            <span>MIA Scanner uses desktop screen capture. Keep disabled for maximum game FPS and 0% GPU capture overhead.</span>
+            <span className="text-amber-400 font-bold">Minimap setup:</span>
+            <span>Calibrate your game monitor and minimap rectangle in Desktop Setup. Uncertain scans suppress missing-enemy alerts.</span>
           </div>
 
           {/* Hands-Free Voice Commands Section */}
