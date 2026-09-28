@@ -10,6 +10,10 @@ import {
   HeroTalentsAnalysis,
   HeroSkillBuildAnalysis,
   VisionAdvisorState,
+  PreRuneShoveInfo,
+  AntiWanderingRoamInfo,
+  PowerSpikeActionInfo,
+  HighGroundSiegeInfo,
 } from '../types/meta';
 import { GSIPayload } from '../types/gsi';
 import { MinimapScanResult } from './minimapScanner';
@@ -19,6 +23,8 @@ import { neutralAdvisor, getHeroArchetype, isSupportHero } from './neutralAdviso
 import { talentAdvisor } from './talentAdvisor';
 import { skillAdvisor } from './skillAdvisor';
 import { visionEngine } from './visionEngine';
+import { alertProfiles } from './alertProfiles';
+
 
 // Standard Neutral Item Unlocks
 const NEUTRAL_TIERS = [
@@ -115,6 +121,11 @@ export class TacticalCoachEngine {
   private lastMatchId: string | null = null;
   private playedLaneAlerts: Set<string> = new Set();
   private announcedTalentLevels: Set<number> = new Set();
+  private playedRuneShoveAlerts: Set<string> = new Set();
+  private lastAntiWanderingAlertTime: number = 0;
+  private lastNearItemAlertTime: number = 0;
+  private lastHighGroundAlertTime: number = 0;
+  private announcedLevel6Spike: boolean = false;
   private lastCacheKey: string | null = null;
   private lastCachedResult: TacticalCoachState | null = null;
 
@@ -128,6 +139,11 @@ export class TacticalCoachEngine {
     this.lastMatchId = null;
     this.playedLaneAlerts.clear();
     this.announcedTalentLevels.clear();
+    this.playedRuneShoveAlerts.clear();
+    this.lastAntiWanderingAlertTime = 0;
+    this.lastNearItemAlertTime = 0;
+    this.lastHighGroundAlertTime = 0;
+    this.announcedLevel6Spike = false;
     visionEngine.reset();
     this.lastCacheKey = null;
     this.lastCachedResult = null;
@@ -161,15 +177,18 @@ export class TacticalCoachEngine {
     const heroAlive = hero?.alive !== false;
     const gold = player?.gold ?? 0;
     const miaSig = minimapResult ? `${minimapResult.scanned}:${minimapResult.all_missing}` : 'none';
-    const itemsSig = items ? `${items.teleport0?.name || ''}:${items.neutral0?.name || ''}:${items.slot0?.name || ''}` : 'none';
+    const itemsSig = items
+      ? `${items.teleport0?.name || ''}:${items.neutral0?.name || ''}:${items.slot0?.name || ''}:${items.slot1?.name || ''}:${items.slot2?.name || ''}:${items.slot3?.name || ''}:${items.slot4?.name || ''}:${items.slot5?.name || ''}`
+      : 'none';
     const abilitiesSig = payload?.abilities ? Object.entries(payload.abilities).map(([k, v]) => `${k}:${v?.level ?? 0}`).join(',') : 'none';
     const wardsPlaced = player?.wards_placed ?? 0;
     const draftLen = draft ? Object.keys(draft).length : 0;
     const settings = audioService.getSettings();
     const laneMode = settings.laneAssistantMode;
     const lang = settings.voiceLanguage;
+    const activeRole = alertProfiles.getSnapshot().active;
 
-    const cacheKey = `${matchId ?? ''}:${clockTime}:${hero?.name ?? ''}:${heroLevel}:${heroHp}:${heroAlive}:${gold}:${miaSig}:${itemsSig}:${abilitiesSig}:${wardsPlaced}:${draftLen}:${laneMode}:${lang}`;
+    const cacheKey = `${matchId ?? ''}:${clockTime}:${hero?.name ?? ''}:${heroLevel}:${heroHp}:${heroAlive}:${gold}:${miaSig}:${itemsSig}:${abilitiesSig}:${wardsPlaced}:${draftLen}:${laneMode}:${lang}:${activeRole}`;
 
     if (this.lastCacheKey === cacheKey && this.lastCachedResult) {
       return this.lastCachedResult;
@@ -249,6 +268,19 @@ export class TacticalCoachEngine {
     // 10. Smart Ward Placement & Vision Timer (Automatic GSI tracking & expiry alert)
     const visionState: VisionAdvisorState = visionEngine.process(payload, clockTime);
 
+    // 11. Smurf/Immortal Coaching Insights (BalloonDota principles)
+    // 11a: Pre-Rune Wave Shove (:40 before 2, 4, 6, 8, 10m)
+    const preRuneShove = this.evaluatePreRuneShove(clockTime, isGameActive);
+
+    // 11b: Anti-Wandering & Roam Punish (3:00 - 10:00)
+    const antiWanderingRoam = this.evaluateAntiWandering(clockTime, minimapResult, isGameActive);
+
+    // 11c: Power Spike Actionability & Near-Item Caution
+    const powerSpikeAction = this.evaluatePowerSpikeAction(clockTime, hero, player, threats, isGameActive);
+
+    // 11d: High Ground Siege Discipline (>= 20:00 Aegis Check)
+    const highGroundSiege = this.evaluateHighGroundSiege(clockTime, equippedItemKeys, isGameActive);
+
     const result: TacticalCoachState = {
       dangerLevel,
       dangerReasons,
@@ -261,6 +293,10 @@ export class TacticalCoachEngine {
       talentAnalysis,
       skillBuildAnalysis,
       visionState,
+      preRuneShove,
+      antiWanderingRoam,
+      powerSpikeAction,
+      highGroundSiege,
     };
 
     this.lastCacheKey = cacheKey;
@@ -851,6 +887,194 @@ export class TacticalCoachEngine {
     });
 
     return keys;
+  }
+
+  private evaluatePreRuneShove(
+    clockTime: number,
+    isGameActive: boolean,
+  ): PreRuneShoveInfo | null {
+    if (!isGameActive || clockTime < 60 || clockTime > 600) return null;
+
+    const currentMinute = Math.floor(clockTime / 60);
+    const secInMinute = clockTime % 60;
+    const targetMinute = currentMinute + 1;
+
+    // Runes spawn on even minutes: 2, 4, 6, 8, 10
+    if (targetMinute % 2 !== 0) return null;
+
+    // Window: :40 to :55 seconds of the preceding odd minute
+    const isInWindow = secInMinute >= 40 && secInMinute <= 55;
+    if (!isInWindow) return null;
+
+    const runeType: 'water' | 'power' = targetMinute <= 4 ? 'water' : 'power';
+    const secondsRemaining = (targetMinute * 60) - clockTime;
+
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    const runeLabel = runeType === 'water' ? (isThai ? 'น้ำ' : 'water') : (isThai ? 'แม่น้ำ' : 'power');
+    const tipEn = `Pre-Rune Shove: Push mid wave into tower now for minute ${targetMinute} ${runeType} rune advantage!`;
+    const tipTh = `ดันเวฟครีปเข้าใต้ป้อมศัตรูตอนนี้ เพื่อคุมรูน${runeLabel}นาทีที่ ${targetMinute}!`;
+
+    const alertKey = `rune_shove_${targetMinute}`;
+    if (secInMinute >= 40 && secInMinute <= 46 && !this.playedRuneShoveAlerts.has(alertKey)) {
+      this.playedRuneShoveAlerts.add(alertKey);
+      const activeRole = alertProfiles.getSnapshot().active;
+      if (activeRole === 'mid') {
+        audioService.playPreRuneShoveAlert(runeType, targetMinute);
+      }
+    }
+
+    return {
+      active: true,
+      runeType,
+      targetMinute,
+      secondsRemaining: Math.max(0, secondsRemaining),
+      tipEn,
+      tipTh,
+    };
+  }
+
+  private evaluateAntiWandering(
+    clockTime: number,
+    minimapResult: MinimapScanResult | null,
+    isGameActive: boolean,
+  ): AntiWanderingRoamInfo | null {
+    if (!isGameActive || clockTime < 180 || clockTime > 600) return null;
+
+    const activeRole = alertProfiles.getSnapshot().active;
+    const isMid = activeRole === 'mid';
+
+    const isEnemyMissing = Boolean(
+      minimapResult?.scanned &&
+      (minimapResult.all_missing || (minimapResult.enemies_visible_count !== undefined && minimapResult.enemies_visible_count <= 2))
+    );
+
+    if (!isEnemyMissing) return null;
+
+    const tipEn = isMid
+      ? 'Enemy Mid roaming! Shove mid wave and damage Tier 1 tower. Do not wander through river without vision.'
+      : 'Enemy Mid missing! Possible side lane roam, fall back near your tower.';
+    const tipTh = isMid
+      ? 'มิดศัตรูเดินแก๊ง! ดันครีปตอดป้อมกลางทันที อย่าเดินตามในแม่น้ำที่ไม่มีวอร์ด'
+      : 'มิดศัตรูหายไปจากเลนกลาง! ระวังโดนเดินแก๊ง ถอยเข้าใกล้ป้อมเรา';
+
+    if (clockTime - this.lastAntiWanderingAlertTime >= 75) {
+      this.lastAntiWanderingAlertTime = clockTime;
+      audioService.playEnemyMidRoamAlert(isMid);
+    }
+
+    return {
+      active: true,
+      isMid,
+      tipEn,
+      tipTh,
+    };
+  }
+
+  private evaluatePowerSpikeAction(
+    clockTime: number,
+    hero: GSIPayload['hero'],
+    player: GSIPayload['player'],
+    threats: EnemyThreatAnalysis[],
+    isGameActive: boolean,
+  ): PowerSpikeActionInfo | null {
+    if (!isGameActive || !hero) return null;
+
+    const currentLevel = hero.level || 1;
+    const gold = player?.gold || 0;
+
+    const keyItemPool = [
+      { key: 'item_black_king_bar', name: 'Black King Bar (BKB)', cost: 4050 },
+      { key: 'item_blink', name: 'Blink Dagger', cost: 2250 },
+      { key: 'item_sphere', name: "Linken's Sphere", cost: 4600 },
+      { key: 'item_monkey_king_bar', name: 'Monkey King Bar (MKB)', cost: 4900 },
+      { key: 'item_shivas_guard', name: "Shiva's Guard", cost: 4825 },
+      { key: 'item_spirit_vessel', name: 'Spirit Vessel', cost: 2840 },
+    ];
+
+    for (const t of threats) {
+      for (const counter of t.recommendedCounters) {
+        if (!counter.isEquipped && counter.cost > 2000) {
+          if (!keyItemPool.some((k) => k.key === counter.name)) {
+            keyItemPool.push({ key: counter.name, name: counter.displayName, cost: counter.cost });
+          }
+        }
+      }
+    }
+
+    // 1. Near-Item Caution: Within 500 gold of high-impact item
+    for (const item of keyItemPool) {
+      const deficit = item.cost - gold;
+      if (deficit > 0 && deficit <= 500) {
+        const tipEn = `Key item ${item.name} within ${deficit}g! Play safe near vision and avoid coinflip fights.`;
+        const tipTh = `ขาดอีก ${deficit} โกลด์จะได้ ${item.name}! เล่นปลอดภัยอย่าเพิ่งเปิดไฟต์เสี่ยง`;
+
+        if (clockTime - this.lastNearItemAlertTime >= 90) {
+          this.lastNearItemAlertTime = clockTime;
+          audioService.playNearItemCautionAlert(item.name, deficit);
+        }
+
+        return {
+          state: 'near_item',
+          itemName: item.name,
+          deficit,
+          tipEn,
+          tipTh,
+        };
+      }
+    }
+
+    // 2. Level 6 Spike Ready
+    if (currentLevel >= 6 && currentLevel <= 7 && !this.announcedLevel6Spike) {
+      this.announcedLevel6Spike = true;
+      const heroClean = hero?.name ? hero.name.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : 'Hero';
+      audioService.playPowerSpikeReadyActionAlert(heroClean, 'Level 6 Ultimate');
+      return {
+        state: 'ready',
+        spikeName: 'Level 6 Ultimate',
+        tipEn: 'Power Spike Ready: Group with team or Smoke for an objective!',
+        tipTh: 'พาวเวอร์สไปก์พร้อมแล้ว รวมทีมกดสโม้กเปิดไฟต์หรือยึดป้อม',
+      };
+    }
+
+    return {
+      state: currentLevel >= 6 ? 'ready' : 'farming',
+      tipEn: currentLevel >= 6 ? 'Power spike active. Look for active map movements.' : 'Farming phase. Prioritize safe creep waves and item timings.',
+      tipTh: currentLevel >= 6 ? 'พาวเวอร์สไปก์พร้อมใช้งาน มองหาจังหวะคุมพื้นที่' : 'ช่วงฟาร์มสะสมไอเทม เน้นเก็บครีปเลนปลอดภัยก่อนเปิดไฟต์',
+    };
+  }
+
+  private evaluateHighGroundSiege(
+    clockTime: number,
+    equippedItems: Set<string>,
+    isGameActive: boolean,
+  ): HighGroundSiegeInfo | null {
+    if (!isGameActive || clockTime < 1200) return null;
+
+    const hasAegis = equippedItems.has('item_aegis');
+
+    if (!hasAegis) {
+      const tipEn = 'High Ground Caution: Do not force high ground without Aegis or a pick-off. Fall back to Roshan or Tormentor!';
+      const tipTh = 'อย่าเพิ่งฝืนขึ้นบ้านถ้ายังไม่มี Aegis ถอยมาคุม Roshan หรือ Tormentor ก่อน';
+
+      if (clockTime - this.lastHighGroundAlertTime >= 300) {
+        this.lastHighGroundAlertTime = clockTime;
+        audioService.playHighGroundCautionAlert();
+      }
+
+      return {
+        caution: true,
+        hasAegis: false,
+        tipEn,
+        tipTh,
+      };
+    }
+
+    return {
+      caution: false,
+      hasAegis: true,
+      tipEn: 'Aegis secured! Siege high ground or force Tier 3 objectives with your advantage.',
+      tipTh: 'มี Aegis พร้อมแล้ว! บุกขึ้นบ้านหรือกดดันป้อม Tier 3 โดยใช้ความได้เปรียบ',
+    };
   }
 }
 

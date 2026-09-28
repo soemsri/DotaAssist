@@ -268,6 +268,38 @@ export interface VisionAdvisorState {
   wardsPlacedTotal: number;
 }
 
+export interface PreRuneShoveInfo {
+  active: boolean;
+  runeType: 'water' | 'power';
+  targetMinute: number;
+  secondsRemaining: number;
+  tipEn: string;
+  tipTh: string;
+}
+
+export interface AntiWanderingRoamInfo {
+  active: boolean;
+  isMid: boolean;
+  tipEn: string;
+  tipTh: string;
+}
+
+export interface PowerSpikeActionInfo {
+  state: 'ready' | 'near_item' | 'farming';
+  spikeName?: string;
+  itemName?: string;
+  deficit?: number;
+  tipEn: string;
+  tipTh: string;
+}
+
+export interface HighGroundSiegeInfo {
+  caution: boolean;
+  hasAegis: boolean;
+  tipEn: string;
+  tipTh: string;
+}
+
 export interface TacticalCoachState {
   dangerLevel: TacticalDangerLevel;
   dangerReasons: string[];
@@ -280,4 +312,9 @@ export interface TacticalCoachState {
   talentAnalysis?: HeroTalentsAnalysis;
   skillBuildAnalysis?: HeroSkillBuildAnalysis;
   visionState?: VisionAdvisorState;
+  preRuneShove?: PreRuneShoveInfo | null;
+  antiWanderingRoam?: AntiWanderingRoamInfo | null;
+  powerSpikeAction?: PowerSpikeActionInfo | null;
+  highGroundSiege?: HighGroundSiegeInfo | null;
 }
+

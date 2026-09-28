@@ -613,6 +613,42 @@ export const OverlayHUD: React.FC<Props> = ({
               </span>
             ) : null}
 
+            {coachState.preRuneShove?.active && (
+              <span
+                className="px-1.5 py-0.5 rounded bg-sky-950 text-sky-200 border border-sky-400 font-bold font-mono text-[10px] flex items-center gap-0.5 animate-pulse"
+                title={coachState.preRuneShove.tipEn}
+              >
+                <span>🌊 Shove Mid</span>
+              </span>
+            )}
+
+            {coachState.antiWanderingRoam?.active && (
+              <span
+                className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-200 border border-rose-500 font-bold font-mono text-[10px] flex items-center gap-0.5 animate-pulse"
+                title={coachState.antiWanderingRoam.tipEn}
+              >
+                <span>⚠️ Roam: Push T1</span>
+              </span>
+            )}
+
+            {coachState.powerSpikeAction?.state === 'near_item' && (
+              <span
+                className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-200 border border-amber-400 font-bold font-mono text-[10px] flex items-center gap-0.5"
+                title={coachState.powerSpikeAction.tipEn}
+              >
+                <span>🛡️ -{coachState.powerSpikeAction.deficit}g {coachState.powerSpikeAction.itemName}</span>
+              </span>
+            )}
+
+            {coachState.highGroundSiege?.caution && (
+              <span
+                className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-200 border border-rose-400 font-bold font-mono text-[10px] flex items-center gap-0.5"
+                title={coachState.highGroundSiege.tipEn}
+              >
+                <span>🏰 Wait Aegis</span>
+              </span>
+            )}
+
             {talentMilestone && (
               <button
                 onClick={() => {

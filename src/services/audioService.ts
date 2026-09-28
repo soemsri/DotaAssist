@@ -72,6 +72,11 @@ interface VoicePhrases {
   voiceQueryItem: (item: string) => string;
   voiceQueryBuyback: (ready: boolean, shortfall?: number) => string;
   voiceUnrecognized: string;
+  preRuneShove: (runeType: string, minute: number) => string;
+  enemyMidRoam: (isMid: boolean) => string;
+  powerSpikeReady: (hero: string, spike: string) => string;
+  nearItemCaution: (item: string, deficit: number) => string;
+  highGroundCaution: string;
 }
 
 export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
@@ -133,6 +138,18 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
         ? 'Buyback is ready'
         : `Need ${shortfall} more gold for buyback`,
     voiceUnrecognized: 'Command not recognized',
+    preRuneShove: (runeType: string, minute: number) =>
+      `Pre-rune shove! Push mid wave into tower now for minute ${minute} ${runeType} rune advantage.`,
+    enemyMidRoam: (isMid: boolean) =>
+      isMid
+        ? 'Enemy Mid is roaming! Shove mid wave and damage Tier 1 tower. Do not wander through river without vision.'
+        : 'Enemy Mid missing! Possible side lane roam, fall back near your tower.',
+    powerSpikeReady: (hero: string, spike: string) =>
+      `Power spike ready for ${hero} with ${spike}! Group with team or Smoke for an objective.`,
+    nearItemCaution: (item: string, deficit: number) =>
+      `Key item ${item} within ${deficit} gold! Play safe near vision and avoid coinflip fights.`,
+    highGroundCaution:
+      'High Ground Caution: Do not force high ground without Aegis or a pick-off. Fall back to Roshan or Tormentor.',
   },
   'th-TH': {
     wisdomShrine: 'รูนวิสดอม EXP ในอีก 30 วินาที',
@@ -192,6 +209,18 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
         ? 'บายแบ็คพร้อมใช้งาน'
         : `ยังขาดเงินอีก ${shortfall} สำหรับบายแบ็ค`,
     voiceUnrecognized: 'ไม่พบคำสั่งที่ตรงกัน',
+    preRuneShove: (runeType: string, minute: number) =>
+      `ดันเวฟครีปเข้าใต้ป้อมศัตรูตอนนี้ เพื่อคุมรูน${runeType}นาทีที่ ${minute}!`,
+    enemyMidRoam: (isMid: boolean) =>
+      isMid
+        ? 'มิดศัตรูเดินแก๊ง! ดันครีปตอดป้อมกลางทันที อย่าเดินตามในแม่น้ำที่ไม่มีวอร์ด'
+        : 'มิดศัตรูหายไปจากเลนกลาง! ระวังโดนเดินแก๊ง ถอยเข้าใกล้ป้อมเรา',
+    powerSpikeReady: (hero: string, spike: string) =>
+      `พาวเวอร์สไปก์ ${spike} พร้อมแล้วสำหรับ ${hero}! รวมทีมกดสโม้กเปิดไฟต์หรือยึดป้อม`,
+    nearItemCaution: (item: string, deficit: number) =>
+      `ขาดอีก ${deficit} โกลด์จะได้ ${item}! เล่นปลอดภัยอย่าเพิ่งเปิดไฟต์เสี่ยง`,
+    highGroundCaution:
+      'อย่าเพิ่งฝืนขึ้นบ้านถ้ายังไม่มีเอจิส ถอยมาคุมโรชานหรือทอร์เมนเตอร์ก่อน',
   },
 };
 
@@ -998,6 +1027,75 @@ class AudioNotificationService {
     const lang = this.settings.voiceLanguage;
     this.speak(PHRASES[lang].wardExpired);
   }
+
+  public playPreRuneShoveAlert(runeType: 'water' | 'power', targetMinute: number, force: boolean = false) {
+    if (!this.settings.tacticalCoachEnabled && !force) return;
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(660, now, 0.1, 'sine');
+      this.playTone(880, now + 0.08, 0.15, 'sine');
+    }
+    const lang = this.settings.voiceLanguage;
+    const runeLabel = runeType === 'water' ? (lang === 'th-TH' ? 'น้ำ' : 'water') : (lang === 'th-TH' ? 'แม่น้ำ' : 'power');
+    const text = PHRASES[lang].preRuneShove(runeLabel, targetMinute);
+    this.speak(text);
+  }
+
+  public playEnemyMidRoamAlert(isMid: boolean, force: boolean = false) {
+    if (!this.settings.tacticalCoachEnabled && !force) return;
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(493.88, now, 0.1, 'triangle');
+      this.playTone(392.0, now + 0.08, 0.15, 'triangle');
+    }
+    const lang = this.settings.voiceLanguage;
+    const text = PHRASES[lang].enemyMidRoam(isMid);
+    this.speak(text);
+  }
+
+  public playPowerSpikeReadyActionAlert(heroName: string, spikeName: string, force: boolean = false) {
+    if ((!this.settings.tacticalCoachEnabled || !this.settings.powerSpikeAlertsEnabled) && !force) return;
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.1, 'sine');
+      this.playTone(659.25, now + 0.08, 0.12, 'sine');
+      this.playTone(783.99, now + 0.16, 0.2, 'sine');
+    }
+    const cleanHero = heroName ? heroName.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : 'Hero';
+    const lang = this.settings.voiceLanguage;
+    const text = PHRASES[lang].powerSpikeReady(cleanHero, spikeName);
+    this.speak(text);
+  }
+
+  public playNearItemCautionAlert(itemName: string, deficit: number, force: boolean = false) {
+    if (!this.settings.tacticalCoachEnabled && !force) return;
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(440, now, 0.1, 'sine');
+      this.playTone(370, now + 0.08, 0.15, 'sine');
+    }
+    const lang = this.settings.voiceLanguage;
+    const text = PHRASES[lang].nearItemCaution(itemName, deficit);
+    this.speak(text);
+  }
+
+  public playHighGroundCautionAlert(force: boolean = false) {
+    if (!this.settings.tacticalCoachEnabled && !force) return;
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(392, now, 0.12, 'sawtooth');
+      this.playTone(330, now + 0.1, 0.18, 'sawtooth');
+    }
+    const lang = this.settings.voiceLanguage;
+    const text = PHRASES[lang].highGroundCaution;
+    this.speak(text);
+  }
+
 
   public playNeutralTierAlert(tier: number) {
     this.initContext();

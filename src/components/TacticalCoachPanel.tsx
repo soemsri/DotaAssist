@@ -35,7 +35,20 @@ export const TacticalCoachPanel: React.FC<Props> = ({
   isConnected,
   minimapResult,
 }) => {
-  const { dangerLevel, dangerReasons, powerSpike, threats, buyback, neutralSlot, tpScroll, macroPhase } = coachState;
+  const {
+    dangerLevel,
+    dangerReasons,
+    powerSpike,
+    threats,
+    buyback,
+    neutralSlot,
+    tpScroll,
+    macroPhase,
+    preRuneShove,
+    antiWanderingRoam,
+    powerSpikeAction,
+    highGroundSiege,
+  } = coachState;
   const heroName = payload?.hero?.name
     ? payload.hero.name.replace(/^npc_dota_hero_/, "").replace(/_/g, " ")
     : "Your Hero";
@@ -149,6 +162,123 @@ export const TacticalCoachPanel: React.FC<Props> = ({
             : minimapResult?.message ?? "Waiting for native in-game scan"}
         </span>
       </div>
+
+      {/* Smurf & Immortal Tactical Alerts (BalloonDota Principles) */}
+      {(preRuneShove?.active || antiWanderingRoam?.active || (powerSpikeAction?.state === 'near_item') || highGroundSiege?.caution) && (
+        <div className="space-y-2.5">
+          {preRuneShove?.active && (
+            <div className="p-3.5 rounded-xl border border-sky-500/50 bg-sky-950/40 text-sky-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-2.5">
+                <Clock className="w-4 h-4 text-sky-400 shrink-0" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-sky-900/80 text-sky-300 font-mono">
+                      Pre-Rune Shove ({preRuneShove.secondsRemaining}s)
+                    </span>
+                    <span className="text-xs text-sky-100 font-bold capitalize">
+                      Minute {preRuneShove.targetMinute} {preRuneShove.runeType} Rune
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {isThai ? preRuneShove.tipTh : preRuneShove.tipEn}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => audioService.playPreRuneShoveAlert(preRuneShove.runeType, preRuneShove.targetMinute, true)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-900/60 hover:bg-sky-800 text-sky-200 text-xs font-semibold border border-sky-600/40 transition shrink-0"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+                <span>Audio Cue</span>
+              </button>
+            </div>
+          )}
+
+          {antiWanderingRoam?.active && (
+            <div className="p-3.5 rounded-xl border border-amber-500/60 bg-amber-950/40 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-2.5">
+                <Compass className="w-4 h-4 text-amber-400 shrink-0" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-900/80 text-amber-300 font-mono">
+                      Anti-Wandering / Roam Punish
+                    </span>
+                    <span className="text-xs text-amber-100 font-bold">
+                      {antiWanderingRoam.isMid ? 'Mid Focus' : 'Side Lane Caution'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {isThai ? antiWanderingRoam.tipTh : antiWanderingRoam.tipEn}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => audioService.playEnemyMidRoamAlert(antiWanderingRoam.isMid, true)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-900/60 hover:bg-amber-800 text-amber-200 text-xs font-semibold border border-amber-600/40 transition shrink-0"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                <span>Audio Cue</span>
+              </button>
+            </div>
+          )}
+
+          {powerSpikeAction?.state === 'near_item' && (
+            <div className="p-3.5 rounded-xl border border-emerald-500/50 bg-emerald-950/40 text-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300 font-mono">
+                      Near Item Spike (-{powerSpikeAction.deficit}g)
+                    </span>
+                    <span className="text-xs text-emerald-100 font-bold">
+                      {powerSpikeAction.itemName}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {isThai ? powerSpikeAction.tipTh : powerSpikeAction.tipEn}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => audioService.playNearItemCautionAlert(powerSpikeAction.itemName || 'Core Item', powerSpikeAction.deficit || 400, true)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-xs font-semibold border border-emerald-600/40 transition shrink-0"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Audio Cue</span>
+              </button>
+            </div>
+          )}
+
+          {highGroundSiege?.caution && (
+            <div className="p-3.5 rounded-xl border border-rose-500/50 bg-rose-950/40 text-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-2.5">
+                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/80 text-rose-300 font-mono">
+                      High Ground Caution
+                    </span>
+                    <span className="text-xs text-rose-100 font-bold">
+                      Aegis Discipline
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {isThai ? highGroundSiege.tipTh : highGroundSiege.tipEn}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => audioService.playHighGroundCautionAlert(true)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-900/60 hover:bg-rose-800 text-rose-200 text-xs font-semibold border border-rose-600/40 transition shrink-0"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-rose-400" />
+                <span>Audio Cue</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 2 Grid Columns: Power Spikes & Inventory/Economy */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
