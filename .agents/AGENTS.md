@@ -708,3 +708,33 @@ Implemented all three choices:
 Cleared slots remain available for replacement; match resets clear the lineup. Updated documentation and regression tests.
 
 All 12 test suites and the production build pass. Native Windows interaction remains untested on-device.
+
+## Design Alignment & Workspace Preferences (2026-09-28) — Live Coaching & Smart Suppression
+
+### สรุปผลการคัดเลือกการออกแบบและข้อกำหนด (Design Decisions Summary)
+
+จากการสัมภาษณ์จัดแนวทาง (Grill-Me Alignment Interview) ในระบบ **Live In-Game Coaching & Dynamic Next Action Suggestions** ได้ข้อสรุปทั้ง 5 ด้านดังนี้:
+
+1. **การตรวจจับการต่อสู้และการหน่วงเวลา (Combat Detection & Linger Buffer)**:
+   - ใช้เงื่อนไข Multi-factor: เมื่อฮีโร่ติดสถานะผิดปกติ (Stunned / Hexed / Silenced), เลือดต่ำกว่า 30%, หรือเลือดลดฮวบมากกว่า 25% ของ Max HP ภายใน 2.5 วินาที
+   - หน่วงเวลาคงสถานะ In-Combat ต่อเนื่องอีก 4 วินาทีหลังสภาวะอันตรายสิ้นสุดลง เพื่อให้มั่นใจว่าทีมไฟต์จบลงจริงก่อนกลับมาเตือนเสียงปกติ
+2. **ขอบเขตการระงับเสียงเตือนอย่างชาญฉลาด (Selective Smart Audio Suppression)**:
+   - ระงับเสียงเตือนคำแนะนำทั่วไปชั่วคราว (Camp Stacking, Creep Pulling, Neutral Item reminders, Missing TP scroll, Laning milestones, Buyback status warning)
+   - ไม่ระงับเสียงแจ้งเตือนวัตถุประสงค์ใหญ่ระดับเกม (Aegis Expiring, Roshan Window/Respawn, Enemy Glyph of Fortification) เพื่อรักษาความได้เปรียบเชิงกลยุทธ์ของทีม
+3. **ป้ายเป้าหมายถัดไปบน HUD และการคัดลอกลง Clipboard (Next Action Pill & Click-to-Copy)**:
+   - แสดงป้ายขนาดกะทัดรัดข้างนาฬิกาเกมบน HUD ทั้งโหมด Minimized และ Expanded พร้อมระดับความเร่งด่วน (Urgent = สีส้มกะพริบ, Info = สีฟ้า)
+   - เมื่อคลิกที่ป้ายในโหมด Interactive Overlay จะทำการคัดลอกข้อความสรุปเป้าหมายลง Clipboard อัตโนมัติ พร้อมแสดงแถบแจ้งเตือน Copied เพื่อใช้สื่อสารในแชตทีมได้ทันที
+4. **การเตือนความเสี่ยงเสียทอง Unreliable Gold (Unreliable Gold Risk Warning)**:
+   - แจ้งเตือนเมื่อ Unreliable Gold $\ge$ 1,200 Gold และเลือดเหลือน้อยกว่า 40% (ขณะอยู่นอกไฟต์) เพื่อเตือนให้กดซื้อไอเทมก่อนเสียชีวิต
+   - จำกัดความถี่เสียงเตือนทุก 90 วินาที พร้อมป้ายเตือน `💰 Spend Gold Now`
+5. **การควบคุมการแสดงผลและการปรับตัวตามบทบาท (Visibility Toggle & Role Adaptation)**:
+   - เปิดใช้งานตามสวิตช์ Tactical Coach พร้อมมีตัวเลือก Checkbox เปิด/ปิด `Action Pill` แยกอิสระในหน้าต่าง Settings สำหรับผู้เล่นที่ต้องการ HUD แบบมินิมอล
+   - ปรับแต่งคำแนะนำตามบทบาท (เช่น Camp Stacking สำหรับ Support/Offlane เท่านั้น)
+
+---
+
+### การตรวจสอบความถูกต้อง (Verification Status)
+
+- **Test Suite**: ผ่านครบ 15 ชุดทดสอบ (`npm test`) 100% ครอบคลุมการตรวจจับไฟต์, Next Action Priority Matrix, การปรับตามบทบาท, การปิดเปิดการแสดงผล, และการคลิกคัดลอก Clipboard
+- **Production Build**: ผ่านการคอมไพล์ TypeScript และ Vite (`npm run build`) สำเร็จ 100% ปราศจากข้อผิดพลาด
+

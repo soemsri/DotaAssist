@@ -10,6 +10,7 @@ import {
   HeroTalentsAnalysis,
   HeroSkillBuildAnalysis,
   VisionAdvisorState,
+  NextActionItem,
 } from '../types/meta';
 import { GSIPayload } from '../types/gsi';
 import { MinimapScanResult } from './minimapScanner';
@@ -19,6 +20,7 @@ import { neutralAdvisor, getHeroArchetype, isSupportHero } from './neutralAdviso
 import { talentAdvisor } from './talentAdvisor';
 import { skillAdvisor } from './skillAdvisor';
 import { visionEngine } from './visionEngine';
+import { alertProfiles } from './alertProfiles';
 
 // Standard Neutral Item Unlocks
 const NEUTRAL_TIERS = [
@@ -117,6 +119,8 @@ export class TacticalCoachEngine {
   private announcedTalentLevels: Set<number> = new Set();
   private lastCacheKey: string | null = null;
   private lastCachedResult: TacticalCoachState | null = null;
+  private lastAnnouncedActions: Map<string, number> = new Map();
+  private lastHpDropSample: { hp: number; time: number } | null = null;
 
   public reset() {
     this.lastProcessedLevel = 0;
@@ -128,6 +132,8 @@ export class TacticalCoachEngine {
     this.lastMatchId = null;
     this.playedLaneAlerts.clear();
     this.announcedTalentLevels.clear();
+    this.lastAnnouncedActions.clear();
+    this.lastHpDropSample = null;
     visionEngine.reset();
     this.lastCacheKey = null;
     this.lastCachedResult = null;
@@ -169,7 +175,12 @@ export class TacticalCoachEngine {
     const laneMode = settings.laneAssistantMode;
     const lang = settings.voiceLanguage;
 
-    const cacheKey = `${matchId ?? ''}:${clockTime}:${hero?.name ?? ''}:${heroLevel}:${heroHp}:${heroAlive}:${gold}:${miaSig}:${itemsSig}:${abilitiesSig}:${wardsPlaced}:${draftLen}:${laneMode}:${lang}`;
+    // 0. Combat Detection & Suppression
+    const inCombat = this.evaluateCombatState(hero, clockTime);
+    audioService.setCombatState(inCombat);
+    const activeRole = alertProfiles.getSnapshot().active;
+
+    const cacheKey = `${matchId ?? ''}:${clockTime}:${hero?.name ?? ''}:${heroLevel}:${heroHp}:${heroAlive}:${gold}:${miaSig}:${itemsSig}:${abilitiesSig}:${wardsPlaced}:${draftLen}:${laneMode}:${lang}:${activeRole}:${inCombat}`;
 
     if (this.lastCacheKey === cacheKey && this.lastCachedResult) {
       return this.lastCachedResult;
@@ -249,6 +260,18 @@ export class TacticalCoachEngine {
     // 10. Smart Ward Placement & Vision Timer (Automatic GSI tracking & expiry alert)
     const visionState: VisionAdvisorState = visionEngine.process(payload, clockTime);
 
+    // 11. Smart Next Action evaluation
+    const nextAction = this.evaluateNextAction(
+      clockTime,
+      hero,
+      player,
+      neutralSlot,
+      tpScroll,
+      buyback,
+      inCombat,
+      isGameActive,
+    );
+
     const result: TacticalCoachState = {
       dangerLevel,
       dangerReasons,
@@ -261,6 +284,8 @@ export class TacticalCoachEngine {
       talentAnalysis,
       skillBuildAnalysis,
       visionState,
+      nextAction,
+      inCombat,
     };
 
     this.lastCacheKey = cacheKey;
@@ -269,6 +294,226 @@ export class TacticalCoachEngine {
   }
 
   // --- Evaluation Logic Helpers ---
+
+  private evaluateCombatState(hero: GSIPayload['hero'], clockTime: number): boolean {
+    if (!hero || hero.alive === false) {
+      this.lastHpDropSample = null;
+      return false;
+    }
+    const hp = hero.health_percent ?? 100;
+    const isStunnedOrDisabled = Boolean(
+      hero.stunned || hero.silenced || hero.hexed || hero.disarmed || hero.muted
+    );
+    const isCriticalHp = hp < 30;
+
+    let rapidHpDrop = false;
+    if (this.lastHpDropSample) {
+      const dt = clockTime - this.lastHpDropSample.time;
+      if (dt > 0 && dt <= 3) {
+        if (this.lastHpDropSample.hp - hp >= 15) {
+          rapidHpDrop = true;
+        }
+      }
+      if (dt > 3 || dt < 0) {
+        this.lastHpDropSample = { hp, time: clockTime };
+      }
+    } else {
+      this.lastHpDropSample = { hp, time: clockTime };
+    }
+
+    return isStunnedOrDisabled || isCriticalHp || rapidHpDrop;
+  }
+
+  private evaluateNextAction(
+    clockTime: number,
+    hero: GSIPayload['hero'],
+    player: GSIPayload['player'],
+    neutralSlot: NeutralSlotStatusInfo,
+    tpScroll: TpScrollStatusInfo,
+    buyback: BuybackStatusInfo,
+    inCombat: boolean,
+    isGameActive: boolean,
+  ): NextActionItem | null {
+    if (!isGameActive) return null;
+
+    const activeRole = alertProfiles.getSnapshot().active;
+    const heroHp = hero?.health_percent ?? 100;
+    const heroAlive = hero?.alive !== false;
+    const candidates: NextActionItem[] = [];
+
+    // 1. TORMENTOR_SPAWN (Priority: 95)
+    // 30s before spawn at 20:00 (1200s): 1170s to 1220s
+    if (clockTime >= 1170 && clockTime <= 1220) {
+      candidates.push({
+        id: 'TORMENTOR_SPAWN',
+        category: 'objective',
+        urgency: 'urgent',
+        titleEn: 'Tormentor Boss Spawning',
+        titleTh: 'บอส Tormentor กำลังเกิด',
+        shortPillEn: '🛡️ Tormentor Ready',
+        shortPillTh: '🛡️ ทอร์เมนเตอร์เกิด',
+        icon: '🛡️',
+        voiceEn: 'Tormentor ready in thirty seconds',
+        voiceTh: 'บอสทอร์เมนเตอร์ พร้อมเกิดใน 30 วินาที',
+        priorityScore: 95,
+        expiresAtClockTime: 1220,
+      });
+    }
+
+    // 2. WISDOM_RUNE (Priority: 90)
+    // Every 7 minutes (420s): 7:00 (420), 14:00 (840), 21:00 (1260)...
+    // Window: 30s before (:30) to 15s after (:15)
+    if (clockTime >= 390) {
+      const secInCycle = clockTime % 420;
+      if (secInCycle >= 390 || secInCycle <= 15) {
+        candidates.push({
+          id: 'WISDOM_RUNE',
+          category: 'macro',
+          urgency: 'urgent',
+          titleEn: 'Secure Wisdom Rune',
+          titleTh: 'คุมรูนปัญญา Wisdom Shrine',
+          shortPillEn: '⚡ Wisdom Rune',
+          shortPillTh: '⚡ รูนปัญญา EXP',
+          icon: '⚡',
+          voiceEn: 'Wisdom Shrine in thirty seconds',
+          voiceTh: 'รูนวิสดอม EXP ในอีก 30 วินาที',
+          priorityScore: 90,
+        });
+      }
+    }
+
+    // 3. UNRELIABLE_GOLD_RISK (Priority: 88)
+    // High unreliable gold when health is in danger zone (<40%)
+    const unreliableGold = player?.gold_unreliable !== undefined ? player.gold_unreliable : (player?.gold ?? 0);
+    if (heroAlive && unreliableGold >= 1200 && heroHp < 40) {
+      candidates.push({
+        id: 'UNRELIABLE_GOLD_RISK',
+        category: 'economy',
+        urgency: 'urgent',
+        titleEn: 'High Unreliable Gold at Risk',
+        titleTh: 'เสี่ยงเสียทองก่อนตาย รีบซื้อไอเทม',
+        shortPillEn: '💰 Spend Gold Now',
+        shortPillTh: '💰 รีบใช้เงินซื้อของ',
+        icon: '💰',
+        voiceEn: 'Warning: High unreliable gold, spend before dying',
+        voiceTh: 'ระวังเงินหล่น รีบใช้เงินซื้อไอเทมก่อนตาย',
+        priorityScore: 88,
+      });
+
+      // Trigger voice alert with 90s cooldown
+      const lastAlert = this.lastAnnouncedActions.get('UNRELIABLE_GOLD_RISK') ?? -9999;
+      if (clockTime - lastAlert >= 90 && !inCombat) {
+        this.lastAnnouncedActions.set('UNRELIABLE_GOLD_RISK', clockTime);
+        audioService.playUnreliableGoldAlert();
+      }
+    }
+
+    // 4. NEUTRAL_TIER (Priority: 85)
+    // Neutral slot unlocked and empty
+    if (neutralSlot.tierUnlocked > 0 && neutralSlot.isSlotEmpty) {
+      candidates.push({
+        id: 'NEUTRAL_TIER',
+        category: 'item',
+        urgency: 'urgent',
+        titleEn: `Equip Tier ${neutralSlot.tierUnlocked} Neutral Item`,
+        titleTh: `ใส่ไอเทมป่าเทียร์ ${neutralSlot.tierUnlocked}`,
+        shortPillEn: `📦 Equip Neutral T${neutralSlot.tierUnlocked}`,
+        shortPillTh: `📦 ใส่ไอเทมป่า T${neutralSlot.tierUnlocked}`,
+        icon: '📦',
+        voiceEn: `Tier ${neutralSlot.tierUnlocked} neutral items unlocked!`,
+        voiceTh: `ไอเทมป่าเทียร์ ${neutralSlot.tierUnlocked} ปลดล็อกแล้ว!`,
+        priorityScore: 85,
+      });
+    }
+
+    // 5. NO_TP_SCROLL (Priority: 80)
+    // Alive, out of fountain, no TP
+    if (tpScroll.alertActive) {
+      candidates.push({
+        id: 'NO_TP_SCROLL',
+        category: 'utility',
+        urgency: 'urgent',
+        titleEn: 'Missing Town Portal Scroll',
+        titleTh: 'ไม่มีใบวาปติดตัว รีบซื้อติดตัวไว้',
+        shortPillEn: '📜 Buy TP Scroll',
+        shortPillTh: '📜 ซื้อใบวาร์ป',
+        icon: '📜',
+        voiceEn: 'Warning: No Town Portal Scroll!',
+        voiceTh: 'คำเตือน! ไม่มีใบวาปติดตัว',
+        priorityScore: 80,
+      });
+    }
+
+    // 6. LOTUS_HARVEST (Priority: 75)
+    // Lotus pool spawns every 3m (180s): 3:00 (180), 6:00 (360), 9:00 (540)...
+    // Window: 15s before (:45) to 10s after (:10)
+    if (clockTime >= 165) {
+      const secInCycle = clockTime % 180;
+      if (secInCycle >= 165 || secInCycle <= 10) {
+        candidates.push({
+          id: 'LOTUS_HARVEST',
+          category: 'macro',
+          urgency: 'info',
+          titleEn: 'Harvest Lotus Pool',
+          titleTh: 'เก็บดอกบัวที่สระ Healing Lotus',
+          shortPillEn: '🌿 Harvest Lotus',
+          shortPillTh: '🌿 เก็บดอกบัว',
+          icon: '🌿',
+          voiceEn: 'Healing Lotus in fifteen seconds',
+          voiceTh: 'ดอกบัวฟื้นฟู ในอีก 15 วินาที',
+          priorityScore: 75,
+        });
+      }
+    }
+
+    // 7. CAMP_STACK (Priority: 70)
+    // Relevant for support or offlane during laning phase / early mid game
+    // Stack timing window: :48 to :55
+    if (activeRole === 'support' || activeRole === 'offlane') {
+      if (clockTime >= 60 && clockTime <= 1200) {
+        const secInMin = clockTime % 60;
+        if (secInMin >= 48 && secInMin <= 55) {
+          candidates.push({
+            id: 'CAMP_STACK',
+            category: 'laning',
+            urgency: 'info',
+            titleEn: 'Stack Jungle Camps',
+            titleTh: 'ดึงสแต็กแคมป์ครีปป่า',
+            shortPillEn: '🎯 Stack Camp (:53)',
+            shortPillTh: '🎯 สแต็กครีปป่า (:53)',
+            icon: '🎯',
+            voiceEn: 'Stack jungle camp',
+            voiceTh: 'สแต็กครีปป่า',
+            priorityScore: 70,
+          });
+        }
+      }
+    }
+
+    // 8. BUYBACK_STATUS (Priority: 65)
+    // Deficit during mid/late game (>= 25 mins)
+    if (clockTime >= 1500 && buyback.state === 'deficit') {
+      candidates.push({
+        id: 'BUYBACK_STATUS',
+        category: 'economy',
+        urgency: 'info',
+        titleEn: `Need ${buyback.deficit}g for Buyback`,
+        titleTh: `ยังขาดเงินอีก ${buyback.deficit} สำหรับบายแบ็ค`,
+        shortPillEn: '⚠️ No Buyback Gold',
+        shortPillTh: '⚠️ เงินบายแบ็คไม่พอ',
+        icon: '⚠️',
+        voiceEn: 'Warning: Need more gold for buyback',
+        voiceTh: 'ยังขาดเงินสำหรับบายแบ็ค',
+        priorityScore: 65,
+      });
+    }
+
+    if (candidates.length === 0) return null;
+
+    // Sort by priorityScore descending
+    candidates.sort((a, b) => b.priorityScore - a.priorityScore);
+    return candidates[0];
+  }
 
   private evaluatePowerSpikes(
     hero: GSIPayload['hero'],

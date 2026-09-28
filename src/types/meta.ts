@@ -268,6 +268,24 @@ export interface VisionAdvisorState {
   wardsPlacedTotal: number;
 }
 
+export type NextActionCategory = 'laning' | 'macro' | 'objective' | 'item' | 'economy' | 'utility';
+export type NextActionUrgency = 'urgent' | 'info';
+
+export interface NextActionItem {
+  id: string;
+  category: NextActionCategory;
+  urgency: NextActionUrgency;
+  titleEn: string;
+  titleTh: string;
+  shortPillEn: string;
+  shortPillTh: string;
+  icon: string;
+  voiceEn: string;
+  voiceTh: string;
+  priorityScore: number;
+  expiresAtClockTime?: number;
+}
+
 export interface TacticalCoachState {
   dangerLevel: TacticalDangerLevel;
   dangerReasons: string[];
@@ -280,4 +298,7 @@ export interface TacticalCoachState {
   talentAnalysis?: HeroTalentsAnalysis;
   skillBuildAnalysis?: HeroSkillBuildAnalysis;
   visionState?: VisionAdvisorState;
+  nextAction?: NextActionItem | null;
+  inCombat?: boolean;
 }
+

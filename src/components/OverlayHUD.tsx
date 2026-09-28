@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 import { audioService } from '../services/audioService';
-import { objectiveTracker } from '../services/objectiveTracker';
+import { objectiveTracker, copyToClipboard } from '../services/objectiveTracker';
 import { buybackService } from '../services/buybackService';
 import { neutralItemService } from '../services/neutralItemService';
 import { enemyUltimateService } from '../services/enemyUltimateService';
@@ -219,6 +219,18 @@ export const OverlayHUD: React.FC<Props> = ({
     }
   };
 
+  const showNextActionPill =
+    audioService.getSettings().tacticalCoachEnabled &&
+    audioService.getSettings().nextActionPillEnabled !== false;
+
+  const handleNextActionClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!coachState.nextAction) return;
+    const text = isThai ? coachState.nextAction.titleTh : coachState.nextAction.titleEn;
+    await copyToClipboard(text);
+    objectiveTracker.setClipboardNotice(text);
+  };
+
   return (
     <div
       className="w-full h-full flex flex-col justify-start items-center p-2 select-none"
@@ -239,6 +251,23 @@ export const OverlayHUD: React.FC<Props> = ({
               }`}
             />
             <span className="font-mono font-black text-amber-400">{formattedTime}</span>
+            {isConnected && showNextActionPill && coachState.nextAction && (
+              <span
+                data-testid="hud-next-action-pill-minimized"
+                onClick={handleNextActionClick}
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shadow-sm cursor-pointer hover:opacity-90 active:scale-95 transition ${
+                  coachState.nextAction.urgency === 'urgent'
+                    ? 'bg-amber-950/90 text-amber-200 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse'
+                    : 'bg-cyan-950/90 text-cyan-200 border-cyan-500/50 shadow-[0_0_6px_rgba(6,182,212,0.2)]'
+                }`}
+                title={`${isThai ? coachState.nextAction.titleTh : coachState.nextAction.titleEn} (Click to copy)`}
+              >
+                <span>{coachState.nextAction.icon}</span>
+                <span className="truncate max-w-[120px]">
+                  {isThai ? coachState.nextAction.shortPillTh : coachState.nextAction.shortPillEn}
+                </span>
+              </span>
+            )}
             {isConnected && payload?.hero && (
               <span
                 className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
@@ -438,6 +467,23 @@ export const OverlayHUD: React.FC<Props> = ({
                   <Eye className={`w-2.5 h-2.5 ${scanResult.all_missing ? 'text-rose-400' : 'text-emerald-400'}`} />
                   <span>{scanResult.all_missing ? 'MIA!' : `${scanResult.enemies_visible_count} Vis`}</span>
                 </span>
+              )}
+              {isConnected && showNextActionPill && coachState.nextAction && (
+                <div
+                  data-testid="hud-next-action-pill"
+                  onClick={handleNextActionClick}
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shadow-sm transition-all cursor-pointer hover:opacity-90 active:scale-95 ${
+                    coachState.nextAction.urgency === 'urgent'
+                      ? 'bg-amber-950/90 text-amber-200 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse'
+                      : 'bg-cyan-950/90 text-cyan-200 border-cyan-500/50 shadow-[0_0_6px_rgba(6,182,212,0.2)]'
+                  }`}
+                  title={`${isThai ? coachState.nextAction.titleTh : coachState.nextAction.titleEn} (Click to copy)`}
+                >
+                  <span className="shrink-0">{coachState.nextAction.icon}</span>
+                  <span className="truncate max-w-[140px]">
+                    {isThai ? coachState.nextAction.shortPillTh : coachState.nextAction.shortPillEn}
+                  </span>
+                </div>
               )}
             </div>
 

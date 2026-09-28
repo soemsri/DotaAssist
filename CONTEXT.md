@@ -144,14 +144,15 @@
   - `objectiveTracker.ts`: Dedicated global hotkey handling, 10s voice quick-undo, and auto-clipboard formatting.
   - `draftService.ts`: Resolves the opponent draft side from the local player's actual GSI team.
   - `apiService.ts`: OpenDota live statistics and item-popularity integration; bundled catalogs contain lookup metadata only.
-  - `audioService.ts`: Web Speech API (TTS) voice announcer + Web Audio API synthesizer.
+  - `tacticalCoach.ts`: Real-time coaching engine with 0ms deterministic local rule evaluation, Smart Fight Suppression, role adaptation, and Next Action priority scoring.
+  - `audioService.ts`: Web Speech API (TTS) voice announcer + Web Audio API synthesizer with smart combat suppression.
 - `src/data/`:
   - `heroUltimates.ts`: Dota 2 hero ultimate catalog and level-based cooldown lookup.
 - `src/components/`:
-  - `OverlayHUD.tsx`: Compact draggable/floating in-game HUD with quick Roshan button, buyback status banner, neutral item status banner & badge, enemy ultimate tracker bar, & audio controls.
+  - `OverlayHUD.tsx`: Compact draggable/floating in-game HUD with Next Action Pill (click-to-copy), quick Roshan button, buyback status banner, neutral item status banner & badge, enemy ultimate tracker bar, & audio controls.
   - `EnemyUltimateBar.tsx`: 5-slot enemy ultimate tracker bar with green ready / red countdown states, hotkeys, and quick undo.
   - `TimingAlerts.tsx`: Interactive countdown cards with Roshan tracker, Neutral Items alerts, and enemy ultimate alerts.
   - `DraftAdvisor.tsx`: Counter-pick calculator and win-rate analyzer.
   - `ItemGuide.tsx`: Popular item phases derived from current OpenDota responses.
   - `GSIStatusBadge.tsx`: Connection health, hero vitality, game clock, Buyback / Safe-to-Spend indicators, and Neutral Item status badge.
-  - `SettingsModal.tsx`: GSI config guide, voice synthesizer tester (with neutral items and enemy ultimate audio tests), and Dota 2 Borderless Window guide.
+  - `SettingsModal.tsx`: GSI config guide, voice synthesizer tester, audio & coaching toggles (including Next Action Pill and Unreliable Gold Risk), and Dota 2 Borderless Window guide.

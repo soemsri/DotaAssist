@@ -308,6 +308,11 @@ class ObjectiveTrackerService {
     return { success: true };
   }
 
+  public setClipboardNotice(notice: string) {
+    this.lastClipboardNotice = notice;
+    this.notify();
+  }
+
   public clearClipboardNotice() {
     this.lastClipboardNotice = null;
     this.notify();

@@ -1,7 +1,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { AlertProfileControls } from './AlertProfileControls';
 import { DesktopSetup } from './DesktopSetup';
-import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard, Scroll, Compass, GitBranch, Eye } from 'lucide-react';
+import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard, Scroll, Compass, GitBranch, Eye, Coins } from 'lucide-react';
 import { audioService } from '../services/audioService';
 import { objectiveTracker } from '../services/objectiveTracker';
 import { voiceCommandService } from '../services/voiceCommandService';
@@ -47,6 +47,9 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
   const [talentAlertsEnabled, setTalentAlertsEnabled] = useState(currentSettings.talentAlertsEnabled ?? true);
   const [minimapScannerEnabled, setMinimapScannerEnabled] = useState(currentSettings.minimapScannerEnabled ?? false);
   const [minimapPosition, setMinimapPosition] = useState<'left' | 'right'>(currentSettings.minimapPosition || 'left');
+
+  const [unreliableGoldAlertEnabled, setUnreliableGoldAlertEnabled] = useState(currentSettings.unreliableGoldAlertEnabled ?? true);
+  const [nextActionPillEnabled, setNextActionPillEnabled] = useState(currentSettings.nextActionPillEnabled ?? true);
 
   const trackerState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
   const [browserRoshanKey, setBrowserRoshanKey] = useState(trackerState.roshanHotkey);
@@ -94,6 +97,18 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
     const next = e.target.checked;
     setTpScrollAlertEnabled(next);
     audioService.setTpScrollAlertEnabled(next);
+  };
+
+  const handleToggleUnreliableGold = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setUnreliableGoldAlertEnabled(next);
+    audioService.updateSettings({ unreliableGoldAlertEnabled: next });
+  };
+
+  const handleToggleNextActionPill = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked;
+    setNextActionPillEnabled(next);
+    audioService.updateSettings({ nextActionPillEnabled: next });
   };
 
   const handleLangChange = (lang: 'en-US' | 'th-TH') => {
@@ -292,6 +307,34 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 />
                 <GitBranch className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Talent Tree</span>
+              </label>
+            </div>
+
+            {/* Unreliable Gold Alert Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={unreliableGoldAlertEnabled}
+                  onChange={handleToggleUnreliableGold}
+                  className="accent-amber-500 rounded"
+                />
+                <Coins className="w-3.5 h-3.5 text-amber-400" />
+                <span>Gold Risk</span>
+              </label>
+            </div>
+
+            {/* Next Action Pill Toggle */}
+            <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+              <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={nextActionPillEnabled}
+                  onChange={handleToggleNextActionPill}
+                  className="accent-amber-500 rounded"
+                />
+                <Compass className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Action Pill</span>
               </label>
             </div>
 
@@ -590,6 +633,12 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
                 className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950/60 border border-emerald-800/60 text-xs text-emerald-300 font-semibold transition text-left"
               >
                 🌳 Talent Advice (Lvl 10)
+              </button>
+              <button
+                onClick={() => audioService.playUnreliableGoldAlert(true)}
+                className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-amber-950/60 border border-amber-800/60 text-xs text-amber-300 font-semibold transition text-left"
+              >
+                💰 Unreliable Gold Warning
               </button>
             </div>
           </div>

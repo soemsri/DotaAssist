@@ -27,6 +27,8 @@ export interface AudioSettings {
   laneAssistantMode: 'auto' | 'always' | 'disabled';
   talentAlertsEnabled: boolean;
   voiceCommandEnabled: boolean;
+  unreliableGoldAlertEnabled?: boolean;
+  nextActionPillEnabled?: boolean;
 }
 
 const STORAGE_KEY = 'dotaassist_audio_settings';
@@ -61,6 +63,7 @@ interface VoicePhrases {
   pushAdvantage: string;
   counterItemAdvice: (threat: string, items: string) => string;
   wardExpired: string;
+  unreliableGoldRisk: string;
   voiceRoshanRecorded: string;
   voiceBkbRecorded: string;
   voiceUltimateRecorded: (name: string) => string;
@@ -116,6 +119,7 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
         ? `Level ${level} reached! Recommend ${side} talent: ${talent}. ${reason}`
         : `Level ${level} reached! Recommend ${side} talent: ${talent}.`,
     wardExpired: 'Observer ward has expired',
+    unreliableGoldRisk: 'Warning: High unreliable gold, spend before dying',
     voiceRoshanRecorded: 'Roshan death recorded',
     voiceBkbRecorded: 'Enemy BKB tracker started, ninety seconds',
     voiceUltimateRecorded: (name) => `Enemy ${name} tracker started`,
@@ -175,6 +179,7 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
         ? `เลเวล ${level} แล้ว! แนะนำเลือกฝั่ง${side} ${talent} ${reason}`
         : `เลเวล ${level} แล้ว! แนะนำเลือกฝั่ง${side} ${talent}`,
     wardExpired: 'วอร์ดหมดอายุแล้ว',
+    unreliableGoldRisk: 'ระวังเงินหล่น รีบใช้เงินซื้อไอเทมก่อนตาย',
     voiceRoshanRecorded: 'บันทึกเวลาโรชานตายเรียบร้อยแล้ว',
     voiceBkbRecorded: 'เริ่มจับเวลาไอเทม BKB ศัตรู 90 วินาที',
     voiceUltimateRecorded: (name) => `เริ่มจับเวลาสกิล ${name} ของศัตรู`,
@@ -304,9 +309,20 @@ class AudioNotificationService {
     laneAssistantMode: 'auto',
     talentAlertsEnabled: true,
     voiceCommandEnabled: true,
+    unreliableGoldAlertEnabled: true,
+    nextActionPillEnabled: true,
     ...loadStoredSettings(),
   };
   private isUnlocked: boolean = false;
+  private inCombat: boolean = false;
+
+  public setCombatState(inCombat: boolean) {
+    this.inCombat = inCombat;
+  }
+
+  public isInCombat(): boolean {
+    return this.inCombat;
+  }
 
   private clock: number | null = null;
   private reminder: ReminderContext | null = null;
@@ -852,6 +868,7 @@ class AudioNotificationService {
     force: boolean = false,
   ) {
     if ((!this.settings.tacticalCoachEnabled || !this.settings.neutralItemAlertsEnabled) && !force) return;
+    if (this.inCombat && !force) return;
 
     this.initContext();
     if (this.settings.sfxEnabled && this.ctx) {
@@ -878,6 +895,7 @@ class AudioNotificationService {
 
   public playBuybackWarning(shortfall: number, force: boolean = false) {
     if ((!this.settings.tacticalCoachEnabled || !this.settings.buybackAlertsEnabled) && !force) return;
+    if (this.inCombat && !force) return;
 
     this.initContext();
     if (this.settings.sfxEnabled && this.ctx) {
@@ -893,6 +911,7 @@ class AudioNotificationService {
 
   public playNoTpScrollAlert(force: boolean = false) {
     if ((!this.settings.tacticalCoachEnabled || !this.settings.tpScrollAlertEnabled) && !force) return;
+    if (this.inCombat && !force) return;
 
     this.initContext();
     if (this.settings.sfxEnabled && this.ctx) {
@@ -951,6 +970,7 @@ class AudioNotificationService {
 
   public playCreepPullAlert(isLargeCamp: boolean = false, force: boolean = false) {
     if (this.settings.laneAssistantMode === 'disabled' && !force) return;
+    if (this.inCombat && !force) return;
     this.initContext();
     const lang = this.settings.voiceLanguage;
     const text = isLargeCamp ? PHRASES[lang].creepPullLarge : PHRASES[lang].creepPullSmall;
@@ -959,9 +979,25 @@ class AudioNotificationService {
 
   public playJungleStackAlert(force: boolean = false) {
     if (this.settings.laneAssistantMode === 'disabled' && !force) return;
+    if (this.inCombat && !force) return;
     this.initContext();
     const lang = this.settings.voiceLanguage;
     this.speak(PHRASES[lang].jungleStack);
+  }
+
+  public playUnreliableGoldAlert(force: boolean = false) {
+    if ((!this.settings.tacticalCoachEnabled || this.settings.unreliableGoldAlertEnabled === false) && !force) return;
+    if (this.inCombat && !force) return;
+
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(349.23, now, 0.1, 'sine');
+      this.playTone(261.63, now + 0.08, 0.15, 'sine');
+    }
+
+    const lang = this.settings.voiceLanguage;
+    this.speak(PHRASES[lang].unreliableGoldRisk);
   }
 
   public playTalentAlert(

@@ -29,6 +29,11 @@
 4. **OpenDota Item Popularity**:
    - แสดงไอเทมที่มีการซื้อจริงในแต่ละช่วงเกมจาก endpoint `itemPopularity` ของ OpenDota พร้อมจำนวนครั้งที่พบในข้อมูล
    - หาก OpenDota ใช้งานไม่ได้ หน้าจอจะแจ้งว่าไม่มีข้อมูลและจะไม่สร้างรายการทดแทนขึ้นมาเอง
+5. **Live In-Game Coaching & Next Action Suggestions**:
+   - **Dynamic Action Pill**: แถบป้ายเป้าหมายถัดไปข้างนาฬิกาเกมบน HUD คอยประเมินสถานะเกมและแจ้งเตือนเป้าหมายที่สำคัญที่สุด 1 รายการแบบเรียลไทม์ (เช่น `🎯 Stack Camp :53`, `🌿 Harvest Lotus`, `⚡ Wisdom Rune`, `🛡️ Tormentor Ready`, `📦 Equip Neutral T1`, `💰 Spend Gold Now`, `📜 Buy TP Scroll`)
+   - **Deterministic Rule Engine (0ms)**: คำนวณแบบ Local 100% ตอบสนองทันทีตามรอบ GSI
+   - **Smart Fight Suppression**: ตรวจจับสถานะการต่อสู้ (Stun/Silence/Hex, เลือดต่ำกว่า 30%, หรือเลือดลดฮวบ) และระงับเสียงเตือนคำแนะนำทั่วไปชั่วคราวเพื่อไม่ให้รบกวนสมาธิผู้เล่นในทีมไฟต์
+   - **Role Adaptation**: กรองและปรับแต่งคำแนะนำตามบทบาท (Support, Carry, Mid, Offlane) พร้อมสวิตช์เปิด/ปิดอิสระใน Settings
 
 ---
 
