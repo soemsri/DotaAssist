@@ -43,6 +43,7 @@ export interface LaningPaceSnapshot {
   benchmark: RoleBenchmark;
   report: LaningSummaryReport | null;
   reportDismissed: boolean;
+  farmLoopTip?: string | null;
 }
 
 export class LaningBenchmarkService {
@@ -65,6 +66,7 @@ export class LaningBenchmarkService {
     benchmark: ROLE_BENCHMARKS.support,
     report: null,
     reportDismissed: false,
+    farmLoopTip: null,
   };
 
   public subscribe = (listener: () => void): (() => void) => {
@@ -107,6 +109,7 @@ export class LaningBenchmarkService {
       benchmark: ROLE_BENCHMARKS[alertProfiles.getSnapshot().active] || ROLE_BENCHMARKS.support,
       report: null,
       reportDismissed: false,
+      farmLoopTip: null,
     };
     this.notify();
   }
@@ -183,6 +186,21 @@ export class LaningBenchmarkService {
       };
     }
 
+    // Decision 4: Mid & Carry Farm Loop Guidance (BalloonDota principle: Lane Creeps > Jungle Creeps)
+    let farmLoopTip: string | null = null;
+    const isThai = audioService.getSettings().voiceLanguage === 'th-TH';
+    if (clock >= 300 && clock <= 600) {
+      if (role === 'mid') {
+        farmLoopTip = isThai
+          ? 'ลูปฟาร์ม: ดันเวฟเลน -> กินแคมป์ป่าข้างเลน -> เดินกลับมารับเวฟถัดไป'
+          : 'Farm Loop: Shove mid wave -> Clear near jungle camp -> Return for next wave.';
+      } else if (role === 'carry') {
+        farmLoopTip = isThai
+          ? 'ครีปเลน > ครีปป่า: ดันเวฟเลนเข้าป้อมก่อนแยกไปฟาร์มแคมป์ป่า'
+          : 'Lane > Jungle: Push safe lane wave to tower before rotating to jungle camps.';
+      }
+    }
+
     this.lastSnapshot = {
       isActive,
       clockTime: clock,
@@ -197,6 +215,7 @@ export class LaningBenchmarkService {
       benchmark,
       report: this.report,
       reportDismissed: this.reportDismissed,
+      farmLoopTip,
     };
 
     this.notify();

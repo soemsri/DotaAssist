@@ -17,6 +17,7 @@ class MinimapScannerService {
   private hasSeenEnemies = false;
   private lastMatchId: string | null = null;
   private scanInFlight = false;
+  private generation = 0;
   private lastResult: MinimapScanResult | null = null;
   private listeners: Set<MinimapScanCallback> = new Set();
   private isRunning: boolean = false;
@@ -67,9 +68,9 @@ class MinimapScannerService {
     // Run a responsive scan every 10 seconds.
     this.intervalId = window.setInterval(async () => {
       const currentSettings = audioService.getSettings();
-      if (!currentSettings.minimapScannerEnabled) return;
+      if (!currentSettings.minimapScannerEnabled) { this.unavailable('Minimap scanning paused in Settings.'); return; }
 
-      if (!this.shouldScan()) return;
+      if (!this.shouldScan()) { this.unavailable('Scanning unavailable: waiting for a live Windows match.'); return; }
 
       await this.scanOnce();
     }, 10_000);
@@ -77,12 +78,21 @@ class MinimapScannerService {
 
   public stop() {
     this.isRunning = false;
+    this.unavailable('Minimap scanning stopped.');
     if (this.intervalId !== null) {
       if (typeof window !== 'undefined') {
         window.clearInterval(this.intervalId);
       }
       this.intervalId = null;
     }
+  }
+
+  private unavailable(message: string) {
+    this.generation++;
+    this.hasSeenEnemies = false;
+    this.wasAllMissing = false;
+    this.lastResult = { enemies_visible_count: 0, all_missing: false, scanned: false, message };
+    this.listeners.forEach(cb => cb(this.lastResult!));
   }
 
   public async scanOnce(): Promise<MinimapScanResult | null> {
@@ -104,11 +114,17 @@ class MinimapScannerService {
         }
         if (matchId) this.lastMatchId = matchId;
 
+        const generation = this.generation;
         const res = await invoke<MinimapScanResult>('scan_minimap', {
           position: pos,
           playerTeam,
         });
 
+        if (generation !== this.generation) return null;
+        if (!this.shouldScan() || !audioService.getSettings().minimapScannerEnabled) {
+          this.unavailable('Scanning unavailable: match inactive or scanning paused.'); return this.lastResult;
+        }
+        if (!res.scanned) { this.unavailable(res.message); return this.lastResult; }
         this.lastResult = res;
         this.listeners.forEach((cb) => cb(res));
 
@@ -139,7 +155,7 @@ class MinimapScannerService {
         return res;
       }
     } catch (err) {
-      console.warn('[MinimapScanner] Scan error:', err);
+      this.unavailable(`Scanning unavailable. Recalibrate in Settings. ${String(err)}`);
     } finally {
       this.scanInFlight = false;
     }
@@ -151,7 +167,7 @@ class MinimapScannerService {
     this.lastAlertTime = 0;
     this.wasAllMissing = false;
     this.hasSeenEnemies = false;
-    this.lastResult = null;
+    this.unavailable('Scanning unavailable: waiting for a fresh calibrated scan.');
     this.lastMatchId = null;
   }
 

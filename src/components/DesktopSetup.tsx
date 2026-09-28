@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { MinimapCalibration } from './MinimapCalibration';
 import { objectiveTracker } from '../services/objectiveTracker';
 
 export interface DesktopStatus {
@@ -149,6 +150,7 @@ export function DesktopSetup({ isConnected }: { isConnected: boolean }) {
       </div>
     </div>
 
+    <MinimapCalibration />
     {message && <p role="status" className="text-amber-200 break-words">{message}</p>}
   </section>;
 }

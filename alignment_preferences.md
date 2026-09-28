@@ -1,13 +1,16 @@
 # Design Alignment Summary
 
-Date: 2026-09-18T07:42:13.630446
+Date: 2026-09-24T10:59:13.393485
 
 Implemented all three choices:
 
-- Empty slots now offer manual hero selection.
-- Incoming GSI preserves existing slots, timers, and corrections while filling empty slots without duplicates.
-- Manual slots have **Clear selection**, with confirmation before discarding timers or corrections.
+- Core scanning with guided onboarding.
+- Uncertain scans suppress missing-enemy alerts and show recalibration guidance.
+- Saved monitor/rectangle calibration with preview confirmation and display-change revalidation.
 
-Cleared slots remain available for replacement; match resets clear the lineup. Updated documentation and regression tests.
+Updated native capture, setup UI, HUD status, documentation, and regression tests.
 
-All 12 test suites and the production build pass. Native Windows interaction remains untested on-device.
+Frontend build, TypeScript checks, existing tests, new scanner tests, and Rust tests passed. Windows capture and in-game confidence accuracy still require on-device validation.
+## Late-game teamfight coaching — 2026-09-24
+
+Implemented role/hero-based plans from 30:00, persisted per-role duty overrides (initiate/follow/protect/counter), conditional targets and engage/retreat guidance, inventory-aware situational items, buyback context, explicitly estimated enemy ultimate timers, and Thai/English dashboard/HUD presentation. Speech is limited to semantic duty/readiness changes with a 120-second throttle and independent cancellation. No engage decision is inferred from minimap scanning or hidden enemy state.

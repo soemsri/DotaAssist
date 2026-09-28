@@ -99,6 +99,14 @@ export const LaningPaceIndicator: React.FC = () => {
         </div>
       )}
 
+      {/* 1b. Pro Farm Loop Coaching Tip (5:00 - 10:00) */}
+      {isLaningPhase && snapshot.farmLoopTip && (
+        <div className="px-2.5 py-1 rounded-lg bg-amber-950/30 border border-amber-500/30 text-[10px] text-amber-200/90 flex items-center gap-1.5 animate-fadeIn">
+          <span className="shrink-0 text-amber-400 font-bold">💡 Tip:</span>
+          <span className="truncate">{snapshot.farmLoopTip}</span>
+        </div>
+      )}
+
       {/* 2. 10-Minute Laning Stage Summary Report Card (10:00 - 15:00 or until dismissed) */}
       {showReport && (
         <div className="bg-slate-900/95 border border-amber-500/60 rounded-xl p-2.5 text-xs text-slate-200 shadow-xl relative animate-fadeIn">

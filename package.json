@@ -1,7 +1,7 @@
 {
   "name": "dota-assist",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "start": "tauri dev",
@@ -12,7 +12,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "scripts\\build-windows.bat",
     "build": "tsc && vite build",
-    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus && npm run test:pro_builds && npm run test:coaching",
+    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus && npm run test:pro_builds && npm run test:coaching && npm run test:draft_items && npm run test:minimap && npm run test:teamfight && npm run test:smurf_coaching",
     "test:verification": "tsx tests/verification.test.ts",
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
@@ -33,7 +33,11 @@
     "test:thai": "tsx tests/thai_voice_naturalness.test.ts",
     "test:lotus": "tsx tests/healing_lotus.test.ts",
     "test:pro_builds": "tsx tests/pro_builds.test.ts",
-    "test:coaching": "tsx tests/tactical_coaching.test.ts"
+    "test:coaching": "tsx tests/tactical_coaching.test.ts",
+    "test:draft_items": "tsx tests/draft_item_recommendation.test.ts",
+    "test:minimap": "tsx tests/minimap_scanner.test.ts",
+    "test:teamfight": "tsx tests/teamfight_advisor.test.ts",
+    "test:smurf_coaching": "tsx tests/smurf_coaching_insights.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

@@ -1,19 +1,19 @@
 {
   "project": "DotaAssist",
-  "timestamp": "2026-09-18T07:42:13.630018",
-  "summary": "Implemented all three choices:\n\n- Empty slots now offer manual hero selection.\n- Incoming GSI preserves existing slots, timers, and corrections while filling empty slots without duplicates.\n- Manual slots have **Clear selection**, with confirmation before discarding timers or corrections.\n\nCleared slots remain available for replacement; match resets clear the lineup. Updated documentation and regression tests.\n\nAll 12 test suites and the production build pass. Native Windows interaction remains untested on-device.",
+  "timestamp": "2026-09-24T10:59:13.392907",
+  "summary": "Implemented all three choices:\n\n- Core scanning with guided onboarding.\n- Uncertain scans suppress missing-enemy alerts and show recalibration guidance.\n- Saved monitor/rectangle calibration with preview confirmation and display-change revalidation.\n\nUpdated native capture, setup UI, HUD status, documentation, and regression tests.\n\nFrontend build, TypeScript checks, existing tests, new scanner tests, and Rust tests passed. Windows capture and in-game confidence accuracy still require on-device validation.",
   "answers": [
     {
       "step": 1,
-      "answer": "(Recommended) Allow manual hero selection for each empty slot, keeping ultimate tracking usable without draft data."
+      "answer": "Make scanning a core feature, with guided calibration during onboarding."
     },
     {
       "step": 2,
-      "answer": "(Recommended) Keep manually selected heroes in their slots, preserve their timers and corrections, and fill empty slots with newly detected heroes without duplicates."
+      "answer": "(Recommended) Suppress enemy-missing alerts when scan confidence is low, show scanning as unavailable, and prompt for recalibration."
     },
     {
       "step": 3,
-      "answer": "(Recommended) Add a Clear selection action for manual slots, confirming before discarding an active timer or cooldown corrections; then allow selecting another hero."
+      "answer": "(Recommended) Let the user select the game monitor and minimap rectangle, verify a preview, and save calibration; require revalidation when display settings change."
     }
   ]
 }
