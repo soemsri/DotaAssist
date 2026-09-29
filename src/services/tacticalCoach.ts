@@ -131,6 +131,7 @@ export class TacticalCoachEngine {
   private lastCachedResult: TacticalCoachState | null = null;
   private lastAnnouncedActions: Map<string, number> = new Map();
   private lastHpDropSample: { hp: number; time: number } | null = null;
+  private lastAcquiredTokenKey: string | null = null;
 
   public reset() {
     this.lastProcessedLevel = 0;
@@ -144,6 +145,7 @@ export class TacticalCoachEngine {
     this.announcedTalentLevels.clear();
     this.lastAnnouncedActions.clear();
     this.lastHpDropSample = null;
+    this.lastAcquiredTokenKey = null;
     this.playedRuneShoveAlerts.clear();
     this.lastAntiWanderingAlertTime = 0;
     this.lastNearItemAlertTime = 0;
@@ -183,7 +185,7 @@ export class TacticalCoachEngine {
     const gold = player?.gold ?? 0;
     const miaSig = minimapResult ? `${minimapResult.scanned}:${minimapResult.all_missing}` : 'none';
     const itemsSig = items
-      ? `${items.teleport0?.name || ''}:${items.neutral0?.name || ''}:${items.slot0?.name || ''}:${items.slot1?.name || ''}:${items.slot2?.name || ''}:${items.slot3?.name || ''}:${items.slot4?.name || ''}:${items.slot5?.name || ''}`
+      ? `${items.teleport0?.name || ''}:${items.neutral0?.name || ''}:${items.slot0?.name || ''}:${items.slot1?.name || ''}:${items.slot2?.name || ''}:${items.slot3?.name || ''}:${items.slot4?.name || ''}:${items.slot5?.name || ''}:${items.backpack0?.name || ''}:${items.backpack1?.name || ''}:${items.backpack2?.name || ''}`
       : 'none';
     const abilitiesSig = payload?.abilities ? Object.entries(payload.abilities).map(([k, v]) => `${k}:${v?.level ?? 0}`).join(',') : 'none';
     const wardsPlaced = player?.wards_placed ?? 0;
@@ -449,9 +451,27 @@ export class TacticalCoachEngine {
       }
     }
 
-    // 4. NEUTRAL_TIER (Priority: 85)
-    // Neutral slot unlocked and empty
-    if (neutralSlot.tierUnlocked > 0 && neutralSlot.isSlotEmpty) {
+    // 4. NEUTRAL_TOKEN_ACQUIRED (Priority: 91)
+    // Holding a neutral token -> high priority action to pick hero-tailored item
+    if (neutralSlot.hasToken && neutralSlot.tokenTier) {
+      const topItems = neutralSlot.recommendations.slice(0, 2).map((r) => r.displayName).join(' / ');
+      const topItemsVoice = neutralSlot.recommendations.slice(0, 2).map((r) => r.displayName).join(' หรือ ');
+      const topItemsVoiceEn = neutralSlot.recommendations.slice(0, 2).map((r) => r.displayName).join(' or ');
+      const heroClean = hero?.name ? hero.name.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : '';
+      candidates.push({
+        id: 'NEUTRAL_TOKEN_ACQUIRED',
+        category: 'item',
+        urgency: 'urgent',
+        titleEn: `Tier ${neutralSlot.tokenTier} Token! Recommend: ${topItems}`,
+        titleTh: `ได้รับเหรียญป่า T${neutralSlot.tokenTier}! แนะนำ: ${topItems}`,
+        shortPillEn: `🎁 Token T${neutralSlot.tokenTier}: ${neutralSlot.recommendations[0]?.displayName || 'Pick Item'}`,
+        shortPillTh: `🎁 เหรียญ T${neutralSlot.tokenTier}: ${neutralSlot.recommendations[0]?.displayName || 'เลือกไอเทม'}`,
+        icon: '🎁',
+        voiceEn: `Tier ${neutralSlot.tokenTier} Neutral Token received! For ${heroClean || 'your hero'}, recommend ${topItemsVoiceEn}.`,
+        voiceTh: `ได้รับเหรียญป่า เทียร์ ${neutralSlot.tokenTier} แล้ว! แนะนำเลือก ${topItemsVoice}`,
+        priorityScore: 91,
+      });
+    } else if (neutralSlot.tierUnlocked > 0 && neutralSlot.isSlotEmpty) {
       candidates.push({
         id: 'NEUTRAL_TIER',
         category: 'item',
@@ -616,26 +636,72 @@ export class TacticalCoachEngine {
       }
     }
 
+    // 1. Scan all slots (neutral0, slot0-slot5, backpack0-backpack2) for neutral tokens
+    const allSlots = [
+      items?.neutral0,
+      items?.slot0, items?.slot1, items?.slot2, items?.slot3, items?.slot4, items?.slot5,
+      items?.backpack0, items?.backpack1, items?.backpack2,
+    ];
+
+    let hasToken = false;
+    let tokenTier: number | null = null;
+    let tokenItemName: string | null = null;
+
+    for (const slot of allSlots) {
+      if (!slot?.name || slot.name === 'empty') continue;
+      const clean = slot.name.toLowerCase().replace(/^item_/, '').trim();
+      const match = clean.match(/tier([1-5])_token/);
+      if (match) {
+        const t = parseInt(match[1], 10);
+        if (tokenTier === null || t > tokenTier) {
+          hasToken = true;
+          tokenTier = t;
+          tokenItemName = slot.name;
+        }
+      }
+    }
+
+    // 2. Check neutral slot item
     const neutralItem = items?.neutral0;
-    const isSlotEmpty = !neutralItem?.name || neutralItem.name === 'empty';
-    const equippedItemName = isSlotEmpty ? null : neutralItem.name.replace(/^item_/, '').replace(/_/g, ' ');
+    const neutralName = neutralItem?.name && neutralItem.name !== 'empty' ? neutralItem.name : null;
+    const isNeutralToken = neutralName ? /tier[1-5]_token/.test(neutralName.toLowerCase()) : false;
+
+    // Slot is empty if missing, empty, or holding an unopened token
+    const isSlotEmpty = !neutralName || isNeutralToken;
+    const equippedItemName = isSlotEmpty ? null : neutralName.replace(/^item_/, '').replace(/_/g, ' ');
 
     const heroKey = hero?.name || 'hero';
-    const activeTier = tierUnlocked > 0 ? tierUnlocked : 1;
+    // If holding a token, recommendations should match that token's tier!
+    const activeTier = hasToken && tokenTier ? tokenTier : (tierUnlocked > 0 ? tierUnlocked : 1);
     const archetypeInfo = getHeroArchetype(heroKey);
     const heroRole = audioService.getSettings().voiceLanguage === 'th-TH' ? archetypeInfo.roleLabelTh : archetypeInfo.roleLabelEn;
     const recommendations = neutralAdvisor.getRecommendations(heroKey, activeTier);
     const allTierRecommendations = neutralAdvisor.getAllTierRecommendations(heroKey);
 
     let alertActive = false;
+
+    // 3. Token Acquired Voice Alert ("ตอนได้มา")
+    const tokenKey = hasToken && tokenTier ? `${tokenItemName || `tier${tokenTier}_token`}` : null;
+    if (isGameActive && tokenKey && tokenKey !== this.lastAcquiredTokenKey) {
+      this.lastAcquiredTokenKey = tokenKey;
+      const heroClean = hero?.name ? hero.name.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : undefined;
+      const topItems = recommendations.slice(0, 2).map((r) => r.displayName);
+      audioService.playNeutralTokenAcquired(tokenTier!, heroClean, topItems);
+    } else if (!hasToken) {
+      this.lastAcquiredTokenKey = null;
+    }
+
+    // 4. Slot Empty / Unlock Window Alert
     if (tierUnlocked > 0 && isSlotEmpty) {
       alertActive = true;
       // Trigger voice alert once per tier unlock window (within 60s of tier start)
       if (isGameActive && tierUnlocked > this.lastAnnouncedTier) {
         this.lastAnnouncedTier = tierUnlocked;
-        const heroClean = hero?.name ? hero.name.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : undefined;
-        const topItems = recommendations.slice(0, 2).map((r) => r.displayName).join(', ');
-        audioService.playNeutralSlotReminder(tierUnlocked, heroClean, topItems);
+        if (!hasToken) {
+          const heroClean = hero?.name ? hero.name.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : undefined;
+          const topItems = recommendations.slice(0, 2).map((r) => r.displayName).join(', ');
+          audioService.playNeutralSlotReminder(tierUnlocked, heroClean, topItems);
+        }
       }
     }
 
@@ -648,6 +714,9 @@ export class TacticalCoachEngine {
       heroRole,
       recommendations,
       allTierRecommendations,
+      hasToken,
+      tokenTier,
+      tokenItemName,
     };
   }
 

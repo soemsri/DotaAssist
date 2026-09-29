@@ -55,14 +55,20 @@ export const TacticalCoachPanel: React.FC<Props> = ({
   const heroLevel = payload?.hero?.level ?? 1;
 
   const [selectedNeutralTier, setSelectedNeutralTier] = React.useState<number>(
-    neutralSlot.tierUnlocked > 0 ? neutralSlot.tierUnlocked : 1,
+    neutralSlot.hasToken && neutralSlot.tokenTier
+      ? neutralSlot.tokenTier
+      : neutralSlot.tierUnlocked > 0
+      ? neutralSlot.tierUnlocked
+      : 1,
   );
 
   React.useEffect(() => {
-    if (neutralSlot.tierUnlocked > 0) {
+    if (neutralSlot.hasToken && neutralSlot.tokenTier) {
+      setSelectedNeutralTier(neutralSlot.tokenTier);
+    } else if (neutralSlot.tierUnlocked > 0) {
       setSelectedNeutralTier(neutralSlot.tierUnlocked);
     }
-  }, [neutralSlot.tierUnlocked]);
+  }, [neutralSlot.hasToken, neutralSlot.tokenTier, neutralSlot.tierUnlocked]);
 
   const isThai = audioService.getSettings().voiceLanguage === "th-TH";
   const tierRecs =
@@ -387,17 +393,27 @@ export const TacticalCoachPanel: React.FC<Props> = ({
                   </div>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono self-start sm:self-auto ${
-                      neutralSlot.isSlotEmpty
+                      neutralSlot.hasToken
+                        ? "bg-purple-500/30 text-amber-300 border border-purple-500 animate-pulse"
+                        : neutralSlot.isSlotEmpty
                         ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
                         : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                     }`}
                   >
-                    {neutralSlot.isSlotEmpty ? "EMPTY!" : "EQUIPPED"}
+                    {neutralSlot.hasToken ? `TOKEN T${neutralSlot.tokenTier}!` : neutralSlot.isSlotEmpty ? "EMPTY!" : "EQUIPPED"}
                   </span>
                 </div>
 
                 <div className="text-xs text-slate-300 mt-1.5">
-                  {neutralSlot.isSlotEmpty ? (
+                  {neutralSlot.hasToken ? (
+                    <div className="p-2 rounded-lg bg-purple-950/70 border border-purple-500/60 text-purple-200">
+                      <span className="font-bold text-amber-300">
+                        {isThai
+                          ? `🎁 ได้รับเหรียญป่า Tier ${neutralSlot.tokenTier} แล้ว! เลือกไอเทม S-Tier ด้านล่างสำหรับ ${heroName}:`
+                          : `🎁 Holding Tier ${neutralSlot.tokenTier} Neutral Token! Choose S-Tier item below for ${heroName}:`}
+                      </span>
+                    </div>
+                  ) : neutralSlot.isSlotEmpty ? (
                     <span className="text-purple-300 font-semibold">
                       ⚠️ Slot is empty! Visit base or use courier to pick your Tier {neutralSlot.tierUnlocked || 1} token.
                     </span>

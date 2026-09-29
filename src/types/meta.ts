@@ -146,6 +146,9 @@ export interface NeutralSlotStatusInfo {
   heroRole: string;
   recommendations: NeutralItemRecommendation[];
   allTierRecommendations?: Record<number, NeutralItemRecommendation[]>;
+  hasToken?: boolean;
+  tokenTier?: number | null;
+  tokenItemName?: string | null;
 }
 
 export interface TpScrollStatusInfo {

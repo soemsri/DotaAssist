@@ -58,6 +58,7 @@ interface VoicePhrases {
   itemAdviceLuxury: (hero: string, items: string) => string;
   levelSpike: (level: number, hero: string, combo: string) => string;
   neutralItemMissing: (tier: number, hero?: string, topItems?: string) => string;
+  neutralTokenAcquired: (tier: number, hero?: string, topItems?: string) => string;
   buybackDeficit: (shortfall: number) => string;
   overextendDanger: string;
   pushAdvantage: string;
@@ -111,6 +112,10 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
       hero && topItems
         ? `Tier ${tier} neutral items unlocked! For ${hero}, recommend ${topItems}.`
         : `Tier ${tier} neutral items unlocked! Your neutral slot is empty, grab a token.`,
+    neutralTokenAcquired: (tier, hero, topItems) =>
+      hero && topItems
+        ? `Tier ${tier} Neutral Token received! For ${hero}, recommend ${topItems}.`
+        : `Tier ${tier} Neutral Token received! Open token to choose neutral item.`,
     buybackDeficit: (shortfall) =>
       `Warning: Need ${shortfall} more gold for buyback! Play safe and save gold.`,
     overextendDanger:
@@ -183,6 +188,10 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
       hero && topItems
         ? `ปลดล็อกไอเทมป่า เทียร์ ${tier} แล้ว! สำหรับ ${hero} แนะนำ ${topItems}`
         : `ปลดล็อกไอเทมป่า เทียร์ ${tier} แล้ว ช่องไอเทมป่ายังว่าง อย่าลืมไปเปิดเหรียญป่า`,
+    neutralTokenAcquired: (tier, hero, topItems) =>
+      hero && topItems
+        ? `ได้รับเหรียญป่า เทียร์ ${tier} แล้ว! สำหรับ ${hero} แนะนำเลือก ${topItems}`
+        : `ได้รับเหรียญป่า เทียร์ ${tier} แล้ว อย่าลืมเปิดเหรียญเลือกไอเทมป่า`,
     buybackDeficit: (shortfall) =>
       `คำเตือน! ขาดเงินอีก ${shortfall} สำหรับบายแบ็ค ระวังตัวและเก็บเงินไว้ก่อน`,
     overextendDanger:
@@ -927,7 +936,40 @@ class AudioNotificationService {
 
     const lang = this.settings.voiceLanguage;
     const text = PHRASES[lang].neutralItemMissing(tier, cleanHero, lang === 'th-TH' ? itemsTh : itemsEn);
-    this.speak(text);
+    this.speak(text, undefined, 'neutral_item');
+  }
+
+  public playNeutralTokenAcquired(
+    tier: number,
+    heroName?: string,
+    topRecommendedItems?: string[] | string,
+    force: boolean = false,
+  ) {
+    if ((!this.settings.tacticalCoachEnabled || !this.settings.neutralItemAlertsEnabled) && !force) return;
+    if (this.inCombat && !force) return;
+
+    this.initContext();
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.playTone(523.25, now, 0.1, 'sine');
+      this.playTone(659.25, now + 0.08, 0.12, 'sine');
+      this.playTone(783.99, now + 0.16, 0.18, 'sine');
+    }
+
+    const cleanHero = heroName ? heroName.replace(/^npc_dota_hero_/, '').replace(/_/g, ' ') : '';
+    let itemsTh = '';
+    let itemsEn = '';
+    if (Array.isArray(topRecommendedItems)) {
+      itemsTh = topRecommendedItems.join(' หรือ ');
+      itemsEn = topRecommendedItems.join(' or ');
+    } else if (typeof topRecommendedItems === 'string') {
+      itemsTh = topRecommendedItems;
+      itemsEn = topRecommendedItems;
+    }
+
+    const lang = this.settings.voiceLanguage;
+    const text = PHRASES[lang].neutralTokenAcquired(tier, cleanHero, lang === 'th-TH' ? itemsTh : itemsEn);
+    this.speak(text, undefined, 'neutral_item');
   }
 
   public playBuybackWarning(shortfall: number, force: boolean = false) {

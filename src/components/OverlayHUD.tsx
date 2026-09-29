@@ -605,7 +605,17 @@ export const OverlayHUD: React.FC<Props> = ({
               </span>
             )}
 
-            {coachState.neutralSlot.alertActive ? (
+            {coachState.neutralSlot.hasToken && coachState.neutralSlot.tokenTier ? (
+              <span
+                className="px-1.5 py-0.5 rounded bg-purple-950 text-purple-200 border border-purple-400 font-bold font-mono flex items-center gap-0.5 animate-pulse"
+                title={`Holding Tier ${coachState.neutralSlot.tokenTier} Token! Recommended: ${coachState.neutralSlot.recommendations?.slice(0, 2).map((r) => r.displayName).join(', ')}`}
+              >
+                <Package className="w-2.5 h-2.5 text-amber-300" />
+                <span>
+                  🎁 T{coachState.neutralSlot.tokenTier} Token: {coachState.neutralSlot.recommendations?.[0]?.displayName || 'Pick'}
+                </span>
+              </span>
+            ) : coachState.neutralSlot.alertActive ? (
               <span
                 className="px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-500 font-bold font-mono flex items-center gap-0.5"
                 title={
@@ -838,7 +848,20 @@ export const OverlayHUD: React.FC<Props> = ({
             </div>
           )}
 
-          {coachState.neutralSlot.alertActive && coachState.neutralSlot.recommendations && coachState.neutralSlot.recommendations.length > 0 && (
+          {coachState.neutralSlot.hasToken && coachState.neutralSlot.tokenTier && coachState.neutralSlot.recommendations && coachState.neutralSlot.recommendations.length > 0 ? (
+            <div className="mx-0.5 px-2 py-1.5 rounded-lg bg-purple-950/95 border border-purple-500 text-[10px] text-purple-200 flex items-center justify-between gap-1 shadow-lg shadow-purple-950/50">
+              <div className="flex items-center gap-1.5 truncate">
+                <Package className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-bounce" />
+                <span className="font-bold text-amber-300">🎁 T{coachState.neutralSlot.tokenTier} Token:</span>
+                <span className="truncate font-semibold text-white">
+                  {coachState.neutralSlot.recommendations.slice(0, 2).map((r) => r.displayName).join(' / ')}
+                </span>
+              </div>
+              <span className="text-[9px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
+                {coachState.neutralSlot.heroRole || 'Top Picks'}
+              </span>
+            </div>
+          ) : coachState.neutralSlot.alertActive && coachState.neutralSlot.recommendations && coachState.neutralSlot.recommendations.length > 0 ? (
             <div className="mx-0.5 px-2 py-1 rounded-lg bg-purple-950/90 border border-purple-600/70 text-[10px] text-purple-200 flex items-center justify-between gap-1 shadow-md">
               <div className="flex items-center gap-1.5 truncate">
                 <Package className="w-3.5 h-3.5 text-purple-400 shrink-0" />
@@ -851,7 +874,7 @@ export const OverlayHUD: React.FC<Props> = ({
                 {coachState.neutralSlot.heroRole || 'Recommended'}
               </span>
             </div>
-          )}
+          ) : null}
 
           {isTalentBannerVisible && talentMilestone && (
             <div className="mx-0.5 px-2 py-1 rounded-lg bg-emerald-950/95 border border-emerald-600/80 text-[10px] text-emerald-200 flex items-center justify-between gap-1 shadow-md">
