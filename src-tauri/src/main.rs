@@ -9,6 +9,7 @@ use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use tiny_http::{Method, Response, Server, StatusCode};
 
+mod db;
 mod desktop;
 mod minimap;
 
@@ -891,7 +892,12 @@ fn main() {
             minimap::preview_minimap,
             minimap::confirm_minimap,
             minimap::minimap_calibration_status,
-            fetch_tts_audio
+            fetch_tts_audio,
+            db::save_match_record,
+            db::get_match_history,
+            db::get_match_details,
+            db::delete_match_record,
+            db::clear_all_matches
         ])
         .setup(move |app| {
             desktop::initialize(app.handle());

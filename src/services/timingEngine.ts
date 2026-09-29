@@ -7,6 +7,7 @@ import { campStackService } from './campStackService';
 import { enemyUltimateService } from './enemyUltimateService';
 import { laningBenchmarkService } from './laningBenchmarkService';
 import { enemyGlyphService } from './enemyGlyphService';
+import { matchTrackerService } from './matchTrackerService';
 
 import { TIMING_RULES as RULES, NEUTRAL_TIER_TIMINGS } from '../data/timingRules';
 import { alertProfiles, Objective } from './alertProfiles';
@@ -155,6 +156,7 @@ export class TimingEngine {
     enemyUltimateService.updateFromGSI(payload.draft, payload.player?.team_name, clockTime);
     laningBenchmarkService.updateFromGSI(payload, clockTime);
     enemyGlyphService.updateFromGSI(payload, clockTime);
+    matchTrackerService.processGSI(payload);
   }
 
   public resetAlerts() {
@@ -176,6 +178,7 @@ export class TimingEngine {
     enemyUltimateService.resetAll();
     laningBenchmarkService.resetAll();
     enemyGlyphService.resetAll();
+    matchTrackerService.resetAll();
   }
 
   public checkItemAdvice(clockTime: number, heroName: string, items: PopularItem[]) {

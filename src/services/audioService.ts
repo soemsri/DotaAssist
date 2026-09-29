@@ -1317,6 +1317,11 @@ class AudioNotificationService {
     this.speak(text);
   }
 
+  public playPostMatchDebrief(spokenSummary: string) {
+    if (!this.settings.voiceEnabled) return;
+    this.speak(spokenSummary);
+  }
+
   private playTone(freq: number, startTime: number, duration: number, type: OscillatorType) {
     if (!this.ctx) return;
     try {

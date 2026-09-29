@@ -1,3 +1,11 @@
+## Local SQLite Match History, Fundamentals Scorecard & Post-Match Debrief — 2026-09-29
+
+- Persists full match telemetry and fundamentals evaluation locally using embedded SQLite (`rusqlite`) in a dedicated Rust background worker thread to prevent UI frame stutter and bypass 5MB web storage limits.
+- Evaluates 4 core pillars of fundamentals: CS Pace at 10m vs role benchmarks, Pre-Rune Wave Shove ratio at :40 before even-minute runes, Aegis Value conversion (sieges vs passive farm), and Late-game Buyback Discipline post-30:00.
+- Automatically launches `PostMatchDebriefModal` upon `POST_GAME` gameState with an overall grade (S/A/B/C/D), score (0-100), key strengths, top blunders, next game focus, and a ~15-second natural Thai TTS voice summary.
+- Dedicated "Match History" tab in Strategy Dashboard provides historical filtering (Role, Grade), win rate metrics, match details, and history management.
+- Unit and regression tests in `tests/match_history_scorecard.test.ts` verify scorecard grading, blunder detection, spoken Thai summary, POST_GAME idempotency, and SQLite/fallback storage operations.
+
 ## Manual enemy lineup alignment — 2026-09-18
 
 - Empty ultimate slots offer hero selection from the bundled catalog, in dashboard and interactive overlay modes. Duplicate and occupied-slot selections are rejected.

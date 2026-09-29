@@ -25,7 +25,11 @@ import { OverlayHUD } from "./components/OverlayHUD";
 import { DesktopStatus } from "./components/DesktopSetup";
 import { SettingsModal } from "./components/SettingsModal";
 import { VisionWardMap } from "./components/VisionWardMap";
-import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink, Zap, Eye } from "lucide-react";
+import { MatchHistoryView } from "./components/MatchHistoryView";
+import { PostMatchDebriefModal } from "./components/PostMatchDebriefModal";
+import { matchTrackerService } from "./services/matchTrackerService";
+import { MatchRecord } from "./types/matchHistory";
+import { Monitor, SlidersHorizontal, ShieldCheck, Swords, Clock, Sparkles, Minus, X, Volume2, ExternalLink, Zap, Eye, History } from "lucide-react";
 
 export const App: React.FC = () => {
   useSyncExternalStore(alertProfiles.subscribe, alertProfiles.getSnapshot);
@@ -33,7 +37,8 @@ export const App: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [overlayMode, setOverlayMode] = useState<boolean>(false);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"timers" | "coach" | "draft" | "items" | "vision">("timers");
+  const [activeTab, setActiveTab] = useState<"timers" | "coach" | "draft" | "items" | "vision" | "history">("timers");
+  const [activeDebrief, setActiveDebrief] = useState<MatchRecord | null>(matchTrackerService.getActiveDebrief());
   const [itemRefresh, setItemRefresh] = useState(0);
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
   const [minimapResult, setMinimapResult] = useState<MinimapScanResult | null>(minimapScanner.getLastResult());
@@ -52,6 +57,11 @@ export const App: React.FC = () => {
     setIsTauri(hasTauri);
     objectiveTracker.init();
     enemyUltimateService.init();
+
+    const unsub = matchTrackerService.subscribe(() => {
+      setActiveDebrief(matchTrackerService.getActiveDebrief());
+    });
+    return unsub;
   }, []);
 
   useEffect(() => {
@@ -339,6 +349,16 @@ export const App: React.FC = () => {
             onExitOverlay={() => { void changeOverlay(false); }}
           />
           <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+          {activeDebrief && (
+            <PostMatchDebriefModal
+              record={activeDebrief}
+              onViewHistory={() => {
+                setActiveTab("history");
+                void changeOverlay(false);
+              }}
+              onClose={() => matchTrackerService.dismissDebrief()}
+            />
+          )}
         </div>
         {pipOverlay}
       </>
@@ -528,6 +548,18 @@ export const App: React.FC = () => {
             <Eye className="w-4 h-4" />
             <span>Vision & Ward Map</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition ${
+              activeTab === "history"
+                ? "bg-purple-500/10 text-purple-400 border border-purple-500/30"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+            }`}
+          >
+            <History className="w-4 h-4" />
+            <span>Match History</span>
+          </button>
         </div>
 
         {/* Active Tab View */}
@@ -578,7 +610,6 @@ export const App: React.FC = () => {
             </div>
           )}
 
-
           {activeTab === "vision" && (
             <div className="space-y-5">
               <VisionWardMap
@@ -586,6 +617,12 @@ export const App: React.FC = () => {
                 payload={livePayload}
                 isConnected={isConnected}
               />
+            </div>
+          )}
+
+          {activeTab === "history" && (
+            <div className="space-y-5">
+              <MatchHistoryView />
             </div>
           )}
         </div>
@@ -598,6 +635,19 @@ export const App: React.FC = () => {
 
       {/* Settings Modal */}
       <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      {/* Post-Match Debrief Modal */}
+      {activeDebrief && (
+        <PostMatchDebriefModal
+          record={activeDebrief}
+          onViewHistory={() => {
+            setActiveTab("history");
+            setOverlayMode(false);
+          }}
+          onClose={() => matchTrackerService.dismissDebrief()}
+        />
+      )}
+
       {pipOverlay}
     </div>
   );
