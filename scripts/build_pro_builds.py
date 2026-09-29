@@ -138,6 +138,57 @@ hero_pros = {
     'npc_dota_hero_largo': ('Ame', 'Xtreme Gaming', 'Carry')
 }
 
+native_blink_or_mobility = {
+    'npc_dota_hero_antimage',
+    'npc_dota_hero_queenofpain',
+    'npc_dota_hero_weaver',
+    'npc_dota_hero_phantom_lancer',
+    'npc_dota_hero_riki',
+    'npc_dota_hero_mirana',
+    'npc_dota_hero_storm_spirit',
+    'npc_dota_hero_void_spirit',
+    'npc_dota_hero_ember_spirit',
+    'npc_dota_hero_morphling',
+    'npc_dota_hero_faceless_void',
+}
+
+blink_dagger_heroes = {
+    'npc_dota_hero_axe',
+    'npc_dota_hero_slardar',
+    'npc_dota_hero_centaur',
+    'npc_dota_hero_earthshaker',
+    'npc_dota_hero_tidehunter',
+    'npc_dota_hero_magnataur',
+    'npc_dota_hero_enigma',
+    'npc_dota_hero_legion_commander',
+    'npc_dota_hero_mars',
+    'npc_dota_hero_sand_king',
+    'npc_dota_hero_batrider',
+    'npc_dota_hero_beastmaster',
+    'npc_dota_hero_primal_beast',
+    'npc_dota_hero_night_stalker',
+    'npc_dota_hero_brewmaster',
+    'npc_dota_hero_dark_seer',
+    'npc_dota_hero_doom_bringer',
+    'npc_dota_hero_puck',
+    'npc_dota_hero_tiny',
+    'npc_dota_hero_nevermore',
+    'npc_dota_hero_templar_assassin',
+    'npc_dota_hero_ursa',
+    'npc_dota_hero_sven',
+    'npc_dota_hero_kunkka',
+    'npc_dota_hero_pangolier',
+    'npc_dota_hero_pudge',
+    'npc_dota_hero_tinker',
+    'npc_dota_hero_dragon_knight',
+    'npc_dota_hero_lion',
+    'npc_dota_hero_shadow_shaman',
+    'npc_dota_hero_rubick',
+    'npc_dota_hero_earth_spirit',
+    'npc_dota_hero_tusk',
+    'npc_dota_hero_elder_titan',
+}
+
 agi_carry = {
     'starting': ['tango', 'quelling_blade', 'slippers', 'circlet', 'branches', 'branches'],
     'early': ['wraith_band', 'boots', 'magic_wand', 'power_treads'],
@@ -148,21 +199,21 @@ agi_carry = {
 str_carry = {
     'starting': ['tango', 'quelling_blade', 'gauntlets', 'circlet', 'branches', 'branches'],
     'early': ['bracer', 'boots', 'magic_wand', 'power_treads'],
-    'core': ['armlet', 'echo_sabre', 'black_king_bar', 'blink'],
+    'core': ['armlet', 'echo_sabre', 'black_king_bar', 'sange_and_yasha'],
     'luxury': ['heart', 'assault', 'overwhelming_blink', 'satanic'],
     'situational': ['nullifier', 'heavens_halberd', 'sphere']
 }
 mid_spell = {
     'starting': ['tango', 'mantle', 'circlet', 'branches', 'branches', 'faerie_fire'],
     'early': ['null_talisman', 'bottle', 'boots', 'magic_wand', 'arcane_boots'],
-    'core': ['blink', 'kaya_and_sange', 'black_king_bar', 'aghanims_shard'],
+    'core': ['witch_blade', 'kaya_and_sange', 'black_king_bar', 'aghanims_shard'],
     'luxury': ['shivas_guard', 'octarine_core', 'refresher', 'sheepstick'],
     'situational': ['aeon_disk', 'sphere', 'cyclone']
 }
 mid_tempo = {
     'starting': ['tango', 'slippers', 'circlet', 'branches', 'branches', 'faerie_fire'],
     'early': ['wraith_band', 'bottle', 'boots', 'magic_wand', 'power_treads'],
-    'core': ['diffusal_blade', 'manta', 'black_king_bar', 'blink'],
+    'core': ['diffusal_blade', 'manta', 'black_king_bar', 'sange_and_yasha'],
     'luxury': ['skadi', 'butterfly', 'swift_blink', 'sheepstick'],
     'situational': ['sphere', 'nullifier', 'monkey_king_bar']
 }
@@ -184,15 +235,15 @@ support_save = {
     'starting': ['tango', 'tango', 'blood_grenade', 'ward_observer', 'ward_sentry', 'clarity'],
     'early': ['tranquil_boots', 'magic_wand', 'wind_lace', 'bracer'],
     'core': ['glimmer_cape', 'force_staff', 'aghanims_shard', 'ghost'],
-    'luxury': ['aeon_disk', 'lotus_orb', 'blink', 'guardian_greaves'],
-    'situational': ['pipe', 'solar_crest', 'pavise']
+    'luxury': ['aeon_disk', 'lotus_orb', 'pavise', 'guardian_greaves'],
+    'situational': ['pipe', 'solar_crest', 'octarine_core']
 }
 support_aggro = {
     'starting': ['tango', 'blood_grenade', 'wind_lace', 'branches', 'branches', 'clarity'],
     'early': ['arcane_boots', 'magic_wand', 'urn_of_shadows', 'bracer'],
-    'core': ['spirit_vessel', 'blink', 'aghanims_shard', 'force_staff'],
+    'core': ['spirit_vessel', 'glimmer_cape', 'aghanims_shard', 'force_staff'],
     'luxury': ['black_king_bar', 'octarine_core', 'shivas_guard', 'lotus_orb'],
-    'situational': ['glimmer_cape', 'aeon_disk', 'cyclone']
+    'situational': ['pavise', 'aeon_disk', 'cyclone']
 }
 
 specific_builds = {
@@ -202,6 +253,139 @@ specific_builds = {
         'core': ['bfury', 'manta', 'black_king_bar', 'basher'],
         'luxury': ['abyssal_blade', 'butterfly', 'satanic', 'skadi', 'swift_blink'],
         'situational': ['nullifier', 'sphere', 'monkey_king_bar']
+    },
+    'npc_dota_hero_queenofpain': {
+        'starting': ['tango', 'mantle', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['null_talisman', 'bottle', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['witch_blade', 'kaya_and_sange', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['shivas_guard', 'octarine_core', 'refresher', 'sheepstick'],
+        'situational': ['aeon_disk', 'sphere', 'cyclone']
+    },
+    'npc_dota_hero_storm_spirit': {
+        'starting': ['tango', 'mantle', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['null_talisman', 'bottle', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['witch_blade', 'kaya_and_sange', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['shivas_guard', 'bloodstone', 'octarine_core', 'sheepstick'],
+        'situational': ['sphere', 'aeon_disk', 'cyclone']
+    },
+    'npc_dota_hero_void_spirit': {
+        'starting': ['tango', 'mantle', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['null_talisman', 'bottle', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['echo_sabre', 'kaya_and_sange', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['shivas_guard', 'octarine_core', 'sheepstick', 'refresher'],
+        'situational': ['sphere', 'aeon_disk', 'cyclone']
+    },
+    'npc_dota_hero_drow_ranger': {
+        'starting': ['tango', 'quelling_blade', 'slippers', 'circlet', 'branches', 'branches'],
+        'early': ['wraith_band', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['dragon_lance', 'manta', 'black_king_bar', 'butterfly'],
+        'luxury': ['hurricane_pike', 'satanic', 'swift_blink', 'skadi'],
+        'situational': ['nullifier', 'sphere', 'monkey_king_bar']
+    },
+    'npc_dota_hero_sniper': {
+        'starting': ['tango', 'slippers', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['wraith_band', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['dragon_lance', 'maelstrom', 'black_king_bar', 'hurricane_pike'],
+        'luxury': ['mjollnir', 'butterfly', 'satanic', 'skadi'],
+        'situational': ['silver_edge', 'sphere', 'monkey_king_bar']
+    },
+    'npc_dota_hero_bristleback': {
+        'starting': ['tango', 'quelling_blade', 'ring_of_protection', 'gauntlets', 'branches', 'branches'],
+        'early': ['bracer', 'boots', 'magic_wand', 'power_treads', 'vanguard'],
+        'core': ['bloodstone', 'aghanims_scepter', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['heart', 'lotus_orb', 'assault', 'shivas_guard'],
+        'situational': ['pipe', 'crimson_guard', 'heavens_halberd']
+    },
+    'npc_dota_hero_viper': {
+        'starting': ['tango', 'circlet', 'slippers', 'branches', 'branches', 'faerie_fire'],
+        'early': ['wraith_band', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['dragon_lance', 'mage_slayer', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['hurricane_pike', 'butterfly', 'heart', 'skadi'],
+        'situational': ['pipe', 'heavens_halberd', 'sphere']
+    },
+    'npc_dota_hero_earthshaker': {
+        'starting': ['tango', 'blood_grenade', 'clarity', 'branches', 'branches', 'ward_observer'],
+        'early': ['tranquil_boots', 'magic_wand', 'wind_lace', 'bracer'],
+        'core': ['blink', 'aghanims_shard', 'force_staff', 'black_king_bar'],
+        'luxury': ['octarine_core', 'refresher', 'overwhelming_blink', 'shivas_guard'],
+        'situational': ['aeon_disk', 'ghost', 'lotus_orb']
+    },
+    'npc_dota_hero_slardar': {
+        'starting': ['tango', 'quelling_blade', 'gauntlets', 'circlet', 'branches', 'branches'],
+        'early': ['power_treads', 'magic_wand', 'bracer', 'chainmail'],
+        'core': ['blink', 'black_king_bar', 'aghanims_scepter', 'aghanims_shard'],
+        'luxury': ['assault', 'overwhelming_blink', 'heart', 'satanic'],
+        'situational': ['heavens_halberd', 'lotus_orb', 'pipe']
+    },
+    'npc_dota_hero_tidehunter': {
+        'starting': ['tango', 'ring_of_protection', 'quelling_blade', 'branches', 'branches'],
+        'early': ['phase_boots', 'magic_wand', 'bracer', 'chainmail'],
+        'core': ['blink', 'pipe', 'guardian_greaves', 'aghanims_shard'],
+        'luxury': ['overwhelming_blink', 'shivas_guard', 'refresher', 'heart'],
+        'situational': ['crimson_guard', 'lotus_orb', 'heavens_halberd']
+    },
+    'npc_dota_hero_centaur': {
+        'starting': ['tango', 'ring_of_protection', 'quelling_blade', 'branches', 'branches'],
+        'early': ['phase_boots', 'magic_wand', 'bracer', 'chainmail'],
+        'core': ['blink', 'blade_mail', 'black_king_bar', 'heart'],
+        'luxury': ['overwhelming_blink', 'shivas_guard', 'lotus_orb', 'assault'],
+        'situational': ['pipe', 'crimson_guard', 'heavens_halberd']
+    },
+    'npc_dota_hero_magnataur': {
+        'starting': ['tango', 'quelling_blade', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['power_treads', 'bottle', 'magic_wand', 'bracer'],
+        'core': ['blink', 'black_king_bar', 'harpoon', 'aghanims_shard'],
+        'luxury': ['refresher', 'overwhelming_blink', 'shivas_guard', 'heart'],
+        'situational': ['lotus_orb', 'force_staff', 'aeon_disk']
+    },
+    'npc_dota_hero_enigma': {
+        'starting': ['tango', 'circlet', 'branches', 'branches', 'clarity', 'clarity'],
+        'early': ['arcane_boots', 'magic_wand', 'urn_of_shadows', 'bracer'],
+        'core': ['blink', 'black_king_bar', 'refresher', 'aghanims_shard'],
+        'luxury': ['octarine_core', 'arcane_blink', 'shivas_guard', 'linkens'],
+        'situational': ['aeon_disk', 'lotus_orb', 'spirit_vessel']
+    },
+    'npc_dota_hero_lion': {
+        'starting': ['tango', 'blood_grenade', 'ward_observer', 'ward_sentry', 'clarity', 'branches'],
+        'early': ['tranquil_boots', 'magic_wand', 'wind_lace', 'bracer'],
+        'core': ['blink', 'aghanims_shard', 'force_staff', 'glimmer_cape'],
+        'luxury': ['aeon_disk', 'octarine_core', 'ghost', 'aghanims_scepter'],
+        'situational': ['pipe', 'lotus_orb', 'pavise']
+    },
+    'npc_dota_hero_shadow_shaman': {
+        'starting': ['tango', 'blood_grenade', 'ward_observer', 'ward_sentry', 'clarity', 'branches'],
+        'early': ['arcane_boots', 'magic_wand', 'wind_lace', 'bracer'],
+        'core': ['blink', 'aghanims_shard', 'glimmer_cape', 'force_staff'],
+        'luxury': ['aghanims_scepter', 'refresher', 'aeon_disk', 'octarine_core'],
+        'situational': ['ghost', 'lotus_orb', 'pavise']
+    },
+    'npc_dota_hero_puck': {
+        'starting': ['tango', 'mantle', 'circlet', 'branches', 'branches', 'faerie_fire'],
+        'early': ['null_talisman', 'bottle', 'boots', 'magic_wand', 'power_treads'],
+        'core': ['witch_blade', 'blink', 'kaya_and_sange', 'aghanims_shard'],
+        'luxury': ['octarine_core', 'shivas_guard', 'dagon', 'arcane_blink'],
+        'situational': ['aeon_disk', 'sphere', 'cyclone']
+    },
+    'npc_dota_hero_tiny': {
+        'starting': ['tango', 'quelling_blade', 'gauntlets', 'circlet', 'branches', 'branches'],
+        'early': ['power_treads', 'bottle', 'magic_wand', 'bracer'],
+        'core': ['blink', 'echo_sabre', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['daedalus', 'assault', 'overwhelming_blink', 'satanic'],
+        'situational': ['silver_edge', 'sphere', 'monkey_king_bar']
+    },
+    'npc_dota_hero_legion_commander': {
+        'starting': ['tango', 'quelling_blade', 'ring_of_protection', 'gauntlets', 'branches', 'branches'],
+        'early': ['phase_boots', 'magic_wand', 'bracer', 'chainmail'],
+        'core': ['blade_mail', 'blink', 'black_king_bar', 'aghanims_shard'],
+        'luxury': ['overwhelming_blink', 'assault', 'heart', 'satanic'],
+        'situational': ['heavens_halberd', 'lotus_orb', 'desolator']
+    },
+    'npc_dota_hero_mars': {
+        'starting': ['tango', 'quelling_blade', 'ring_of_protection', 'gauntlets', 'branches', 'branches'],
+        'early': ['phase_boots', 'magic_wand', 'bracer', 'soul_ring'],
+        'core': ['blink', 'black_king_bar', 'desolator', 'aghanims_shard'],
+        'luxury': ['overwhelming_blink', 'refresher', 'heart', 'shivas_guard'],
+        'situational': ['pipe', 'lotus_orb', 'heavens_halberd']
     },
     'npc_dota_hero_juggernaut': {
         'starting': ['tango', 'quelling_blade', 'slippers', 'circlet', 'branches', 'branches'],
@@ -235,7 +419,7 @@ specific_builds = {
         'starting': ['tango', 'tango', 'blood_grenade', 'ward_observer', 'ward_sentry', 'clarity'],
         'early': ['tranquil_boots', 'magic_wand', 'wind_lace', 'bracer'],
         'core': ['glimmer_cape', 'force_staff', 'aghanims_shard', 'black_king_bar'],
-        'luxury': ['blink', 'ghost', 'aeon_disk', 'lotus_orb'],
+        'luxury': ['ghost', 'aeon_disk', 'lotus_orb', 'guardian_greaves'],
         'situational': ['pipe', 'solar_crest', 'octarine_core']
     }
 }
@@ -266,8 +450,12 @@ for hero in heroes:
     else:
         build_template = agi_carry if attr == 'agi' else offlane_init
 
-    def map_items(keys):
-        return [k for k in keys if k in item_keys]
+    def map_items(keys, phase=''):
+        res = [k for k in keys if k in item_keys]
+        if hname in native_blink_or_mobility or hname not in blink_dagger_heroes:
+            if phase in ('early', 'core'):
+                res = [k for k in res if k != 'blink']
+        return res
 
     full_data[hname] = {
         'heroId': hid,
@@ -276,11 +464,11 @@ for hero in heroes:
         'proPlayer': pro_info[0],
         'team': pro_info[1],
         'role': pro_info[2],
-        'starting': map_items(build_template['starting']),
-        'early': map_items(build_template['early']),
-        'core': map_items(build_template['core']),
-        'luxury': map_items(build_template['luxury']),
-        'situational': map_items(build_template['situational'])
+        'starting': map_items(build_template['starting'], 'starting'),
+        'early': map_items(build_template['early'], 'early'),
+        'core': map_items(build_template['core'], 'core'),
+        'luxury': map_items(build_template['luxury'], 'luxury'),
+        'situational': map_items(build_template['situational'], 'situational')
     }
 
 with open('src/data/dotaProBuilds.json', 'w') as out_f:

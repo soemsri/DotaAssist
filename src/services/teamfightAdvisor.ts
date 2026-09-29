@@ -3,6 +3,7 @@ import type { GSIPayload } from '../types/gsi';
 import type { Role } from './alertProfiles';
 import { getEnemyPickClasses } from './draftService';
 import type { EnemyUltimateSlot } from './enemyUltimateService';
+import { isBlinkDaggerHero } from './heroItemUtils';
 
 export type FightDuty = 'auto' | 'initiate' | 'follow' | 'protect' | 'counter';
 export const DUTIES: FightDuty[] = ['auto', 'initiate', 'follow', 'protect', 'counter'];
@@ -69,7 +70,7 @@ export function makeFightPlan(payload: GSIPayload | null, connected: boolean, ro
     } else {
       if (enemies.some(h => h.roles.includes('Disabler') || h.roles.includes('Nuker')))
         add('black_king_bar', 'Black King Bar', 'ถ้าโดนหยุดจนทำหน้าที่ไม่ได้ ให้พิจารณาป้องกันตัว; ไม่ได้กันทุกสกิล', 'If control prevents your contribution, consider protection; it does not stop every ability.');
-      if (duty === 'initiate' && hero?.roles.includes('Initiator'))
+      if (duty === 'initiate' && isBlinkDaggerHero(p.hero.name))
         add('blink', 'Blink Dagger', 'ถ้าเปิดไม่ถึงเป้าหมาย ให้พิจารณาเครื่องมือเข้าถึงพร้อมเพื่อน', 'If you cannot reach an opening, consider an approach tool with allied follow-up.', ['overwhelming_blink','swift_blink','arcane_blink']);
       if (hero?.attack_type === 'Ranged')
         add('force_staff', 'Force Staff', 'ทางเลือกถ้าต้องรักษาระยะจากตัวเข้าประชิด', 'Alternative if you need spacing against divers.', ['hurricane_pike']);

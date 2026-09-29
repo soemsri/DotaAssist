@@ -25,6 +25,7 @@ import { talentAdvisor } from './talentAdvisor';
 import { skillAdvisor } from './skillAdvisor';
 import { visionEngine } from './visionEngine';
 import { alertProfiles } from './alertProfiles';
+import { isBlinkDaggerHero, hasEquippedBlink } from './heroItemUtils';
 
 // Standard Neutral Item Unlocks
 const NEUTRAL_TIERS = [
@@ -296,7 +297,14 @@ export class TacticalCoachEngine {
     const antiWanderingRoam = this.evaluateAntiWandering(clockTime, minimapResult, isGameActive);
 
     // 12c: Power Spike Actionability & Near-Item Caution
-    const powerSpikeAction = this.evaluatePowerSpikeAction(clockTime, hero, player, threats, isGameActive);
+    const powerSpikeAction = this.evaluatePowerSpikeAction(
+      clockTime,
+      hero,
+      player,
+      threats,
+      equippedItemKeys,
+      isGameActive,
+    );
 
     // 12d: High Ground Siege Discipline (>= 20:00 Aegis Check)
     const highGroundSiege = this.evaluateHighGroundSiege(clockTime, equippedItemKeys, isGameActive);
@@ -1217,6 +1225,7 @@ export class TacticalCoachEngine {
     hero: GSIPayload['hero'],
     player: GSIPayload['player'],
     threats: EnemyThreatAnalysis[],
+    equippedItems: Set<string>,
     isGameActive: boolean,
   ): PowerSpikeActionInfo | null {
     if (!isGameActive || !hero) return null;
@@ -1224,18 +1233,25 @@ export class TacticalCoachEngine {
     const currentLevel = hero.level || 1;
     const gold = player?.gold || 0;
 
-    const keyItemPool = [
-      { key: 'item_black_king_bar', name: 'Black King Bar (BKB)', cost: 4050 },
-      { key: 'item_blink', name: 'Blink Dagger', cost: 2250 },
-      { key: 'item_sphere', name: "Linken's Sphere", cost: 4600 },
-      { key: 'item_monkey_king_bar', name: 'Monkey King Bar (MKB)', cost: 4900 },
-      { key: 'item_shivas_guard', name: "Shiva's Guard", cost: 4825 },
-      { key: 'item_spirit_vessel', name: 'Spirit Vessel', cost: 2840 },
-    ];
+    const keyItemPool: Array<{ key: string; name: string; cost: number }> = [];
 
+    // 1. Hero-specific Blink Dagger power spike:
+    // Only recommend Blink Dagger if the hero genuinely builds/needs it for initiation,
+    // and does NOT already own Blink Dagger or any upgraded Blink item.
+    if (!hasEquippedBlink(equippedItems) && isBlinkDaggerHero(hero.name)) {
+      keyItemPool.push({ key: 'item_blink', name: 'Blink Dagger', cost: 2250 });
+    }
+
+    // 2. Black King Bar (BKB) power spike:
+    // Core fight/survival item if not already equipped
+    if (!equippedItems.has('item_black_king_bar')) {
+      keyItemPool.push({ key: 'item_black_king_bar', name: 'Black King Bar (BKB)', cost: 4050 });
+    }
+
+    // 3. Dynamic threat counters (only if not already equipped)
     for (const t of threats) {
       for (const counter of t.recommendedCounters) {
-        if (!counter.isEquipped && counter.cost > 2000) {
+        if (!counter.isEquipped && !equippedItems.has(counter.name) && counter.cost > 2000) {
           if (!keyItemPool.some((k) => k.key === counter.name)) {
             keyItemPool.push({ key: counter.name, name: counter.displayName, cost: counter.cost });
           }
@@ -1243,8 +1259,10 @@ export class TacticalCoachEngine {
       }
     }
 
-    // 1. Near-Item Caution: Within 500 gold of high-impact item
+    // 4. Near-Item Caution: Within 500 gold of high-impact unequipped item
     for (const item of keyItemPool) {
+      if (equippedItems.has(item.key)) continue;
+
       const deficit = item.cost - gold;
       if (deficit > 0 && deficit <= 500) {
         const tipEn = `Key item ${item.name} within ${deficit}g! Play safe near vision and avoid coinflip fights.`;

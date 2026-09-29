@@ -101,7 +101,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -185,10 +185,10 @@
       "black_king_bar"
     ],
     "luxury": [
-      "blink",
       "ghost",
       "aeon_disk",
-      "lotus_orb"
+      "lotus_orb",
+      "guardian_greaves"
     ],
     "situational": [
       "pipe",
@@ -218,21 +218,21 @@
       "power_treads"
     ],
     "core": [
+      "dragon_lance",
       "manta",
-      "diffusal_blade",
       "black_king_bar",
-      "basher"
+      "butterfly"
     ],
     "luxury": [
-      "butterfly",
-      "abyssal_blade",
+      "hurricane_pike",
+      "satanic",
       "swift_blink",
       "skadi"
     ],
     "situational": [
-      "satanic",
       "nullifier",
-      "sphere"
+      "sphere",
+      "monkey_king_bar"
     ]
   },
   "npc_dota_hero_earthshaker": {
@@ -244,35 +244,34 @@
     "role": "Roamer / Soft Support",
     "starting": [
       "tango",
-      "slippers",
-      "circlet",
+      "blood_grenade",
+      "clarity",
       "branches",
       "branches",
-      "faerie_fire"
+      "ward_observer"
     ],
     "early": [
-      "wraith_band",
-      "bottle",
-      "boots",
+      "tranquil_boots",
       "magic_wand",
-      "power_treads"
+      "wind_lace",
+      "bracer"
     ],
     "core": [
-      "diffusal_blade",
-      "manta",
-      "black_king_bar",
-      "blink"
+      "blink",
+      "aghanims_shard",
+      "force_staff",
+      "black_king_bar"
     ],
     "luxury": [
-      "skadi",
-      "butterfly",
-      "swift_blink",
-      "sheepstick"
+      "octarine_core",
+      "refresher",
+      "overwhelming_blink",
+      "shivas_guard"
     ],
     "situational": [
-      "sphere",
-      "nullifier",
-      "monkey_king_bar"
+      "aeon_disk",
+      "ghost",
+      "lotus_orb"
     ]
   },
   "npc_dota_hero_juggernaut": {
@@ -491,19 +490,19 @@
       "bottle",
       "boots",
       "magic_wand",
-      "arcane_boots"
+      "power_treads"
     ],
     "core": [
+      "witch_blade",
       "blink",
       "kaya_and_sange",
-      "black_king_bar",
       "aghanims_shard"
     ],
     "luxury": [
-      "shivas_guard",
       "octarine_core",
-      "refresher",
-      "sheepstick"
+      "shivas_guard",
+      "dagon",
+      "arcane_blink"
     ],
     "situational": [
       "aeon_disk",
@@ -611,7 +610,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -648,23 +647,23 @@
       "bottle",
       "boots",
       "magic_wand",
-      "arcane_boots"
+      "power_treads"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
     ],
     "luxury": [
       "shivas_guard",
+      "bloodstone",
       "octarine_core",
-      "refresher",
       "sheepstick"
     ],
     "situational": [
-      "aeon_disk",
       "sphere",
+      "aeon_disk",
       "cyclone"
     ]
   },
@@ -693,7 +692,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -723,27 +722,26 @@
       "branches"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "power_treads",
+      "bottle",
       "magic_wand",
-      "power_treads"
+      "bracer"
     ],
     "core": [
-      "armlet",
+      "blink",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
       "assault",
       "overwhelming_blink",
       "satanic"
     ],
     "situational": [
-      "nullifier",
-      "heavens_halberd",
-      "sphere"
+      "silver_edge",
+      "sphere",
+      "monkey_king_bar"
     ]
   },
   "npc_dota_hero_vengefulspirit": {
@@ -772,7 +770,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -811,7 +809,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -848,7 +846,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -890,7 +888,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -927,7 +925,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -953,35 +951,33 @@
     "role": "Hard Support",
     "starting": [
       "tango",
-      "mantle",
-      "circlet",
-      "branches",
-      "branches",
-      "faerie_fire"
+      "blood_grenade",
+      "ward_observer",
+      "ward_sentry",
+      "clarity",
+      "branches"
     ],
     "early": [
-      "null_talisman",
-      "bottle",
-      "boots",
+      "tranquil_boots",
       "magic_wand",
-      "arcane_boots"
+      "wind_lace",
+      "bracer"
     ],
     "core": [
       "blink",
-      "kaya_and_sange",
-      "black_king_bar",
-      "aghanims_shard"
+      "aghanims_shard",
+      "force_staff",
+      "glimmer_cape"
     ],
     "luxury": [
-      "shivas_guard",
+      "aeon_disk",
       "octarine_core",
-      "refresher",
-      "sheepstick"
+      "ghost"
     ],
     "situational": [
-      "aeon_disk",
-      "sphere",
-      "cyclone"
+      "pipe",
+      "lotus_orb",
+      "pavise"
     ]
   },
   "npc_dota_hero_shadow_shaman": {
@@ -993,35 +989,33 @@
     "role": "Support Pusher",
     "starting": [
       "tango",
-      "mantle",
-      "circlet",
-      "branches",
-      "branches",
-      "faerie_fire"
+      "blood_grenade",
+      "ward_observer",
+      "ward_sentry",
+      "clarity",
+      "branches"
     ],
     "early": [
-      "null_talisman",
-      "bottle",
-      "boots",
+      "arcane_boots",
       "magic_wand",
-      "arcane_boots"
+      "wind_lace",
+      "bracer"
     ],
     "core": [
       "blink",
-      "kaya_and_sange",
-      "black_king_bar",
-      "aghanims_shard"
+      "aghanims_shard",
+      "glimmer_cape",
+      "force_staff"
     ],
     "luxury": [
-      "shivas_guard",
-      "octarine_core",
       "refresher",
-      "sheepstick"
+      "aeon_disk",
+      "octarine_core"
     ],
     "situational": [
-      "aeon_disk",
-      "sphere",
-      "cyclone"
+      "ghost",
+      "lotus_orb",
+      "pavise"
     ]
   },
   "npc_dota_hero_slardar": {
@@ -1040,27 +1034,26 @@
       "branches"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "power_treads",
       "magic_wand",
-      "power_treads"
+      "bracer",
+      "chainmail"
     ],
     "core": [
-      "armlet",
-      "echo_sabre",
+      "blink",
       "black_king_bar",
-      "blink"
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
       "assault",
       "overwhelming_blink",
+      "heart",
       "satanic"
     ],
     "situational": [
-      "nullifier",
       "heavens_halberd",
-      "sphere"
+      "lotus_orb",
+      "pipe"
     ]
   },
   "npc_dota_hero_tidehunter": {
@@ -1072,34 +1065,33 @@
     "role": "Offlane Initiator",
     "starting": [
       "tango",
+      "ring_of_protection",
       "quelling_blade",
-      "gauntlets",
-      "circlet",
       "branches",
       "branches"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "phase_boots",
       "magic_wand",
-      "power_treads"
+      "bracer",
+      "chainmail"
     ],
     "core": [
-      "armlet",
-      "echo_sabre",
-      "black_king_bar",
-      "blink"
+      "blink",
+      "pipe",
+      "guardian_greaves",
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
-      "assault",
       "overwhelming_blink",
-      "satanic"
+      "shivas_guard",
+      "refresher",
+      "heart"
     ],
     "situational": [
-      "nullifier",
-      "heavens_halberd",
-      "sphere"
+      "crimson_guard",
+      "lotus_orb",
+      "heavens_halberd"
     ]
   },
   "npc_dota_hero_witch_doctor": {
@@ -1125,7 +1117,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1165,7 +1157,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1230,35 +1222,33 @@
     "role": "Offlane / Jungler",
     "starting": [
       "tango",
-      "quelling_blade",
-      "ring_of_protection",
-      "gauntlets",
+      "circlet",
       "branches",
-      "branches"
+      "branches",
+      "clarity",
+      "clarity"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "arcane_boots",
       "magic_wand",
-      "phase_boots",
-      "chainmail"
+      "urn_of_shadows",
+      "bracer"
     ],
     "core": [
       "blink",
-      "blade_mail",
       "black_king_bar",
+      "refresher",
       "aghanims_shard"
     ],
     "luxury": [
-      "overwhelming_blink",
-      "shivas_guard",
-      "heart",
-      "lotus_orb"
+      "octarine_core",
+      "arcane_blink",
+      "shivas_guard"
     ],
     "situational": [
-      "pipe",
-      "crimson_guard",
-      "heavens_halberd"
+      "aeon_disk",
+      "lotus_orb",
+      "spirit_vessel"
     ]
   },
   "npc_dota_hero_tinker": {
@@ -1284,7 +1274,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1310,11 +1300,11 @@
     "role": "Mid / Carry",
     "starting": [
       "tango",
-      "quelling_blade",
       "slippers",
       "circlet",
       "branches",
-      "branches"
+      "branches",
+      "faerie_fire"
     ],
     "early": [
       "wraith_band",
@@ -1323,21 +1313,21 @@
       "power_treads"
     ],
     "core": [
-      "manta",
-      "diffusal_blade",
+      "dragon_lance",
+      "maelstrom",
       "black_king_bar",
-      "basher"
+      "hurricane_pike"
     ],
     "luxury": [
+      "mjollnir",
       "butterfly",
-      "abyssal_blade",
-      "swift_blink",
+      "satanic",
       "skadi"
     ],
     "situational": [
-      "satanic",
-      "nullifier",
-      "sphere"
+      "silver_edge",
+      "sphere",
+      "monkey_king_bar"
     ]
   },
   "npc_dota_hero_necrolyte": {
@@ -1363,7 +1353,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1403,7 +1393,6 @@
       "chainmail"
     ],
     "core": [
-      "blink",
       "blade_mail",
       "black_king_bar",
       "aghanims_shard"
@@ -1443,7 +1432,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1480,10 +1469,10 @@
       "bottle",
       "boots",
       "magic_wand",
-      "arcane_boots"
+      "power_treads"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1523,7 +1512,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1604,7 +1593,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -1643,7 +1632,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -1719,7 +1708,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1784,11 +1773,11 @@
     "role": "Offlane / Mid",
     "starting": [
       "tango",
-      "quelling_blade",
-      "slippers",
       "circlet",
+      "slippers",
       "branches",
-      "branches"
+      "branches",
+      "faerie_fire"
     ],
     "early": [
       "wraith_band",
@@ -1797,20 +1786,20 @@
       "power_treads"
     ],
     "core": [
-      "manta",
-      "diffusal_blade",
+      "dragon_lance",
+      "mage_slayer",
       "black_king_bar",
-      "basher"
+      "aghanims_shard"
     ],
     "luxury": [
+      "hurricane_pike",
       "butterfly",
-      "abyssal_blade",
-      "swift_blink",
+      "heart",
       "skadi"
     ],
     "situational": [
-      "satanic",
-      "nullifier",
+      "pipe",
+      "heavens_halberd",
       "sphere"
     ]
   },
@@ -1878,7 +1867,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -1915,7 +1904,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -1958,7 +1947,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -1995,7 +1984,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -2037,7 +2026,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2076,7 +2065,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2195,7 +2184,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -2274,7 +2263,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2313,7 +2302,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2392,7 +2381,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -2468,7 +2457,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -2548,7 +2537,7 @@
     ],
     "core": [
       "spirit_vessel",
-      "blink",
+      "glimmer_cape",
       "aghanims_shard",
       "force_staff"
     ],
@@ -2559,7 +2548,7 @@
       "lotus_orb"
     ],
     "situational": [
-      "glimmer_cape",
+      "pavise",
       "aeon_disk",
       "cyclone"
     ]
@@ -2626,7 +2615,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -2668,7 +2657,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2746,7 +2735,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2824,7 +2813,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -2862,7 +2851,6 @@
     ],
     "core": [
       "spirit_vessel",
-      "blink",
       "black_king_bar",
       "aghanims_shard"
     ],
@@ -2901,7 +2889,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -2941,7 +2929,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -2983,7 +2971,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -3022,7 +3010,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -3059,7 +3047,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3140,7 +3128,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -3216,7 +3204,6 @@
       "chainmail"
     ],
     "core": [
-      "blink",
       "blade_mail",
       "black_king_bar",
       "aghanims_shard"
@@ -3259,7 +3246,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -3299,7 +3286,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -3336,7 +3323,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3376,7 +3363,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3416,7 +3403,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3495,7 +3482,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3535,7 +3522,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3575,7 +3562,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3718,35 +3705,33 @@
     "role": "Offlane Initiator",
     "starting": [
       "tango",
-      "slippers",
-      "circlet",
+      "ring_of_protection",
+      "quelling_blade",
       "branches",
-      "branches",
-      "faerie_fire"
+      "branches"
     ],
     "early": [
-      "wraith_band",
-      "bottle",
-      "boots",
+      "phase_boots",
       "magic_wand",
-      "power_treads"
+      "bracer",
+      "chainmail"
     ],
     "core": [
-      "diffusal_blade",
-      "manta",
+      "blink",
+      "blade_mail",
       "black_king_bar",
-      "blink"
+      "heart"
     ],
     "luxury": [
-      "skadi",
-      "butterfly",
-      "swift_blink",
-      "sheepstick"
+      "overwhelming_blink",
+      "shivas_guard",
+      "lotus_orb",
+      "assault"
     ],
     "situational": [
-      "sphere",
-      "nullifier",
-      "monkey_king_bar"
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
     ]
   },
   "npc_dota_hero_magnataur": {
@@ -3758,35 +3743,34 @@
     "role": "Offlane Initiator",
     "starting": [
       "tango",
-      "mantle",
+      "quelling_blade",
       "circlet",
       "branches",
       "branches",
       "faerie_fire"
     ],
     "early": [
-      "null_talisman",
+      "power_treads",
       "bottle",
-      "boots",
       "magic_wand",
-      "arcane_boots"
+      "bracer"
     ],
     "core": [
       "blink",
-      "kaya_and_sange",
       "black_king_bar",
+      "harpoon",
       "aghanims_shard"
     ],
     "luxury": [
-      "shivas_guard",
-      "octarine_core",
       "refresher",
-      "sheepstick"
+      "overwhelming_blink",
+      "shivas_guard",
+      "heart"
     ],
     "situational": [
-      "aeon_disk",
-      "sphere",
-      "cyclone"
+      "lotus_orb",
+      "force_staff",
+      "aeon_disk"
     ]
   },
   "npc_dota_hero_shredder": {
@@ -3815,7 +3799,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -3839,8 +3823,8 @@
     "starting": [
       "tango",
       "quelling_blade",
+      "ring_of_protection",
       "gauntlets",
-      "circlet",
       "branches",
       "branches"
     ],
@@ -3848,24 +3832,24 @@
       "bracer",
       "boots",
       "magic_wand",
-      "power_treads"
+      "power_treads",
+      "vanguard"
     ],
     "core": [
-      "armlet",
-      "echo_sabre",
+      "bloodstone",
       "black_king_bar",
-      "blink"
+      "aghanims_shard"
     ],
     "luxury": [
       "heart",
+      "lotus_orb",
       "assault",
-      "overwhelming_blink",
-      "satanic"
+      "shivas_guard"
     ],
     "situational": [
-      "nullifier",
-      "heavens_halberd",
-      "sphere"
+      "pipe",
+      "crimson_guard",
+      "heavens_halberd"
     ]
   },
   "npc_dota_hero_tusk": {
@@ -3894,7 +3878,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -3931,7 +3915,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -3973,7 +3957,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -4013,7 +3997,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -4037,33 +4021,33 @@
     "starting": [
       "tango",
       "quelling_blade",
+      "ring_of_protection",
       "gauntlets",
-      "circlet",
       "branches",
       "branches"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "phase_boots",
       "magic_wand",
-      "power_treads"
+      "bracer",
+      "chainmail"
     ],
     "core": [
-      "armlet",
-      "echo_sabre",
+      "blade_mail",
+      "blink",
       "black_king_bar",
-      "blink"
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
-      "assault",
       "overwhelming_blink",
+      "assault",
+      "heart",
       "satanic"
     ],
     "situational": [
-      "nullifier",
       "heavens_halberd",
-      "sphere"
+      "lotus_orb",
+      "desolator"
     ]
   },
   "npc_dota_hero_techies": {
@@ -4089,7 +4073,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4171,7 +4155,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -4211,7 +4195,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -4290,7 +4274,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -4327,7 +4311,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4367,7 +4351,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4409,7 +4393,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -4485,7 +4469,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4527,7 +4511,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -4564,7 +4548,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4607,7 +4591,7 @@
       "diffusal_blade",
       "manta",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "skadi",
@@ -4630,34 +4614,35 @@
     "role": "Midlaner",
     "starting": [
       "tango",
-      "quelling_blade",
-      "gauntlets",
+      "mantle",
       "circlet",
       "branches",
-      "branches"
+      "branches",
+      "faerie_fire"
     ],
     "early": [
-      "bracer",
+      "null_talisman",
+      "bottle",
       "boots",
       "magic_wand",
       "power_treads"
     ],
     "core": [
-      "armlet",
       "echo_sabre",
+      "kaya_and_sange",
       "black_king_bar",
-      "blink"
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
-      "assault",
-      "overwhelming_blink",
-      "satanic"
+      "shivas_guard",
+      "octarine_core",
+      "sheepstick",
+      "refresher"
     ],
     "situational": [
-      "nullifier",
-      "heavens_halberd",
-      "sphere"
+      "sphere",
+      "aeon_disk",
+      "cyclone"
     ]
   },
   "npc_dota_hero_snapfire": {
@@ -4683,7 +4668,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4710,33 +4695,33 @@
     "starting": [
       "tango",
       "quelling_blade",
+      "ring_of_protection",
       "gauntlets",
-      "circlet",
       "branches",
       "branches"
     ],
     "early": [
-      "bracer",
-      "boots",
+      "phase_boots",
       "magic_wand",
-      "power_treads"
+      "bracer",
+      "soul_ring"
     ],
     "core": [
-      "armlet",
-      "echo_sabre",
+      "blink",
       "black_king_bar",
-      "blink"
+      "desolator",
+      "aghanims_shard"
     ],
     "luxury": [
-      "heart",
-      "assault",
       "overwhelming_blink",
-      "satanic"
+      "refresher",
+      "heart",
+      "shivas_guard"
     ],
     "situational": [
-      "nullifier",
-      "heavens_halberd",
-      "sphere"
+      "pipe",
+      "lotus_orb",
+      "heavens_halberd"
     ]
   },
   "npc_dota_hero_ringmaster": {
@@ -4762,7 +4747,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
@@ -4804,7 +4789,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -4843,7 +4828,7 @@
       "armlet",
       "echo_sabre",
       "black_king_bar",
-      "blink"
+      "sange_and_yasha"
     ],
     "luxury": [
       "heart",
@@ -4920,7 +4905,7 @@
       "arcane_boots"
     ],
     "core": [
-      "blink",
+      "witch_blade",
       "kaya_and_sange",
       "black_king_bar",
       "aghanims_shard"
