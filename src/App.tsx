@@ -333,34 +333,48 @@ export const App: React.FC = () => {
   if (overlayMode) {
     return (
       <>
-        <div className="w-screen h-screen bg-transparent select-none overflow-auto relative">
-          {isTauri && <div className="bg-slate-900 text-amber-200 text-xs p-2" role="status">
-            {desktop?.interactive ? 'HUD interaction enabled' : 'Click-through'} · {desktop?.hotkey} to toggle
-            {(desktopError || desktop?.error) && <p>{desktopError || desktop?.error}</p>}
-          </div>}
-          <OverlayHUD
-            interactive={!isTauri || (desktop?.interactive ?? false)}
-            payload={livePayload}
-            isConnected={isConnected}
-            alerts={alerts}
-            onRefreshItems={() => setItemRefresh(n => n + 1)}
-            items={popularItems}
-            coachState={coachState}
-            scanResult={minimapResult}
-            onOpenSettings={() => setSettingsOpen(true)}
-            onExitOverlay={() => { void changeOverlay(false); }}
-          />
-          <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
-          {activeDebrief && (
-            <PostMatchDebriefModal
-              record={activeDebrief}
-              onViewHistory={() => {
-                setActiveTab("history");
-                void changeOverlay(false);
-              }}
-              onClose={() => matchTrackerService.dismissDebrief()}
-            />
+        <div className="w-screen h-screen bg-transparent select-none overflow-hidden relative pointer-events-none">
+          {/* Non-intrusive floating status pill for Tauri click-through */}
+          {isTauri && (
+            <div
+              className={`fixed top-1 left-2 z-40 transition-opacity duration-300 pointer-events-auto ${
+                desktop?.interactive ? 'opacity-90' : 'opacity-40 hover:opacity-100'
+              }`}
+              title={`${desktop?.interactive ? 'HUD interaction enabled' : 'Click-through mode active'} (${desktop?.hotkey || 'Ctrl+Shift+F10'} to toggle)`}
+            >
+              <div className="bg-slate-950/80 backdrop-blur-md border border-slate-800 text-[10px] text-amber-300/80 px-2 py-0.5 rounded-full shadow flex items-center gap-1 font-mono">
+                <span className={`w-1.5 h-1.5 rounded-full ${desktop?.interactive ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+                <span>{desktop?.interactive ? 'HUD Active' : 'Click-Through'} · {desktop?.hotkey || 'Ctrl+Shift+F10'}</span>
+              </div>
+            </div>
           )}
+          <div className="pointer-events-auto">
+            <OverlayHUD
+              interactive={!isTauri || (desktop?.interactive ?? false)}
+              payload={livePayload}
+              isConnected={isConnected}
+              alerts={alerts}
+              onRefreshItems={() => setItemRefresh(n => n + 1)}
+              items={popularItems}
+              coachState={coachState}
+              scanResult={minimapResult}
+              onOpenSettings={() => setSettingsOpen(true)}
+              onExitOverlay={() => { void changeOverlay(false); }}
+            />
+          </div>
+          <div className="pointer-events-auto">
+            <SettingsModal isConnected={isConnected} isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+            {activeDebrief && (
+              <PostMatchDebriefModal
+                record={activeDebrief}
+                onViewHistory={() => {
+                  setActiveTab("history");
+                  void changeOverlay(false);
+                }}
+                onClose={() => matchTrackerService.dismissDebrief()}
+              />
+            )}
+          </div>
         </div>
         {pipOverlay}
       </>

@@ -62,30 +62,30 @@ export class SlarkReflexService {
     this.notify();
   }
 
-  public getSettings(): SlarkReflexSettings {
+  public getSettings = (): SlarkReflexSettings => {
     return { ...this.settings };
-  }
+  };
 
-  public getSnapshot(): SlarkReflexState {
+  public getSnapshot = (): SlarkReflexState => {
     return this.state;
-  }
+  };
 
-  public subscribe(listener: () => void): () => void {
+  public subscribe = (listener: () => void): () => void => {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
-  }
+  };
 
-  private notify() {
+  private notify = () => {
     this.listeners.forEach((l) => l());
-  }
+  };
 
-  public testCleanseAlert() {
+  public testCleanseAlert = () => {
     audioService.triggerEmergencyReflex(this.settings.darkPactHotkey, 'cleanse');
-  }
+  };
 
-  public testShadowDanceAlert() {
+  public testShadowDanceAlert = () => {
     audioService.triggerEmergencyReflex(this.settings.shadowDanceHotkey, 'shadow_dance');
-  }
+  };
 
   public processGSI(payload: GSIPayload | null, clockTime: number) {
     if (!payload?.hero) {

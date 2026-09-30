@@ -8,7 +8,7 @@ import { GSIPayload } from '../types/gsi';
 import {
   Bell, Minimize2, Maximize2, Package, X, Settings, Volume2, VolumeX, ShieldAlert,
   Shield, Sparkles, Flame, Droplets, ClipboardCheck, Coins, Layers, Swords,
-  Eye, Zap, Scroll, GitBranch, Mic, MicOff, Target
+  Eye, Zap, Scroll, GitBranch, Mic, MicOff, Target, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 import { audioService } from '../services/audioService';
@@ -52,7 +52,25 @@ export const OverlayHUD: React.FC<Props> = ({
   onOpenSettings,
   onExitOverlay,
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  type HudDisplayMode = 'icon' | 'bar' | 'expanded';
+
+  const [displayMode, setDisplayMode] = useState<HudDisplayMode>(() => {
+    try {
+      const saved = localStorage.getItem('dotaassist.hud_display_mode');
+      if (saved === 'icon' || saved === 'bar' || saved === 'expanded') {
+        return saved as HudDisplayMode;
+      }
+    } catch {}
+    return 'icon';
+  });
+
+  const changeDisplayMode = (mode: HudDisplayMode) => {
+    setDisplayMode(mode);
+    try {
+      localStorage.setItem('dotaassist.hud_display_mode', mode);
+    } catch {}
+  };
+
   const [opacity, setOpacity] = useState(90);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const undoState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
@@ -72,7 +90,7 @@ export const OverlayHUD: React.FC<Props> = ({
 
   useEffect(() => {
     voiceCommandService.registerHudToggleHandler(() => {
-      setCollapsed((prev) => !prev);
+      setDisplayMode((prev) => (prev === 'expanded' ? 'bar' : 'expanded'));
     });
 
     const unsubCooldowns = voiceCommandService.subscribeCooldowns((cds) => {
@@ -254,20 +272,93 @@ export const OverlayHUD: React.FC<Props> = ({
 
   return (
     <div
-      className="w-full h-full flex flex-col justify-start items-center p-2 select-none"
+      className="select-none pointer-events-auto"
       style={{ opacity: opacity / 100 }}
     >
-      <AlertProfileControls />
-      {!collapsed && <TeamfightPlan payload={payload} connected={isConnected} interactive={interactive} />}
-      {collapsed ? (
-        /* Top-Right In-Game Minimalist Icon Bar (เรียงต่อจากตัว ไอค่อน Hero ไปทางขวา) */
+      {/* 1. Single Icon Mode (Minimalist Icon in the Top-Right Red Box) */}
+      {displayMode === 'icon' && (
         <div
           data-tauri-drag-region
-          className="fixed top-2 right-2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-700/80 shadow-2xl text-xs select-none hover:border-amber-400/80 transition-all cursor-move text-slate-100"
+          className="fixed top-2 right-2 z-50 flex items-center gap-1 select-none pointer-events-auto cursor-move"
+          title={`${heroDisplayName} (Lv.${heroLevel}) - HP: ${heroHpPercent}% | Click to expand DotaAssist`}
+        >
+          <div
+            onClick={() => changeDisplayMode('bar')}
+            className="relative group cursor-pointer"
+          >
+            <div
+              className={`w-9 h-9 rounded-2xl overflow-hidden border-2 flex items-center justify-center bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all group-hover:scale-105 ${
+                !isConnected
+                  ? 'border-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.4)]'
+                  : slarkSnapshot.isSlark && slarkSnapshot.cleanseUrgent
+                  ? 'border-cyan-400 bg-cyan-950 shadow-[0_0_16px_rgba(6,182,212,0.9)] animate-bounce'
+                  : slarkSnapshot.isSlark && slarkSnapshot.shadowDanceUrgent
+                  ? 'border-rose-500 bg-rose-950 shadow-[0_0_18px_rgba(244,63,94,0.9)] animate-pulse'
+                  : heroHpPercent <= 20
+                  ? 'border-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)] animate-pulse'
+                  : heroHpPercent <= 50
+                  ? 'border-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]'
+                  : 'border-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.3)] hover:border-amber-400'
+              }`}
+            >
+              {heroAvatarUrl ? (
+                <img
+                  src={heroAvatarUrl}
+                  alt={heroDisplayName}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Shield className="w-5 h-5 text-amber-400" />
+              )}
+            </div>
+
+            {/* Hero Level Badge */}
+            {isConnected && heroLevel > 0 && (
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-[8px] px-1 rounded-full leading-tight font-mono shadow">
+                {heroLevel}
+              </span>
+            )}
+
+            {/* Slark Cleanse Hotkey Prompt Badge */}
+            {slarkSnapshot.isSlark && slarkSnapshot.cleanseUrgent && (
+              <span className="absolute -top-1 -right-1 bg-cyan-500 text-slate-950 font-black text-[9px] px-1 rounded-full leading-tight font-mono animate-pulse shadow">
+                {slarkSnapshot.cleanseHotkey}
+              </span>
+            )}
+
+            {/* Urgent Alert Warning Dot */}
+            {mostUrgentAlert && mostUrgentAlert.secondsRemaining <= 20 && !slarkSnapshot.cleanseUrgent && (
+              <span className="absolute -top-1 -left-1 w-2.5 h-2.5 rounded-full bg-amber-400 border border-slate-950 animate-ping shadow" />
+            )}
+          </div>
+
+          {/* Quick Expand Chevron Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              changeDisplayMode('bar');
+            }}
+            className="w-5 h-9 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-700/80 text-slate-400 hover:text-amber-300 flex items-center justify-center transition shadow-lg cursor-pointer"
+            title="Expand to Icon Bar"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* 2. Top-Right In-Game Minimalist Icon Bar (Fits precisely in the top-right red box) */}
+      {(displayMode === 'bar' || displayMode === 'expanded') && (
+        <div
+          data-tauri-drag-region
+          className="fixed top-2 right-2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-700/80 shadow-2xl text-xs select-none hover:border-amber-400/80 transition-all cursor-move text-slate-100 pointer-events-auto"
         >
           {/* 1. Hero Avatar Icon */}
           <div
-            onClick={() => setCollapsed(false)}
+            onClick={() => changeDisplayMode(displayMode === 'expanded' ? 'bar' : 'expanded')}
             className="relative group cursor-pointer shrink-0"
             title={`${heroDisplayName} (Lv.${heroLevel}) - HP: ${heroHpPercent}% | Click to toggle full dashboard`}
           >
@@ -527,17 +618,36 @@ export const OverlayHUD: React.FC<Props> = ({
 
           {/* 12. Clock & Expand Dashboard Button */}
           <div
-            onClick={() => setCollapsed(false)}
+            onClick={() => changeDisplayMode(displayMode === 'expanded' ? 'bar' : 'expanded')}
             className="flex items-center gap-1.5 pl-1.5 border-l border-slate-800 cursor-pointer group shrink-0"
-            title={`Game Time: ${formattedTime}${mostUrgentAlert ? ` · Next Alert: ${mostUrgentAlert.title} (${mostUrgentAlert.secondsRemaining}s)` : ''} | Click to expand dashboard`}
+            title={`Game Time: ${formattedTime}${mostUrgentAlert ? ` · Next Alert: ${mostUrgentAlert.title} (${mostUrgentAlert.secondsRemaining}s)` : ''} | Click to ${displayMode === 'expanded' ? 'collapse' : 'expand'} dashboard`}
           >
             <span className="font-mono font-black text-amber-400 text-xs">{formattedTime}</span>
-            <Maximize2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 transition" />
+            {displayMode === 'expanded' ? (
+              <Minimize2 className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-300 transition" />
+            ) : (
+              <Maximize2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 transition" />
+            )}
           </div>
+
+          {/* 13. Minimize to Single Icon Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              changeDisplayMode('icon');
+            }}
+            className="w-5 h-8 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-slate-900 flex items-center justify-center transition cursor-pointer shrink-0"
+            title="Minimize to Single Icon"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         </div>
-      ) : (
-        /* Full Compact Overlay Widget */
-        <div className="w-full bg-slate-950/95 border border-slate-700/90 rounded-2xl shadow-lg p-3 text-slate-100 flex flex-col gap-2.5">
+      )}
+
+      {/* 3. Full Compact Strategy Flyout (Anchored under top-right bar) */}
+      {displayMode === 'expanded' && (
+        <div className="fixed top-14 right-2 z-50 w-[420px] max-w-[95vw] max-h-[85vh] overflow-y-auto bg-slate-950/95 border border-slate-700/90 rounded-2xl shadow-2xl p-3 text-slate-100 flex flex-col gap-2.5 backdrop-blur-md pointer-events-auto">
           {/* Header */}
           <div data-tauri-drag-region className="flex items-center justify-between pb-2 border-b border-slate-800 cursor-move">
             <div data-tauri-drag-region className="flex items-center gap-1.5 flex-wrap">
@@ -694,7 +804,7 @@ export const OverlayHUD: React.FC<Props> = ({
                 <Settings className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => setCollapsed(true)}
+                onClick={() => changeDisplayMode('bar')}
                 className="p-1 text-slate-400 hover:text-slate-200 rounded"
                 title="Minimize HUD"
               >
@@ -742,6 +852,12 @@ export const OverlayHUD: React.FC<Props> = ({
               </button>
             </div>
           )}
+
+          {/* Active Profile Controls & Suggested Role Notification */}
+          <AlertProfileControls />
+
+          {/* Teamfight Duty & Plan */}
+          <TeamfightPlan payload={payload} connected={isConnected} interactive={interactive} />
 
           {/* Tactical Danger Alert Banner if Active */}
           {coachState.dangerLevel === 'danger' && (

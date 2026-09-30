@@ -313,4 +313,23 @@ describe('Slark Reflex & Top-Right Icon HUD Tests', () => {
     assert.strictEqual(service.getSnapshot().cleanseUrgent, false);
     assert.strictEqual(service.getSnapshot().shadowDanceUrgent, false);
   });
+
+  it('[Test 6] Standalone getSnapshot and subscribe tear-off execution (useSyncExternalStore compatibility)', () => {
+    const service = new SlarkReflexService();
+    // Simulate useSyncExternalStore passing callbacks without this binding
+    const { getSnapshot, subscribe } = service;
+    assert.doesNotThrow(() => {
+      const snap = getSnapshot();
+      assert.strictEqual(typeof snap, 'object');
+      assert.strictEqual(typeof snap.cleanseUrgent, 'boolean');
+    });
+
+    let notified = false;
+    const unsubscribe = subscribe(() => {
+      notified = true;
+    });
+    service.saveSettings({ darkPactHotkey: 'E' });
+    assert.strictEqual(notified, true);
+    unsubscribe();
+  });
 });
