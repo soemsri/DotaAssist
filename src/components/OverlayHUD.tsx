@@ -8,7 +8,7 @@ import { GSIPayload } from '../types/gsi';
 import {
   Bell, Minimize2, Maximize2, Package, X, Settings, Volume2, VolumeX, ShieldAlert,
   Shield, Sparkles, Flame, Droplets, ClipboardCheck, Coins, Layers, Swords,
-  Eye, Zap, Scroll, GitBranch, Mic, MicOff
+  Eye, Zap, Scroll, GitBranch, Mic, MicOff, Target
 } from 'lucide-react';
 import { timingEngine } from '../services/timingEngine';
 import { audioService } from '../services/audioService';
@@ -24,7 +24,8 @@ import { EnemyGlyphIndicator } from './EnemyGlyphIndicator';
 import { minimapScanner, MinimapScanResult } from '../services/minimapScanner';
 import { tacticalCoach } from '../services/tacticalCoach';
 import { voiceCommandService } from '../services/voiceCommandService';
-import { EnemyCooldownTracker, VoiceRecognitionResult } from '../types/voice';
+import { slarkReflexService } from '../services/slarkReflexService';
+import { EnemyCooldownTracker, VoiceRecognitionResult, VoicePttState } from '../types/voice';
 
 interface Props {
   interactive?: boolean;
@@ -62,6 +63,9 @@ export const OverlayHUD: React.FC<Props> = ({
   const [voiceListening, setVoiceListening] = useState<boolean>(
     voiceCommandService.getStatus() === 'listening'
   );
+  const [pttState, setPttState] = useState<VoicePttState>(
+    voiceCommandService.getPttState()
+  );
   const [localScanResult, setLocalScanResult] = useState<MinimapScanResult | null>(
     propScanResult !== undefined ? propScanResult : minimapScanner.getLastResult()
   );
@@ -83,10 +87,15 @@ export const OverlayHUD: React.FC<Props> = ({
       setVoiceListening(st === 'listening');
     });
 
+    const unsubPtt = voiceCommandService.subscribePttState((st) => {
+      setPttState(st);
+    });
+
     return () => {
       unsubCooldowns();
       unsubResult();
       unsubStatus();
+      unsubPtt();
     };
   }, []);
 
@@ -122,10 +131,21 @@ export const OverlayHUD: React.FC<Props> = ({
   const ultSnapshot = useSyncExternalStore(enemyUltimateService.subscribe, enemyUltimateService.getSnapshot);
   const laningSnapshot = useSyncExternalStore(laningBenchmarkService.subscribe, laningBenchmarkService.getSnapshot);
   const glyphSnapshot = useSyncExternalStore(enemyGlyphService.subscribe, enemyGlyphService.getSnapshot);
+  const slarkSnapshot = useSyncExternalStore(slarkReflexService.subscribe, slarkReflexService.getSnapshot);
   const coachState = propCoachState ?? tacticalCoach.process(payload, scanResult);
   const isThai = audioService.getSettings().voiceLanguage === "th-TH";
   const talentMilestone = coachState.talentAnalysis?.activeMilestoneAdvice;
   const skillRecommendation = coachState.skillBuildAnalysis?.currentRecommendation;
+
+  const heroShortName = payload?.hero?.name ? payload.hero.name.replace(/^npc_dota_hero_/, '') : 'unknown';
+  const heroDisplayName = heroShortName !== 'unknown'
+    ? heroShortName.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+    : 'Hero';
+  const heroLevel = payload?.hero?.level ?? 1;
+  const heroHpPercent = payload?.hero?.health_percent ?? 100;
+  const heroAvatarUrl = heroShortName !== 'unknown'
+    ? `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${heroShortName}.png`
+    : null;
 
   const [dismissedTalentLevel, setDismissedTalentLevel] = useState<number | null>(null);
   const [talentBannerExpiry, setTalentBannerExpiry] = useState<number | null>(null);
@@ -240,206 +260,281 @@ export const OverlayHUD: React.FC<Props> = ({
       <AlertProfileControls />
       {!collapsed && <TeamfightPlan payload={payload} connected={isConnected} interactive={interactive} />}
       {collapsed ? (
-        /* Collapsed minimal badge */
-        <button
+        /* Top-Right In-Game Minimalist Icon Bar (เรียงต่อจากตัว ไอค่อน Hero ไปทางขวา) */
+        <div
           data-tauri-drag-region
-          onClick={() => setCollapsed(false)}
-          className="w-full flex items-center justify-between bg-slate-950/95 border border-slate-700/80 px-3 py-2 rounded-2xl shadow-lg text-xs hover:border-amber-400 transition cursor-move text-slate-100"
+          className="fixed top-2 right-2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-700/80 shadow-2xl text-xs select-none hover:border-amber-400/80 transition-all cursor-move text-slate-100"
         >
-          <div className="flex items-center gap-2">
-            <span
-              className={`w-2.5 h-2.5 rounded-full ${
-                isConnected ? 'bg-emerald-500' : 'bg-rose-500'
+          {/* 1. Hero Avatar Icon */}
+          <div
+            onClick={() => setCollapsed(false)}
+            className="relative group cursor-pointer shrink-0"
+            title={`${heroDisplayName} (Lv.${heroLevel}) - HP: ${heroHpPercent}% | Click to toggle full dashboard`}
+          >
+            <div
+              className={`w-8 h-8 rounded-full overflow-hidden border-2 flex items-center justify-center bg-slate-900 transition-all group-hover:scale-105 shadow-md ${
+                !isConnected
+                  ? 'border-rose-500'
+                  : heroHpPercent <= 20
+                  ? 'border-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)] animate-pulse'
+                  : heroHpPercent <= 50
+                  ? 'border-amber-400'
+                  : 'border-emerald-500'
               }`}
-            />
-            <span className="font-mono font-black text-amber-400">{formattedTime}</span>
-            {isConnected && showNextActionPill && coachState.nextAction && (
-              <span
-                data-testid="hud-next-action-pill-minimized"
-                onClick={handleNextActionClick}
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shadow-sm cursor-pointer hover:opacity-90 active:scale-95 transition ${
-                  coachState.nextAction.urgency === 'urgent'
-                    ? 'bg-amber-950/90 text-amber-200 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse'
-                    : 'bg-cyan-950/90 text-cyan-200 border-cyan-500/50 shadow-[0_0_6px_rgba(6,182,212,0.2)]'
-                }`}
-                title={`${isThai ? coachState.nextAction.titleTh : coachState.nextAction.titleEn} (Click to copy)`}
-              >
-                <span>{coachState.nextAction.icon}</span>
-                <span className="truncate max-w-[120px]">
-                  {isThai ? coachState.nextAction.shortPillTh : coachState.nextAction.shortPillEn}
-                </span>
+            >
+              {heroAvatarUrl ? (
+                <img
+                  src={heroAvatarUrl}
+                  alt={heroDisplayName}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Shield className="w-4 h-4 text-amber-400" />
+              )}
+            </div>
+            {isConnected && heroLevel > 0 && (
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-[8px] px-1 rounded-full leading-tight font-mono">
+                {heroLevel}
               </span>
             )}
-            {isConnected && payload?.hero && (
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  buyback.cooldown > 0
-                    ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
-                    : buyback.hasBuyback
-                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
-                    : 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
-                }`}
-                title={`Buyback: ${buyback.hasBuyback ? 'Ready' : buyback.cooldown > 0 ? 'Cooldown' : 'Not ready'}`}
-              >
-                {buyback.cooldown > 0
-                  ? `CD ${buyback.cooldown}s`
-                  : buyback.hasBuyback
-                  ? `+${buyback.surplusGold}g`
-                  : `-${buyback.missingGold}g`}
-              </span>
-            )}
-            {isConnected && neutralStatus.unlockedTier > 0 && (
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  neutralStatus.isMissing
-                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 animate-pulse'
-                    : neutralStatus.isOutdated
-                    ? 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
-                    : 'bg-slate-800 text-slate-300 border border-slate-700'
-                }`}
-                title={`Neutral Item: ${
-                  neutralStatus.isMissing
-                    ? `Slot Empty! Tier ${neutralStatus.unlockedTier} Available`
-                    : neutralStatus.isOutdated
-                    ? `Tier ${neutralStatus.equippedTier} equipped (Tier ${neutralStatus.unlockedTier} available)`
-                    : `Tier ${neutralStatus.equippedTier} (${neutralStatus.equippedItemName?.replace(/^item_/, '') || 'Equipped'})`
-                }`}
-              >
-                {neutralStatus.isMissing
-                  ? `No T${neutralStatus.unlockedTier}`
-                  : neutralStatus.isOutdated
-                  ? `T${neutralStatus.equippedTier}→T${neutralStatus.unlockedTier}`
-                  : `T${neutralStatus.equippedTier}`}
-              </span>
-            )}
-            {isConnected && stackAlert && (
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  stackAlert.urgent
-                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 animate-pulse'
-                    : 'bg-slate-800 text-slate-300 border border-slate-700'
-                }`}
-                title={`Camp Stacking: ${stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s to pull (:53)` : 'Pull NOW (until :55)'}`}
-              >
-                Stack {stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s` : 'NOW'}
-              </span>
-            )}
-            {isConnected && ultSnapshot.activeCooldownCount > 0 && (
-              <span
-                className="text-[10px] font-mono px-1.5 py-0.5 rounded font-bold bg-rose-950/80 text-rose-300 border border-rose-500/40"
-                title={`${ultSnapshot.activeCooldownCount} enemy ultimates estimated on cooldown`}
-              >
-                {ultSnapshot.activeCooldownCount} Est. Ult CD
-              </span>
-            )}
-            {isConnected && laningSnapshot.isActive && laningSnapshot.clockTime <= 600 && (
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  laningSnapshot.paceStatus === 'ahead'
-                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
-                    : laningSnapshot.paceStatus === 'behind'
-                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
-                    : 'bg-slate-800 text-slate-300 border border-slate-700'
-                }`}
-                title={`${laningSnapshot.role.toUpperCase()} CS: ${laningSnapshot.currentLastHits}/${laningSnapshot.expectedCS} (${laningSnapshot.csDiff >= 0 ? `+${laningSnapshot.csDiff}` : laningSnapshot.csDiff})`}
-              >
-                CS {laningSnapshot.currentLastHits}/{laningSnapshot.expectedCS}
-              </span>
-            )}
-            {isConnected && (
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                  glyphSnapshot.isActive
-                    ? 'bg-sky-950/80 text-sky-200 border border-sky-400 animate-pulse'
-                    : !glyphSnapshot.isReady
-                    ? 'bg-slate-800 text-slate-300 border border-slate-700'
-                    : 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
-                }`}
-                title={`Enemy Glyph: ${
-                  glyphSnapshot.isActive
-                    ? `INVULNERABLE (${glyphSnapshot.activeRemainingSeconds}s)`
-                    : !glyphSnapshot.isReady
-                    ? `Cooldown (${timingEngine.formatTime(glyphSnapshot.cooldownRemainingSeconds)})`
-                    : 'Ready'
-                }`}
-              >
-                {glyphSnapshot.isActive
-                  ? `Glyph ${glyphSnapshot.activeRemainingSeconds}s ⚡`
-                  : !glyphSnapshot.isReady
-                  ? `Glyph ${timingEngine.formatTime(glyphSnapshot.cooldownRemainingSeconds)}`
-                  : 'Glyph Ready'}
-              </span>
-            )}
-            {coachState.dangerLevel === 'danger' ? (
-              <span className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-500 font-bold text-[9px] animate-pulse flex items-center gap-0.5">
-                <ShieldAlert className="w-2.5 h-2.5" />
-                <span>DANGER!</span>
-              </span>
-            ) : scanResult?.scanned && scanResult.all_missing ? (
-              <span className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-500 font-bold text-[9px] animate-pulse flex items-center gap-0.5">
-                <Eye className="w-2.5 h-2.5" />
-                <span>MIA!</span>
-              </span>
-            ) : null}
-            {coachState.tpScroll?.alertActive && (
-              <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500 font-bold text-[9px] flex items-center gap-0.5">
-                <Scroll className="w-2.5 h-2.5" />
-                <span>NO TP</span>
-              </span>
-            )}
-            {talentMilestone && (
-              <span
-                className="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500 font-bold text-[9px] flex items-center gap-0.5"
-                title={`Lvl ${talentMilestone.level} Talent Spike!`}
-              >
-                <GitBranch className="w-2.5 h-2.5 text-emerald-400" />
-                <span>L{talentMilestone.level}</span>
-              </span>
-            )}
-            {skillRecommendation && (
-              <span
-                className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500 font-bold text-[9px] flex items-center gap-0.5"
-                title={`Skill Point Ready: [${skillRecommendation.slot}] ${skillRecommendation.skillName}`}
-              >
-                <Zap className="w-2.5 h-2.5 text-amber-400" />
-                <span>[{skillRecommendation.slot}]</span>
-              </span>
-            )}
-            {coachState.visionState?.nearestExpirySeconds !== null && coachState.visionState?.nearestExpirySeconds !== undefined && (
-              <span
-                className={`px-1.5 py-0.5 rounded font-bold text-[9px] flex items-center gap-0.5 border ${
-                  coachState.visionState.nearestExpirySeconds <= 30
-                    ? 'bg-rose-950 text-rose-300 border-rose-500 animate-pulse'
-                    : 'bg-sky-950 text-sky-300 border-sky-500/70'
-                }`}
-                title={`Active Observer Ward: ${Math.floor(coachState.visionState.nearestExpirySeconds / 60)}:${(coachState.visionState.nearestExpirySeconds % 60).toString().padStart(2, '0')} remaining`}
-              >
-                <Eye className="w-2.5 h-2.5 text-sky-400" />
-                <span>
-                  {Math.floor(coachState.visionState.nearestExpirySeconds / 60)}:{(coachState.visionState.nearestExpirySeconds % 60).toString().padStart(2, '0')}
-                </span>
-              </span>
-            )}
-            {activeCooldowns.map((cd) => (
-              <span
-                key={cd.id}
-                className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500 font-bold text-[9px] flex items-center gap-0.5 animate-pulse"
-                title={`${cd.name}: ${Math.floor(cd.remainingSeconds / 60)}:${(cd.remainingSeconds % 60).toString().padStart(2, '0')}`}
-              >
-                <span>{cd.icon || '🛡️'}</span>
-                <span>
-                  {cd.skillOrItem.toUpperCase()} {Math.floor(cd.remainingSeconds / 60)}:{(cd.remainingSeconds % 60).toString().padStart(2, '0')}
-                </span>
-              </span>
-            ))}
           </div>
-          {mostUrgentAlert && (
-            <span className="text-slate-200 text-[11px] truncate max-w-[140px]">
-              {mostUrgentAlert.title} ({mostUrgentAlert.secondsRemaining}s)
-            </span>
+
+          {/* 2. Slark Cleanse [F] Icon */}
+          {slarkSnapshot.isSlark && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                slarkReflexService.testCleanseAlert();
+              }}
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                slarkSnapshot.cleanseUrgent
+                  ? 'bg-cyan-950 border-2 border-cyan-400 text-cyan-200 shadow-[0_0_16px_rgba(6,182,212,0.9)] animate-bounce scale-110'
+                  : slarkSnapshot.darkPactReady
+                  ? 'bg-slate-900/90 border border-cyan-600/60 text-cyan-300 hover:border-cyan-400'
+                  : 'bg-slate-950/70 border border-slate-800 text-slate-600 opacity-60'
+              }`}
+              title={`Dark Pact [${slarkSnapshot.cleanseHotkey}] - ${
+                slarkSnapshot.cleanseUrgent ? 'DISPEL DEBUFF NOW!' : slarkSnapshot.darkPactReady ? 'Ready' : 'Cooldown'
+              } (Click to test sound)`}
+            >
+              <Sparkles className={`w-4 h-4 ${slarkSnapshot.cleanseUrgent ? 'text-cyan-300 animate-spin' : ''}`} />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-cyan-500/50 text-cyan-300 font-extrabold text-[8px] px-1 rounded font-mono">
+                {slarkSnapshot.cleanseHotkey}
+              </span>
+            </button>
           )}
-          <Maximize2 className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
-        </button>
+
+          {/* 3. Slark Shadow Dance [R] Icon */}
+          {slarkSnapshot.isSlark && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                slarkReflexService.testShadowDanceAlert();
+              }}
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                slarkSnapshot.shadowDanceUrgent
+                  ? 'bg-rose-950 border-2 border-rose-500 text-rose-200 shadow-[0_0_18px_rgba(244,63,94,0.9)] animate-pulse scale-110'
+                  : slarkSnapshot.shadowDanceReady
+                  ? 'bg-slate-900/90 border border-purple-600/60 text-purple-300 hover:border-purple-400'
+                  : 'bg-slate-950/70 border border-slate-800 text-slate-600 opacity-60'
+              }`}
+              title={`Shadow Dance [${slarkSnapshot.shadowDanceHotkey}] - ${
+                slarkSnapshot.shadowDanceUrgent
+                  ? `CRITICAL HP (<=${slarkReflexService.getSettings().shadowDanceHpThreshold}%) - PRESS NOW!`
+                  : slarkSnapshot.shadowDanceReady
+                  ? 'Ready'
+                  : 'Cooldown'
+              } (Click to test sound)`}
+            >
+              <Eye className={`w-4 h-4 ${slarkSnapshot.shadowDanceUrgent ? 'text-rose-300 animate-ping' : ''}`} />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-rose-500/50 text-rose-300 font-extrabold text-[8px] px-1 rounded font-mono">
+                {slarkSnapshot.shadowDanceHotkey}
+              </span>
+            </button>
+          )}
+
+          {/* 4. Buyback Status Icon */}
+          {isConnected && payload?.hero && (
+            <div
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                buyback.cooldown > 0
+                  ? 'bg-amber-950/80 border-amber-500/50 text-amber-300'
+                  : buyback.hasBuyback
+                  ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300 shadow-[0_0_6px_rgba(16,185,129,0.3)]'
+                  : 'bg-rose-950/80 border-rose-500/50 text-rose-300'
+              }`}
+              title={`Buyback: ${
+                buyback.hasBuyback
+                  ? `Ready (+${buyback.surplusGold}g)`
+                  : buyback.cooldown > 0
+                  ? `Cooldown (${buyback.cooldown}s)`
+                  : `Missing ${buyback.missingGold}g`
+              }`}
+            >
+              <Coins className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-[8px] font-mono font-bold px-1 rounded">
+                {buyback.cooldown > 0 ? `${buyback.cooldown}s` : buyback.hasBuyback ? '✓' : `-${buyback.missingGold}`}
+              </span>
+            </div>
+          )}
+
+          {/* 5. Neutral Tier Icon */}
+          {isConnected && neutralStatus.unlockedTier > 0 && (
+            <div
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                neutralStatus.isMissing
+                  ? 'bg-rose-950/90 border-rose-500 text-rose-200 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]'
+                  : neutralStatus.isOutdated
+                  ? 'bg-amber-950/80 border-amber-500/60 text-amber-300'
+                  : 'bg-slate-900/80 border-slate-700 text-slate-300'
+              }`}
+              title={`Neutral Item: ${
+                neutralStatus.isMissing
+                  ? `Slot Empty! Tier ${neutralStatus.unlockedTier} Available`
+                  : neutralStatus.isOutdated
+                  ? `Tier ${neutralStatus.equippedTier} equipped (Tier ${neutralStatus.unlockedTier} available)`
+                  : `Tier ${neutralStatus.equippedTier} (${neutralStatus.equippedItemName?.replace(/^item_/, '') || 'Equipped'})`
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-[8px] font-mono font-bold px-1 rounded text-amber-300">
+                T{neutralStatus.equippedTier || neutralStatus.unlockedTier}
+              </span>
+            </div>
+          )}
+
+          {/* 6. Laning CS Pace Icon (during laning 0-10 min) */}
+          {isConnected && laningSnapshot.isActive && clockTime <= 600 && (
+            <div
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                laningSnapshot.paceStatus === 'ahead'
+                  ? 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300'
+                  : laningSnapshot.paceStatus === 'behind'
+                  ? 'bg-rose-950/80 border-rose-500/60 text-rose-300'
+                  : 'bg-slate-900/80 border-slate-700 text-slate-300'
+              }`}
+              title={`Laning CS Pace: ${laningSnapshot.currentLastHits}/${laningSnapshot.expectedCS} LH (${laningSnapshot.csDiff >= 0 ? `+${laningSnapshot.csDiff}` : laningSnapshot.csDiff}) - ${laningSnapshot.paceStatus.toUpperCase()}`}
+            >
+              <Target className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-[8px] font-mono font-bold px-1 rounded text-amber-300">
+                {laningSnapshot.currentLastHits}
+              </span>
+            </div>
+          )}
+
+          {/* 7. Camp Stacking Icon */}
+          {isConnected && stackAlert && (
+            <div
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                stackAlert.urgent
+                  ? 'bg-emerald-950 border-emerald-400 text-emerald-200 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.7)]'
+                  : 'bg-slate-900/80 border-slate-700 text-slate-400'
+              }`}
+              title={`Camp Stacking: ${stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s to pull (:53)` : 'Pull NOW (until :55)'}`}
+            >
+              <Layers className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-[8px] font-mono font-bold px-1 rounded text-emerald-300">
+                {stackAlert.secondsRemaining > 0 ? `${stackAlert.secondsRemaining}s` : '!'}
+              </span>
+            </div>
+          )}
+
+          {/* 7. Enemy Glyph Icon */}
+          {isConnected && (
+            <div
+              className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                glyphSnapshot.isActive
+                  ? 'bg-sky-950 border-sky-400 text-sky-200 animate-pulse shadow-[0_0_12px_rgba(56,189,248,0.7)]'
+                  : !glyphSnapshot.isReady
+                  ? 'bg-slate-900/80 border-slate-700 text-slate-500'
+                  : 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300'
+              }`}
+              title={`Enemy Glyph: ${
+                glyphSnapshot.isActive
+                  ? `INVULNERABLE (${glyphSnapshot.activeRemainingSeconds}s)`
+                  : !glyphSnapshot.isReady
+                  ? `Cooldown (${timingEngine.formatTime(glyphSnapshot.cooldownRemainingSeconds)})`
+                  : 'Ready'
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-slate-700 text-[8px] font-mono font-bold px-1 rounded">
+                {glyphSnapshot.isActive ? '⚡' : glyphSnapshot.isReady ? '✓' : 'CD'}
+              </span>
+            </div>
+          )}
+
+          {/* 8. Enemy Ultimates Icon */}
+          {isConnected && ultSnapshot.activeCooldownCount > 0 && (
+            <div
+              className="relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border bg-rose-950/80 border-rose-500/50 text-rose-300 transition-all"
+              title={`${ultSnapshot.activeCooldownCount} enemy ultimates estimated on cooldown`}
+            >
+              <Swords className="w-4 h-4" />
+              <span className="absolute -bottom-1 -right-1 bg-slate-950 border border-rose-500 text-[8px] font-mono font-bold px-1 rounded text-rose-300">
+                {ultSnapshot.activeCooldownCount}
+              </span>
+            </div>
+          )}
+
+          {/* 9. Tactical Next Action Pill */}
+          {isConnected && showNextActionPill && coachState.nextAction && (
+            <div
+              data-testid="hud-next-action-pill-minimized"
+              onClick={handleNextActionClick}
+              className={`h-8 px-2 rounded-xl border flex items-center gap-1 shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 ${
+                coachState.nextAction.urgency === 'urgent'
+                  ? 'bg-amber-950/90 text-amber-200 border-amber-500/70 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse'
+                  : 'bg-cyan-950/90 text-cyan-200 border-cyan-500/50 shadow-[0_0_6px_rgba(6,182,212,0.2)]'
+              }`}
+              title={`${isThai ? coachState.nextAction.titleTh : coachState.nextAction.titleEn} (Click to copy)`}
+            >
+              <span className="text-xs">{coachState.nextAction.icon}</span>
+              <span className="text-[10px] font-bold max-w-[80px] truncate hidden sm:inline">
+                {isThai ? coachState.nextAction.shortPillTh : coachState.nextAction.shortPillEn}
+              </span>
+            </div>
+          )}
+
+          {/* 10. PTT Mic Icon */}
+          <div
+            data-testid="hud-ptt-waveform-collapsed"
+            className={`relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+              pttState.isPttActive
+                ? 'bg-emerald-950 border-emerald-400 text-emerald-200 shadow-[0_0_10px_rgba(52,211,153,0.6)] animate-pulse'
+                : 'bg-slate-900/80 border-slate-800 text-slate-500'
+            }`}
+            title={`PTT Mic: ${pttState.isPttActive ? 'Active' : 'Standby'} (${pttState.pttHotkey})`}
+          >
+            <Mic className={`w-4 h-4 ${pttState.isPttActive ? 'text-emerald-400 animate-bounce' : ''}`} />
+            {pttState.isPttActive && (
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-0.5 h-1.5 px-0.5 bg-slate-950 rounded-full border border-emerald-500">
+                {pttState.waveformBars.slice(0, 3).map((b: number, i: number) => (
+                  <div
+                    key={i}
+                    className="w-0.5 bg-emerald-400 rounded-full"
+                    style={{ height: `${Math.max(2, Math.min(6, (b / 100) * 6))}px` }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 12. Clock & Expand Dashboard Button */}
+          <div
+            onClick={() => setCollapsed(false)}
+            className="flex items-center gap-1.5 pl-1.5 border-l border-slate-800 cursor-pointer group shrink-0"
+            title={`Game Time: ${formattedTime}${mostUrgentAlert ? ` · Next Alert: ${mostUrgentAlert.title} (${mostUrgentAlert.secondsRemaining}s)` : ''} | Click to expand dashboard`}
+          >
+            <span className="font-mono font-black text-amber-400 text-xs">{formattedTime}</span>
+            <Maximize2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 transition" />
+          </div>
+        </div>
       ) : (
         /* Full Compact Overlay Widget */
         <div className="w-full bg-slate-950/95 border border-slate-700/90 rounded-2xl shadow-lg p-3 text-slate-100 flex flex-col gap-2.5">
@@ -490,7 +585,72 @@ export const OverlayHUD: React.FC<Props> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              {/* Push-to-Talk Status Indicator & Live Waveform */}
+              {audioService.getSettings().voiceCommandEnabled && (
+                <div
+                  data-testid="hud-ptt-waveform"
+                  onMouseDown={() => {
+                    if (pttState.activationMode === 'ptt') {
+                      voiceCommandService.startPtt();
+                    }
+                  }}
+                  onMouseUp={() => {
+                    if (pttState.activationMode === 'ptt') {
+                      voiceCommandService.stopPtt();
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (pttState.activationMode === 'ptt' && pttState.isPttActive) {
+                      voiceCommandService.stopPtt();
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold cursor-pointer transition select-none ${
+                    pttState.isPttActive
+                      ? 'bg-emerald-950/95 border-emerald-400 text-emerald-200 shadow-[0_0_12px_rgba(52,211,153,0.5)] animate-pulse'
+                      : 'bg-slate-900/80 border-slate-700/80 text-slate-300 hover:border-slate-500'
+                  }`}
+                  title={
+                    pttState.activationMode === 'ptt'
+                      ? isThai
+                        ? `กดคีย์ [${pttState.pttHotkey === 'Backquote' ? '~' : pttState.pttHotkey}] ค้างขณะพูด หรือคลิกค้างไว้ที่นี่เพื่อสั่งการ`
+                        : `Hold [${pttState.pttHotkey === 'Backquote' ? '~' : pttState.pttHotkey}] to talk or click & hold here`
+                      : isThai
+                      ? 'โหมดฟังเสียงตลอดเวลา (Always-Listening)'
+                      : 'Always-Listening Mode'
+                  }
+                >
+                  <Mic
+                    className={`w-3 h-3 ${
+                      pttState.isPttActive ? 'text-emerald-400 animate-bounce' : 'text-slate-400'
+                    }`}
+                  />
+                  {pttState.isPttActive ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-emerald-300 text-[10px] uppercase font-bold tracking-wider">
+                        {isThai ? 'กำลังฟัง' : 'Listening'}
+                      </span>
+                      {/* Live 6-bar Waveform */}
+                      <div className="flex items-center gap-0.5 h-3.5 px-0.5" title={`Audio Level: ${pttState.audioLevel}%`}>
+                        {pttState.waveformBars.map((bar: number, i: number) => (
+                          <div
+                            key={i}
+                            className="w-1 bg-emerald-400 rounded-full transition-all duration-75"
+                            style={{
+                              height: `${Math.max(3, Math.min(14, (bar / 100) * 14))}px`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-slate-400 font-mono text-[9px]">
+                      PTT [{pttState.pttHotkey === 'Backquote' ? '~' : pttState.pttHotkey}]
+                    </span>
+                  )}
+                </div>
+              )}
+
               <button
                 onClick={() => {
                   const nextListening = voiceCommandService.toggleListening();

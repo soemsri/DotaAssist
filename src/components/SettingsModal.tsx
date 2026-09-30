@@ -1,10 +1,11 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { AlertProfileControls } from './AlertProfileControls';
 import { DesktopSetup } from './DesktopSetup';
-import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard, Scroll, Compass, GitBranch, Eye, Coins } from 'lucide-react';
+import { X, Copy, Check, Volume2, Shield, FolderOpen, Monitor, Mic, Globe, Keyboard, Scroll, Compass, GitBranch, Eye, Coins, Sparkles } from 'lucide-react';
 import { audioService } from '../services/audioService';
 import { objectiveTracker } from '../services/objectiveTracker';
 import { voiceCommandService } from '../services/voiceCommandService';
+import { slarkReflexService } from '../services/slarkReflexService';
 
 interface Props {
   isOpen: boolean;
@@ -50,11 +51,24 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
 
   const [unreliableGoldAlertEnabled, setUnreliableGoldAlertEnabled] = useState(currentSettings.unreliableGoldAlertEnabled ?? true);
   const [nextActionPillEnabled, setNextActionPillEnabled] = useState(currentSettings.nextActionPillEnabled ?? true);
+  const [voiceActivationMode, setVoiceActivationMode] = useState<'ptt' | 'continuous'>(
+    currentSettings.voiceActivationMode || 'ptt'
+  );
+  const [voicePttKey, setVoicePttKey] = useState(
+    currentSettings.voicePttHotkey || 'Backquote'
+  );
 
   const trackerState = useSyncExternalStore(objectiveTracker.subscribe, objectiveTracker.getSnapshot);
   const [browserRoshanKey, setBrowserRoshanKey] = useState(trackerState.roshanHotkey);
   const [browserTormentorKey, setBrowserTormentorKey] = useState(trackerState.tormentorHotkey);
   const [hotkeyMsg, setHotkeyMsg] = useState('');
+
+  const [slarkSettings, setSlarkSettings] = useState(slarkReflexService.getSettings());
+  const handleSlarkSettingsChange = (partial: Partial<typeof slarkSettings>) => {
+    const updated = { ...slarkSettings, ...partial };
+    setSlarkSettings(updated);
+    slarkReflexService.saveSettings(updated);
+  };
 
   if (!isOpen) return null;
 
@@ -415,7 +429,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
               <div className="flex items-center gap-2">
                 <Mic className="w-4 h-4 text-emerald-400" />
                 <span className="text-xs font-bold text-slate-100">
-                  Hands-Free Voice Command &amp; Query (ระบบสั่งการและถามตอบด้วยเสียง)
+                  Hands-Free Voice Command &amp; Push-to-Talk (ระบบสั่งการด้วยเสียง)
                 </span>
               </div>
               <label className="text-xs text-slate-200 flex items-center gap-1.5 cursor-pointer">
@@ -431,63 +445,144 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
               </label>
             </div>
 
+            {/* Voice Activation Mode (PTT vs Continuous) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-slate-300 block">
+                  รูปแบบการรับเสียง (Activation Mode):
+                </label>
+                <div className="flex items-center gap-3 text-xs">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-slate-200">
+                    <input
+                      type="radio"
+                      name="voiceActivationMode"
+                      value="ptt"
+                      checked={voiceActivationMode === 'ptt'}
+                      onChange={() => {
+                        setVoiceActivationMode('ptt');
+                        voiceCommandService.setActivationMode('ptt');
+                      }}
+                      className="accent-emerald-500"
+                    />
+                    <span className="font-medium text-emerald-400">Push-to-Talk (PTT)</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
+                    <input
+                      type="radio"
+                      name="voiceActivationMode"
+                      value="continuous"
+                      checked={voiceActivationMode === 'continuous'}
+                      onChange={() => {
+                        setVoiceActivationMode('continuous');
+                        voiceCommandService.setActivationMode('continuous');
+                      }}
+                      className="accent-emerald-500"
+                    />
+                    <span>Always-Listening</span>
+                  </label>
+                </div>
+              </div>
+
+              {voiceActivationMode === 'ptt' && (
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-300 block">
+                    ปุ่มกดพูด PTT Hotkey:
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={voicePttKey}
+                      onChange={(e) => {
+                        const key = e.target.value;
+                        setVoicePttKey(key);
+                        voiceCommandService.setPttHotkey(key);
+                      }}
+                      className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+                    >
+                      <option value="Backquote">Tilde / Backquote (` ~)</option>
+                      <option value="KeyV">Key V</option>
+                      <option value="Alt+V">Alt + V</option>
+                      <option value="Space">Spacebar</option>
+                      <option value="ControlLeft">Left Ctrl</option>
+                    </select>
+                    <span className="text-[10px] text-slate-400">
+                      (กดค้างขณะพูด)
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="text-[11px] text-slate-400">
               {voiceLang === 'th-TH'
-                ? 'ไมค์ทำงานเบื้องหลังอัตโนมัติ พูดสั่งการได้ทันที เช่น "โรชานตาย", "ศัตรูกดบีเคบี", "เวลารูน", หรือ "ไอเทมต่อไป"'
-                : 'Continuous background mic listening. Speak commands hands-free e.g. "Roshan dead", "BKB used", "Next rune", or "Next item".'}
+                ? voiceActivationMode === 'ptt'
+                  ? `ระบบ PTT เปิดไมค์เฉพาะตอนกดปุ่ม [${voicePttKey === 'Backquote' ? '~' : voicePttKey}] ค้างไว้ ป้องกันเสียงคุย Discord ทริกเกอร์ รองรับคำสั่ง 2 ภาษา เช่น "โรชานตาย / Roshan dead", "ทอร์เมนเตอร์ตาย / Tormentor dead", "ยกเลิก / Undo"`
+                  : 'โหมดฟังเสียงตลอดเวลา พูดสั่งการได้ทันที เช่น "โรชานตาย", "ทอร์เมนเตอร์", "ยกเลิก", "เวลารูน"'
+                : voiceActivationMode === 'ptt'
+                ? `PTT mode listens only while holding [${voicePttKey === 'Backquote' ? '~' : voicePttKey}]. Eliminates Discord chatter false-positives. Bilingual commands e.g. "Roshan dead", "Tormentor dead", "Undo".`
+                : 'Continuous listening mode. Speak commands hands-free e.g. "Roshan dead", "Tormentor dead", "Undo", "Next rune".'}
             </div>
 
             <div className="flex items-center gap-2 flex-wrap pt-1">
-              <span className="text-[10px] text-slate-500 font-semibold">Test Voice Commands:</span>
+              <span className="text-[10px] text-slate-500 font-semibold">Test Commands:</span>
               <button
-                onClick={() =>
+                onClick={() => {
+                  voiceCommandService.startPtt();
                   voiceCommandService.processTranscript(
                     voiceLang === 'th-TH' ? 'โรชานตาย' : 'roshan dead'
-                  )
-                }
+                  );
+                  voiceCommandService.stopPtt();
+                }}
                 className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
               >
                 🎙️ "{voiceLang === 'th-TH' ? 'โรชานตาย' : 'roshan dead'}"
               </button>
               <button
-                onClick={() =>
+                onClick={() => {
+                  voiceCommandService.startPtt();
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'ทอร์เมนเตอร์ตาย' : 'tormentor dead'
+                  );
+                  voiceCommandService.stopPtt();
+                }}
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                🎙️ "{voiceLang === 'th-TH' ? 'ทอร์เมนเตอร์ตาย' : 'tormentor dead'}"
+              </button>
+              <button
+                onClick={() => {
+                  voiceCommandService.startPtt();
+                  voiceCommandService.processTranscript(
+                    voiceLang === 'th-TH' ? 'ยกเลิก' : 'undo'
+                  );
+                  voiceCommandService.stopPtt();
+                }}
+                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 text-[10px] font-semibold border border-slate-700 transition"
+              >
+                ↩️ "{voiceLang === 'th-TH' ? 'ยกเลิก (Undo)' : 'undo'}"
+              </button>
+              <button
+                onClick={() => {
+                  voiceCommandService.startPtt();
                   voiceCommandService.processTranscript(
                     voiceLang === 'th-TH' ? 'ศัตรูกดบีเคบี' : 'bkb used'
-                  )
-                }
+                  );
+                  voiceCommandService.stopPtt();
+                }}
                 className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
               >
                 🎙️ "{voiceLang === 'th-TH' ? 'ศัตรูกดบีเคบี' : 'bkb used'}"
               </button>
               <button
-                onClick={() =>
+                onClick={() => {
+                  voiceCommandService.startPtt();
                   voiceCommandService.processTranscript(
                     voiceLang === 'th-TH' ? 'เวลารูน' : 'next rune'
-                  )
-                }
+                  );
+                  voiceCommandService.stopPtt();
+                }}
                 className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
               >
                 🎙️ "{voiceLang === 'th-TH' ? 'เวลารูน' : 'next rune'}"
-              </button>
-              <button
-                onClick={() =>
-                  voiceCommandService.processTranscript(
-                    voiceLang === 'th-TH' ? 'ไอเทมต่อไป' : 'next item'
-                  )
-                }
-                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
-              >
-                🎙️ "{voiceLang === 'th-TH' ? 'ไอเทมต่อไป' : 'next item'}"
-              </button>
-              <button
-                onClick={() =>
-                  voiceCommandService.processTranscript(
-                    voiceLang === 'th-TH' ? 'เวลาดอกบัว' : 'lotus time'
-                  )
-                }
-                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold border border-slate-700 transition"
-              >
-                🎙️ "{voiceLang === 'th-TH' ? 'เวลาดอกบัว' : 'lotus time'}"
               </button>
             </div>
           </div>
@@ -497,6 +592,110 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose, isConnected })
             Countdowns use the latest game clock when speech starts. Expired reminders are skipped.
             Disabling voice clears speech immediately; profile changes stop reminders for disabled objectives.
           </p>
+
+          {/* Slark Reflex & Emergency Survival Assistant */}
+          <div className="flex flex-col gap-2 p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span className="font-semibold text-sm text-cyan-300">
+                  {voiceLang === 'th-TH'
+                    ? 'Slark Reflex & Top-Right Icon HUD (ระบบเตือนล้างดีบัฟและอัลติ Slark)'
+                    : 'Slark Reflex & Top-Right Icon HUD'}
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={slarkSettings.enabled}
+                  onChange={(e) => handleSlarkSettingsChange({ enabled: e.target.checked })}
+                  className="sr-only peer"
+                />
+                <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-600"></div>
+              </label>
+            </div>
+
+            <p className="text-xs text-slate-400">
+              {voiceLang === 'th-TH'
+                ? 'ระบบตรวจจับสภาวะฉุกเฉินเฉพาะของ Slark: เตือนล้างดีบัฟสดด้วย Dark Pact ทันที และเตือนกด Shadow Dance เมื่อเลือดต่ำกว่าเกณฑ์ ด้วยเสียงพากย์สั้นกุดพยางค์เดียวแบบตัดคิวทันที (Emergency Preemption Channel)'
+                : 'Emergency reflex triggers for Slark: instant Dark Pact cleanse alert on fresh dispellable debuffs, and critical Shadow Dance alert at low HP, with single-syllable queue-cutting audio callouts.'}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              {/* Dark Pact Cleanse Hotkey */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-slate-300 flex items-center gap-1">
+                  <span className="text-cyan-400 font-bold">[F]</span>
+                  <span>{voiceLang === 'th-TH' ? 'ปุ่ม Dark Pact (สกิล 1):' : 'Dark Pact Hotkey:'}</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={5}
+                  value={slarkSettings.darkPactHotkey}
+                  onChange={(e) => handleSlarkSettingsChange({ darkPactHotkey: e.target.value.toUpperCase() || 'F' })}
+                  className="bg-slate-950 border border-slate-700 rounded px-2.5 py-1 text-xs text-amber-300 font-mono font-bold uppercase focus:border-cyan-400 focus:outline-none"
+                  placeholder="F"
+                />
+              </div>
+
+              {/* Shadow Dance Ulti Hotkey */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-slate-300 flex items-center gap-1">
+                  <span className="text-rose-400 font-bold">[R]</span>
+                  <span>{voiceLang === 'th-TH' ? 'ปุ่ม Shadow Dance (Ulti):' : 'Shadow Dance Hotkey:'}</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={5}
+                  value={slarkSettings.shadowDanceHotkey}
+                  onChange={(e) => handleSlarkSettingsChange({ shadowDanceHotkey: e.target.value.toUpperCase() || 'R' })}
+                  className="bg-slate-950 border border-slate-700 rounded px-2.5 py-1 text-xs text-amber-300 font-mono font-bold uppercase focus:border-rose-400 focus:outline-none"
+                  placeholder="R"
+                />
+              </div>
+
+              {/* Shadow Dance HP Threshold */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-slate-300 flex items-center gap-1">
+                  <span>🩸</span>
+                  <span>{voiceLang === 'th-TH' ? 'เกณฑ์เลือดเตือน Ulti:' : 'Ulti HP Threshold:'}</span>
+                </label>
+                <select
+                  value={slarkSettings.shadowDanceHpThreshold}
+                  onChange={(e) => handleSlarkSettingsChange({ shadowDanceHpThreshold: Number(e.target.value) })}
+                  className="bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-amber-300 font-mono font-bold focus:border-rose-400 focus:outline-none"
+                >
+                  <option value={15}>15% HP</option>
+                  <option value={20}>20% HP (Recommended)</option>
+                  <option value={25}>25% HP</option>
+                  <option value={30}>30% HP</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Test Audio Reflex Buttons */}
+            <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-slate-800/80">
+              <span className="text-[10px] text-slate-400 font-semibold">
+                {voiceLang === 'th-TH' ? 'ทดสอบเสียงฉุกเฉิน (ตัดคิวทันที):' : 'Test Emergency Audio:'}
+              </span>
+              <button
+                type="button"
+                onClick={() => slarkReflexService.testCleanseAlert()}
+                className="px-2.5 py-1 rounded bg-cyan-950 hover:bg-cyan-900 text-cyan-200 text-xs font-bold border border-cyan-500/50 shadow-[0_0_8px_rgba(6,182,212,0.3)] transition flex items-center gap-1"
+              >
+                <span>⚡ Test Cleanse</span>
+                <span className="font-mono bg-cyan-900 px-1 rounded text-[10px]">"{slarkSettings.darkPactHotkey}"</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => slarkReflexService.testShadowDanceAlert()}
+                className="px-2.5 py-1 rounded bg-rose-950 hover:bg-rose-900 text-rose-200 text-xs font-bold border border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.3)] transition flex items-center gap-1"
+              >
+                <span>🩸 Test Ulti</span>
+                <span className="font-mono bg-rose-900 px-1 rounded text-[10px]">"{slarkSettings.shadowDanceHotkey}"</span>
+              </button>
+            </div>
+          </div>
 
           {/* Audio Test Panel */}
           <div>

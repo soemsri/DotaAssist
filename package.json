@@ -12,7 +12,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "scripts\\build-windows.bat",
     "build": "tsc && vite build",
-    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus && npm run test:pro_builds && npm run test:coaching && npm run test:draft_items && npm run test:minimap && npm run test:teamfight && npm run test:smurf_coaching && npm run test:hero_blink && npm run test:neutral_token && npm run test:match_history",
+    "test": "npm run test:verification && npm run test:gsi && npm run test:profiles && npm run test:voice && npm run test:cache && npm run test:hotkeys && npm run test:buyback && npm run test:neutral && npm run test:stack && npm run test:enemy_ult && npm run test:laning && npm run test:glyph && npm run test:thai && npm run test:lotus && npm run test:pro_builds && npm run test:coaching && npm run test:draft_items && npm run test:minimap && npm run test:teamfight && npm run test:smurf_coaching && npm run test:hero_blink && npm run test:neutral_token && npm run test:match_history && npm run test:voice_ptt && npm run test:slark_reflex",
     "test:verification": "tsx tests/verification.test.ts",
     "test:gsi": "tsx tests/gsi_integration.test.ts",
     "preview": "vite preview",
@@ -40,7 +40,9 @@
     "test:smurf_coaching": "tsx tests/smurf_coaching_insights.test.ts",
     "test:hero_blink": "tsx tests/hero_aware_blink.test.ts",
     "test:neutral_token": "tsx tests/neutral_token_advisor.test.ts",
-    "test:match_history": "tsx tests/match_history_scorecard.test.ts"
+    "test:match_history": "tsx tests/match_history_scorecard.test.ts",
+    "test:voice_ptt": "tsx tests/voice_ptt_commands.test.ts",
+    "test:slark_reflex": "tsx tests/slark_reflex_hud.test.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

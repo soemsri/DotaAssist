@@ -12,6 +12,7 @@ import { apiService } from "./services/apiService";
 import { audioService } from "./services/audioService";
 import { objectiveTracker } from "./services/objectiveTracker";
 import { enemyUltimateService } from "./services/enemyUltimateService";
+import { voiceCommandService } from "./services/voiceCommandService";
 import { minimapScanner, MinimapScanResult } from "./services/minimapScanner";
 import { tacticalCoach } from "./services/tacticalCoach";
 import { TimingEventAlert, PopularItem } from "./types/meta";
@@ -57,6 +58,7 @@ export const App: React.FC = () => {
     setIsTauri(hasTauri);
     objectiveTracker.init();
     enemyUltimateService.init();
+    voiceCommandService.init();
 
     const unsub = matchTrackerService.subscribe(() => {
       setActiveDebrief(matchTrackerService.getActiveDebrief());

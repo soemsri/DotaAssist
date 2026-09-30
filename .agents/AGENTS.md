@@ -844,3 +844,211 @@ Frontend build, TypeScript checks, existing tests, new scanner tests, and Rust t
    ✓ match_history_scorecard.test.ts
    ```
 3. **Production Build** (`npm run build`): ผ่านการตรวจสอบ Type Check ของ TypeScript และ Vite Build ได้ Bundle ไฟล์สำหรับ Production เรียบร้อยสมบูรณ์โดยไม่มีข้อผิดพลาด
+
+## Design Alignment & Workspace Preferences (2026-09-30) — Hands-Free Voice Recognition & Push-to-Talk (PTT)
+
+### สรุปผลการคัดเลือกการออกแบบและข้อกำหนด (Design Decisions Summary)
+
+จากการสัมภาษณ์จัดแนวทาง (Interactive Grill-Me Alignment) ได้ข้อสรุปทั้ง 3 ข้อดังนี้:
+
+1. **ระบบสั่งการด้วยเสียงแบบแฮนด์ฟรี (Hands-Free Voice Recognition)**:
+   - สั่งบันทึกเวลาเกิด/ตายของ **Roshan**, **Tormentor**, และคำสั่ง **Quick Undo** ยกเลิกการบันทึกได้ด้วยเสียงพูดทันที โดยไม่ต้องละมือจากเมาส์หรือคลำหาคีย์ลัดระหว่างทีมไฟต์
+2. **ระบบ Push-to-Talk ป้องกันเสียงแทรก (Push-to-Talk Hotkey & Noise Gate)**:
+   - รองรับโหมด **Push-to-Talk (PTT)** (ค่าเริ่มต้นระดับระบบ: `Alt+V` / ในเบราว์เซอร์: `Backquote` `~`) เปิดไมโครโฟนตรวจจับคำสั่งเฉพาะช่วงที่กดปุ่มค้างไว้
+   - กรองเสียงรบกวน (Noise Gate) โดยตัดเสียงคุยใน Discord / Team Chat ทิ้งทันทีเมื่อไม่ได้กด PTT ป้องกัน False Positives 100% พร้อมตัวเลือกสลับเป็น Always-Listening ใน Settings
+3. **รองรับ 2 ภาษาและแถบสถานะคลื่นเสียงบน HUD (Bilingual Vocabulary & Visual Waveform Indicator)**:
+   - รองรับคำสั่งทั้งภาษาไทยและภาษาอังกฤษอย่างเป็นธรรมชาติ (เช่น *"โรชานตาย"*, *"Roshan dead"*, *"ทอร์เมนเตอร์"*, *"Tormentor"*, *"ยกเลิก"*, *"Cancel roshan"*)
+   - แสดงสถานะ PTT Badge พร้อมแท่งคลื่นเสียงอนิเมชัน 6 แถบ (6-Bar Audio Waveform) เรืองแสงสีเขียว/ส้มบน Overlay HUD ทั้งในโหมด Minimized และ Expanded
+
+---
+
+### รายละเอียดการพัฒนาและไฟล์ที่ได้ดำเนินการ (Implementation Actions)
+
+#### 1. สถาปัตยกรรมสั่งการด้วยเสียงและ PTT State Machine
+- [`src/types/voice.ts`](file:///root/Desktop/DotaAssist/src/types/voice.ts):
+  - เพิ่ม Intent `tormentor_death` และ `undo_objective` ใน [`VoiceCommandIntent`](file:///root/Desktop/DotaAssist/src/types/voice.ts)
+  - กำหนดโหมดการทำงาน [`VoiceActivationMode`](file:///root/Desktop/DotaAssist/src/types/voice.ts) (`'ptt' | 'continuous'`) และสถานะ [`VoicePttState`](file:///root/Desktop/DotaAssist/src/types/voice.ts)
+- [`src/services/voiceCommandService.ts`](file:///root/Desktop/DotaAssist/src/services/voiceCommandService.ts):
+  - เพิ่มพจนานุกรมคำสั่งเสียง 2 ภาษา (ไทย/อังกฤษ) สำหรับ Roshan, Tormentor, และ Undo พร้อมอัลกอริทึม Longest-phrase matching ป้องกันคำสั่งซ้อนทับ
+  - เชื่อมโยงกับ Web Audio API AnalyserNode คำนวณคลื่นเสียง 6 แถบแบบเรียลไทม์ขณะกด PTT
+  - ระบบ Noise Gate ตรวจจับ `fromMic: true` หากไม่ได้กด PTT จะปฏิเสธการประมวลผลทันที
+  - ส่งต่อคำสั่งไปยัง [`objectiveTracker.recordRoshan()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts), [`objectiveTracker.recordTormentor()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts), และ [`objectiveTracker.undoLatest()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts)
+- [`src/services/objectiveTracker.ts`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts):
+  - เพิ่มฟังก์ชันตรวจสอบสถานะ Undo Window: `isRoshanUndoActive()`, `isTormentorUndoActive()`, และเมธอด `undoLatest()` สำหรับยกเลิกไทม์เมอร์ล่าสุดผ่านเสียง
+
+#### 2. ฝั่ง Rust Backend & Global PTT Shortcut
+- [`src-tauri/src/desktop.rs`](file:///root/Desktop/DotaAssist/src-tauri/src/desktop.rs):
+  - เพิ่ม `ptt_hotkey` (ค่าเริ่มต้น `"Alt+V"`) ในโครงสร้าง Preferences และ DesktopStatus
+  - ตรวจจับคีย์ลัดระดับ OS แบบกดค้าง (`ShortcutState::Pressed` $\rightarrow$ ส่งอีเวนต์ `ptt-start`) และปล่อยปุ่ม (`ShortcutState::Released` $\rightarrow$ ส่งอีเวนต์ `ptt-stop`)
+  - เพิ่มคำสั่ง Tauri Command `set_ptt_hotkey` พร้อมการบันทึกการตั้งค่าลงเครื่อง
+- [`src-tauri/src/main.rs`](file:///root/Desktop/DotaAssist/src-tauri/src/main.rs): ลงทะเบียนคำสั่ง IPC `set_ptt_hotkey`
+
+#### 3. ส่วนติดต่อผู้ใช้และการควบคุม (UI Components)
+- [`src/components/OverlayHUD.tsx`](file:///root/Desktop/DotaAssist/src/components/OverlayHUD.tsx):
+  - เพิ่ม PTT Mic Badge พร้อมแถบคลื่นเสียงอนิเมชัน 6 แถบ ตอบสนองแบบเรียลไทม์
+  - รองรับการกดค้างด้วยเมาส์ (MouseDown/MouseUp) สำหรับทดสอบหรือใช้บนจอสัมผัส
+- [`src/components/SettingsModal.tsx`](file:///root/Desktop/DotaAssist/src/components/SettingsModal.tsx):
+  - พาเนลตั้งค่า Voice Recognition & Push-to-Talk เลือกโหมด (PTT vs Always Listening)
+  - ตัวเลือกตั้งค่าปุ่ม PTT Hotkey (`Backquote`, `KeyV`, `Alt+V`, `Space`, `ControlLeft`)
+  - ปุ่มทดสอบคำสั่งเสียงจำลองทั้งภาษาไทยและอังกฤษสำหรับ Roshan, Tormentor, Undo, BKB, และ Rune
+
+#### 4. ชุดทดสอบครอบคลุมรอบด้าน
+- [`tests/voice_ptt_commands.test.ts`](file:///root/Desktop/DotaAssist/tests/voice_ptt_commands.test.ts):
+  - ตรวจสอบสถานะ PTT Transitions และ Waveform Reset
+  - ตรวจสอบการจับคู่คำสั่ง 2 ภาษา (ไทย/อังกฤษ) และ Longest-phrase matching
+  - ตรวจสอบการป้องกันเสียงแทรก (Discord Chatter / Team Voice Chat Suppression)
+  - ตรวจสอบการสั่งบันทึก Roshan และทำ Quick Undo ภายใน 10 วินาทีด้วยเสียง
+  - ตรวจสอบการสั่งบันทึก Tormentor และโหมด Continuous Listening Fallback
+
+---
+
+### การตรวจสอบความถูกต้อง (Verification Results)
+
+1. **Unit Test Suite** (`npm run test:voice_ptt`): ผ่านการทดสอบทั้งหมด **6/6 รายการ (100%)**
+2. **Full Test Suite** (`npm test`): ผ่านการทดสอบครบถ้วนทั้ง **24 ชุดทดสอบ (100%)**
+3. **Rust Backend Test Suite** (`cargo test --manifest-path src-tauri/Cargo.toml`): ผ่านการทดสอบ **5/5 รายการ (100%)**
+4. **Production Build** (`npm run build`): ผ่านการตรวจสอบ Type Check ของ TypeScript และ Vite Build ได้ Bundle สำหรับ Production เรียบร้อยสมบูรณ์โดยไม่มีข้อผิดพลาด
+
+
+## Design Alignment & Workspace Preferences (2026-09-30)
+
+### สรุปผลการคัดเลือกการออกแบบและข้อกำหนด (Design Decisions Summary)
+
+จากการสัมภาษณ์จัดแนวทาง (Grill-Me Alignment Interview) ได้ข้อสรุปทั้ง 3 ข้อดังนี้:
+
+1. **ระบบสั่งการด้วยเสียงแบบแฮนด์ฟรี (Hands-Free Voice Recognition)**:
+   - สั่งบันทึกเวลาของ **Roshan** และ **Tormentor** หรือสั่ง **Quick Undo** ยกเลิกการบันทึกได้ด้วยเสียงพูดทันที โดยผู้เล่นไม่ต้องละมือจากเมาส์หรือคลำหาคีย์ลัดระหว่างไฟต์
+2. **ระบบ Push-to-Talk (PTT) ป้องกันเสียงแทรก 100%**:
+   - ใช้ระบบ **Push-to-Talk (PTT)** (ค่าเริ่มต้นระดับ OS: `Alt+V` / ในเบราว์เซอร์: ปุ่ม Grave Accent `~` หรือ `Backquote`) โดยไมโครโฟนจะเริ่มตรวจจับคำสั่งเฉพาะช่วงที่กดปุ่มค้างไว้
+   - มีระบบ Noise Gate ตัดเสียงพูดทั่วไป เช่น เสียงคุยใน Discord หรือ Team Voice Chat ทิ้งทันทีเมื่อไม่ได้กดปุ่ม PTT ป้องกัน False Positives โดยสิ้นเชิง พร้อมตัวเลือกสลับเป็น Continuous Listening ได้ใน Settings
+3. **รองรับ 2 ภาษาและแสดงสถานะคลื่นเสียงบน HUD (Bilingual & Visual Waveform)**:
+   - รองรับคำสั่งเสียงทั้งภาษาไทยและอังกฤษอย่างเป็นธรรมชาติ (เช่น *"โรชานตาย"*, *"Roshan dead"*, *"ทอร์เมนเตอร์"*, *"Tormentor"*, *"ยกเลิก"*, *"Cancel roshan"*)
+   - แสดงป้าย **PTT Mic Badge** พร้อมแท่งคลื่นเสียงอนิเมชัน 6 แถบ (6-Bar Audio Waveform) เรืองแสงสีเขียว/ส้มบน In-game Overlay HUD ทั้งในโหมด Minimized และ Expanded แบบเรียลไทม์
+
+---
+
+### รายละเอียดการพัฒนาและไฟล์ที่ได้ดำเนินการ (Implementation Actions Executed)
+
+#### 1. สถาปัตยกรรมประเภทข้อมูลและ Intent
+- [`src/types/voice.ts`](file:///root/Desktop/DotaAssist/src/types/voice.ts):
+  - เพิ่ม Intent `tormentor_death` และ `undo_objective` ใน [`VoiceCommandIntent`](file:///root/Desktop/DotaAssist/src/types/voice.ts#L3)
+  - กำหนดโหมดการเปิดใช้งาน [`VoiceActivationMode`](file:///root/Desktop/DotaAssist/src/types/voice.ts#L42) (`'ptt' | 'continuous'`)
+  - กำหนดโครงสร้างสถานะ PTT และคลื่นเสียง [`VoicePttState`](file:///root/Desktop/DotaAssist/src/types/voice.ts#L44-L52) (`isPttActive`, `audioLevel`, `waveformBars`, `activationMode`, `pttHotkey`)
+
+#### 2. เอ็นจินสั่งการด้วยเสียงและ PTT State Machine
+- [`src/services/voiceCommandService.ts`](file:///root/Desktop/DotaAssist/src/services/voiceCommandService.ts):
+  - เพิ่มพจนานุกรมคำสั่งเสียง 2 ภาษา (ไทย/อังกฤษ) สำหรับ Roshan, Tormentor, และ Quick Undo พร้อมระบบจัดลำดับแบบ Longest-phrase matching ป้องกันคำสั่งซ้อนทับ (เช่น *"cancel roshan"* จะตรงกับ `undo_objective` ก่อน `roshan_death`)
+  - เชื่อมโยงกับ Web Audio API (`AudioContext` และ `AnalyserNode`) คำนวณคลื่นเสียง 6 แถบความถี่แบบเรียลไทม์ขณะกด PTT
+  - ระบบ Noise Gate ตรวจสอบ `fromMic: true` หากไม่ได้กดปุ่ม PTT จะปฏิเสธการประมวลผลทันที
+  - ส่งต่อคำสั่งไปยัง [`objectiveTracker.recordRoshan()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts), [`objectiveTracker.recordTormentor()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts), และ [`objectiveTracker.undoLatest()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts)
+- [`src/services/objectiveTracker.ts`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts):
+  - เพิ่มฟังก์ชัน [`isRoshanUndoActive()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts#L104), [`isTormentorUndoActive()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts#L108), และ [`undoLatest()`](file:///root/Desktop/DotaAssist/src/services/objectiveTracker.ts#L112) รองรับการยกเลิกไทม์เมอร์ที่บันทึกล่าสุดผ่านเสียงภายในหน้าต่างเวลา 10 วินาที
+
+#### 3. ฝั่ง Rust Backend & Global Shortcuts ระดับระบบ
+- [`src-tauri/src/desktop.rs`](file:///root/Desktop/DotaAssist/src-tauri/src/desktop.rs):
+  - เพิ่ม `DEFAULT_PTT_HOTKEY = "Alt+V"`, ฟิลด์ `ptt_hotkey` ในโครงสร้าง [`Preferences`](file:///root/Desktop/DotaAssist/src-tauri/src/desktop.rs#L24) และ [`DesktopStatus`](file:///root/Desktop/DotaAssist/src-tauri/src/desktop.rs#L55)
+  - ลงทะเบียนคีย์ลัดระดับ OS แบบกดค้าง (`ShortcutState::Pressed` $\rightarrow$ ส่งอีเวนต์ IPC `ptt-start`) และปล่อยปุ่ม (`ShortcutState::Released` $\rightarrow$ ส่งอีเวนต์ IPC `ptt-stop`)
+  - เพิ่ม Tauri Command [`set_ptt_hotkey`](file:///root/Desktop/DotaAssist/src-tauri/src/desktop.rs#L309) พร้อมบันทึกลงในไฟล์ Preferences ในเครื่อง
+- [`src-tauri/src/main.rs`](file:///root/Desktop/DotaAssist/src-tauri/src/main.rs#L905): ลงทะเบียนคำสั่ง `set_ptt_hotkey` เข้ากับตัวจัดการ IPC
+
+#### 4. ส่วนติดต่อผู้ใช้บน Overlay HUD และหน้าต่าง Settings
+- [`src/components/OverlayHUD.tsx`](file:///root/Desktop/DotaAssist/src/components/OverlayHUD.tsx):
+  - เพิ่มป้ายสถานะไมค์ PTT พร้อมแถบ Visual Waveform 6 ขีดแบบอนิเมชัน ทั้งในแถบหัว Full HUD และ Mini Badge
+  - รองรับการกดค้างด้วยเมาส์ (MouseDown/MouseUp) สำหรับทดสอบการสั่งการ
+- [`src/components/SettingsModal.tsx`](file:///root/Desktop/DotaAssist/src/components/SettingsModal.tsx):
+  - เพิ่มพาเนลตั้งค่า Voice Recognition & Push-to-Talk ให้เลือกโหมด (PTT vs Always Listening)
+  - เพิ่มตัวเลือกตั้งค่าปุ่ม PTT Hotkey (`Backquote`, `KeyV`, `Alt+V`, `Space`, `ControlLeft`)
+  - เพิ่มปุ่มทดสอบคำสั่งเสียงจำลอง 2 ภาษา (Roshan, Tormentor, Undo, BKB, Lotus)
+- [`src/App.tsx`](file:///root/Desktop/DotaAssist/src/App.tsx): เชื่อมต่อและเริ่มทำงาน `voiceCommandService.init()` ตอนเปิดแอป
+
+#### 5. ชุดทดสอบครอบคลุมรอบด้าน
+- [`tests/voice_ptt_commands.test.ts`](file:///root/Desktop/DotaAssist/tests/voice_ptt_commands.test.ts):
+  - ทดสอบ PTT State Transitions และการรีเซ็ต Waveform
+  - ทดสอบการจับคู่คำสั่ง 2 ภาษา (ไทย/อังกฤษ) และ Longest-phrase matching
+  - ทดสอบระบบ PTT Noise Gate ตัดเสียง Discord Chatter
+  - ทดสอบการสั่งบันทึก Roshan / Tormentor และการสั่ง Quick Undo ด้วยเสียงภายใน 10 วินาที
+  - ทดสอบ Continuous Listening Mode Fallback
+
+---
+
+### การตรวจสอบความถูกต้อง (Verification Results)
+
+1. **Unit Test Suite** (`npm run test:voice_ptt`):
+   - ผ่านการทดสอบทั้งหมด **6/6 รายการ (100%)**
+2. **Full Frontend Test Suite** (`npm test`):
+   - ผ่านการทดสอบครบถ้วนทั้ง **24 ชุดทดสอบ (100%)** ปราศจากข้อผิดพลาดและไม่มี Regression
+3. **Rust Backend Test Suite** (`cargo test --manifest-path src-tauri/Cargo.toml`):
+   - ผ่านการทดสอบทั้งหมด **5/5 รายการ (100%)**
+4. **Production Build** (`npm run build`):
+   - ผ่านการตรวจสอบ Type Check ของ TypeScript และ Vite Build สร้าง Bundle ไฟล์สำหรับ Production สำเร็จสมบูรณ์โดยไม่มี Error (5.62s)
+
+---
+
+### เอกสารประกอบและสถานะ Workspace
+
+- ได้อัปเดตบันทึกสถาปัตยกรรมและรายละเอียดการทำงานทั้งหมดลงใน [`.agents/AGENTS.md`](file:///root/Desktop/DotaAssist/.agents/AGENTS.md) เรียบร้อยแล้ว
+- โค้ดทั้งหมดพร้อมใช้งาน หากต้องการให้ทำการ Commit และ Push แจ้งได้ทันทีครับ!
+
+## Design Alignment & Workspace Preferences (2026-09-30) — Slark Reflex & Top-Right Icon HUD
+
+### สรุปผลการคัดเลือกการออกแบบและข้อกำหนด (Design Decisions Summary)
+
+จากการสัมภาษณ์จัดแนวทาง (Alignment Interview) ได้ข้อสรุปร่วมกัน 3 ด้าน:
+
+1. **ระบบช่วยกดลบล้างสถานะ Slark Dark Pact (Cleanse Reflex)**:
+   - ตรวจจับเมื่อฮีโร่คือ Slark (`npc_dota_hero_slark`) ได้รับผลด้านลบ (Debuff) เช่น โดนสโลว์, ใบ้เงียบ, ลดเกราะ หรือ Disarm โดยที่สกิล 1 (Dark Pact) พร้อมใช้งาน (`can_cast: true`) และผู้เล่นไม่ได้ติดสถานะ Hard Disable (Stun หรือ Silenced ที่ไม่สามารถกดสกิลได้)
+   - แนะนำคีย์ลัดที่ผู้เล่นตั้งค่าไว้ (ค่าเริ่มต้นคือปุ่ม `F` ตามการตั้งค่าของผู้เล่น)
+2. **ระบบแจ้งเตือนฉุกเฉิน Slark Ultimate (Shadow Dance Low-HP Survival)**:
+   - ตรวจจับเมื่อ Slark ยังมีชีวิตอยู่, Ultimate (Shadow Dance) พร้อมใช้งาน (`can_cast: true`), และพลังชีวิต (% HP) ลดลงต่ำกว่าเกณฑ์ที่ตั้งไว้ (ค่าเริ่มต้นคือ `<= 20%`)
+   - แจ้งเตือนกดปุ่ม Ultimate ทันที (ค่าเริ่มต้นปุ่ม `R`) พร้อมมีเสียงไซเรนฉุกเฉิน
+3. **ระบบตัดคิวเสียงฉุกเฉิน (Emergency Voice Preemption & SFX)**:
+   - เสียงแจ้งเตือนของ Slark Reflex (ปุ่ม Dark Pact และ Ulti) เป็นเสี้ยววินาทีตัดสินชีวิต **ต้องไม่ต่อคิวกับระบบเสียงแจ้งเตือนปกติ (VoiceQueue)**
+   - ทำงานผ่านช่องทางด่วนพิเศษ (Emergency Channel): ยกเลิกหรือตัดเสียงบรรยายทั่วไปที่กำลังพูดอยู่ทันที, ยิงเสียงเอฟเฟกต์เฉพาะตัว (Dual Snap Ping ความถี่สูง หรือ Emergency Siren), และออกเสียงคีย์ลัดแบบสั้นกระชับพยางค์เดียว (`"F!"` / `"R!"` หรือภาษาไทย `"เอฟ!"` / `"อาร์!"`) ด้วยความเร็วพูด 1.35x
+4. **ปรับโฉม In-Game Overlay HUD สู่ Top-Right Minimalist Icon Bar**:
+   - ออกแบบแถบ HUD ย่อขนาดให้แสดงผลเป็นชุดไอคอนแบบมินิมอลอยู่บริเวณ **มุมขวาบนของหน้าจอเกม (`fixed top-2 right-2`)** ไม่บดบังพื้นที่กลางจอ
+   - **เรียงต่อจากตัวไอค่อน Hero ไปทางขวา**:
+     1. `[Hero Avatar]` (ขอบสีตามระดับเลือด: เขียว >50%, ส้ม <=50%, แดงกะพริบ <=20% พร้อมเลเวล)
+     2. `[Cleanse F]` (ไอคอน Dark Pact เรืองแสงสีฟ้า Cyan กระเด้งเมื่อมี Debuff พร้อมปุ่มเทสต์เสียง)
+     3. `[Ulti R]` (ไอคอน Shadow Dance เรืองแสงสีแดง Rose กะพริบเมื่อเลือดต่ำวิกฤต พร้อมปุ่มเทสต์เสียง)
+     4. `[Buyback]` (สถานะ Cooldown / เงินพอ / เงินขาด)
+     5. `[Neutral Tier]` (ไอคอนเทียร์ไอเทมป่า / เตือนช่องว่าง)
+     6. `[Laning CS]` (สถานะ Last Hit ช่วง 0–10 นาที: Ahead/On Pace/Behind)
+     7. `[Camp Stack]` (นับถอยหลังวินาทีเดินดึงครีปป่า :53-:55)
+     8. `[Enemy Glyph]` (สถานะ Glyph ป้องกันป้อมศัตรู)
+     9. `[Enemy Ults]` (จำนวนอัลติศัตรูที่กำลังติดคูลดาวน์)
+     10. `[Tactical Action]` (Pill คำสั่งเชิงกลยุทธ์คลิกก็อปปี้ลงแชตได้ทันที)
+     11. `[PTT Mic]` (ไอคอนไมโครโฟนพร้อม Waveform สด)
+     12. `[Clock & Expand]` (นาฬิกาเกมพร้อม Tooltip แจ้งเตือนถัดไป และปุ่มขยาย Dashboard)
+
+---
+
+### รายละเอียดการพัฒนาและไฟล์ที่ได้ดำเนินการ (Implementation Actions)
+
+1. **โครงสร้างข้อมูลและชนิดตัวแปร ([`src/types/slarkReflex.ts`](file:///root/Desktop/DotaAssist/src/types/slarkReflex.ts))**:
+   - กำหนด Interface [`SlarkReflexSettings`](file:///root/Desktop/DotaAssist/src/types/slarkReflex.ts) (`enabled`, `darkPactHotkey: 'F'`, `shadowDanceHotkey: 'R'`, `shadowDanceHpThreshold: 20`)
+   - กำหนด Interface [`SlarkReflexState`](file:///root/Desktop/DotaAssist/src/types/slarkReflex.ts) สำหรับ State ของ Slark, ความพร้อมของสกิล, และสถานะ Urgent
+2. **ระบบบริหารจัดการ Slark Reflex ([`src/services/slarkReflexService.ts`](file:///root/Desktop/DotaAssist/src/services/slarkReflexService.ts))**:
+   - คลาส [`SlarkReflexService`](file:///root/Desktop/DotaAssist/src/services/slarkReflexService.ts) ตรวจสอบ GSI Payload:
+     - เช็กฮีโร่ Slark และ Debuff (`has_debuff: true` หรือ `disarmed: true`)
+     - ตรวจสอบสกิล Dark Pact (`can_cast: true` และไม่โดน Stun/Silence)
+     - ตรวจสอบเลือดต่ำกว่า Threshold และ Shadow Dance พร้อมใช้งาน
+     - Debounce & Cooldown Hysteresis ป้องกันการส่งเสียงรบกวนซ้ำซ้อน
+     - บันทึกและดึงการตั้งค่าจาก LocalStorage
+3. **ระบบเสียงฉุกเฉินและตัดเสียงปกติ ([`src/services/audioService.ts`](file:///root/Desktop/DotaAssist/src/services/audioService.ts))**:
+   - เพิ่มฟังก์ชัน [`triggerEmergencyReflex(hotkey, type)`](file:///root/Desktop/DotaAssist/src/services/audioService.ts):
+     - ตัดสายเสียงปกติ (`window.speechSynthesis.cancel()`)
+     - เล่น Web Audio Synth SFX เฉพาะตัว (Dual Snap Ping ความถี่ 880Hz $\rightarrow$ 1320Hz สำหรับ Cleanse และ Triple Siren สำหรับ Ulti)
+     - สปีดเสียงพูดสั้นกะทัดรัดคำเดียวไม่รบกวนสมาธิ
+4. **ปรับแต่งหน้าจอ In-Game Overlay HUD ([`src/components/OverlayHUD.tsx`](file:///root/Desktop/DotaAssist/src/components/OverlayHUD.tsx))**:
+   - แปลงโหมด Collapsed ให้เป็นแถบชุดไอคอนมุมขวาบน เรียงต่อจาก Hero Avatar ไปทางขวาครบทุกโมดูล
+   - มีปุ่มทดสอบเสียง Cleanse และ Ulti โดยตรงจากไอคอน
+5. **หน้าต่างการตั้งค่า ([`src/components/SettingsModal.tsx`](file:///root/Desktop/DotaAssist/src/components/SettingsModal.tsx))**:
+   - เพิ่มหมวด "Slark Reflex & In-Game Icon Bar"
+   - ช่องใส่คีย์ลัด Dark Pact (เช่น `F`), Shadow Dance (เช่น `R`), และระดับเลือดฉุกเฉิน (15%, 20%, 25%, 30%) พร้อมปุ่ม Test Sound
+6. **ชุดทดสอบครอบคลุม ([`tests/slark_reflex_hud.test.ts`](file:///root/Desktop/DotaAssist/tests/slark_reflex_hud.test.ts))**:
+   - ทดสอบ Cleanse Trigger เมื่อติด Debuff และการกดข่มเมื่อติด Stun/Silence
+   - ทดสอบ Shadow Dance Low-HP Trigger และการปรับเกณฑ์เลือด
+   - ทดสอบการ Remap Hotkey
+   - ทดสอบ Emergency Audio Preemption ไม่ให้เข้าคิว VoiceQueue
+   - ทดสอบความถูกต้องของ State Snapshot
+

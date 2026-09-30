@@ -884,6 +884,7 @@ fn main() {
             desktop::set_overlay_hotkey,
             desktop::set_roshan_hotkey,
             desktop::set_tormentor_hotkey,
+            desktop::set_ptt_hotkey,
             desktop::set_auto_copy_clipboard,
             desktop::detect_dota_installations,
             desktop::install_gsi_config,

@@ -3,9 +3,12 @@ import {
   VoiceAssistantStatus,
   VoiceCommandRule,
   VoiceRecognitionResult,
+  VoiceActivationMode,
+  VoicePttState,
 } from '../types/voice';
 import { audioService } from './audioService';
 import { timingEngine } from './timingEngine';
+import { objectiveTracker, matchesHotkey } from './objectiveTracker';
 import { visionEngine } from './visionEngine';
 import { TacticalCoachState, PopularItem, TimingEventAlert } from '../types/meta';
 
@@ -19,11 +22,61 @@ const ULTIMATE_COOLDOWNS: Record<string, { duration: number; nameTh: string; nam
 };
 
 const COMMAND_RULES: VoiceCommandRule[] = [
-  // 1. Roshan Death
+  // 1. Undo / Cancel Objective Recording (checked first to prevent partial match on objective names)
+  {
+    intent: 'undo_objective',
+    phrasesTh: [
+      'ยกเลิกโรชาน',
+      'ยกเลิกทอร์เมนเตอร์',
+      'ยกเลิกเวลา',
+      'ยกเลิกไทเมอร์',
+      'ยกเลิกการจับเวลา',
+      'ยกเลิก',
+      'แคนเซิล',
+      'อันดู',
+    ],
+    phrasesEn: [
+      'cancel roshan',
+      'cancel tormentor',
+      'undo roshan',
+      'undo tormentor',
+      'cancel timer',
+      'undo timer',
+      'cancel',
+      'undo',
+    ],
+    actionType: 'action',
+  },
+  // 2. Roshan Death
   {
     intent: 'roshan_death',
-    phrasesTh: ['โรชานตาย', 'ฆ่าโรชาน', 'โรชานล้ม', 'โรชานดับ', 'จดเวลาโรชาน', 'โรชาน'],
-    phrasesEn: ['roshan dead', 'roshan down', 'roshan killed', 'roshan died', 'kill roshan', 'record roshan'],
+    phrasesTh: ['โรชานตาย', 'ฆ่าโรชาน', 'โรชานล้ม', 'โรชานดับ', 'จดเวลาโรชาน', 'โรชานแล้ว', 'โรชาน'],
+    phrasesEn: ['roshan dead', 'roshan down', 'roshan killed', 'roshan died', 'kill roshan', 'record roshan', 'roshan'],
+    actionType: 'action',
+  },
+  // 3. Tormentor Death
+  {
+    intent: 'tormentor_death',
+    phrasesTh: [
+      'ทอร์เมนเตอร์ตาย',
+      'ฆ่าทอร์เมนเตอร์',
+      'ทอร์เมนเตอร์ล้ม',
+      'จดเวลาทอร์เมนเตอร์',
+      'ทอร์เมนเตอร์แล้ว',
+      'ทอร์เมนเตอร์',
+      'ทอร์เม้นตาย',
+      'ทอร์เม้น',
+      'ทอร์เมน',
+    ],
+    phrasesEn: [
+      'tormentor dead',
+      'tormentor down',
+      'tormentor killed',
+      'kill tormentor',
+      'record tormentor',
+      'tormentor slain',
+      'tormentor',
+    ],
     actionType: 'action',
   },
   // 2. Enemy BKB
@@ -147,12 +200,246 @@ class VoiceCommandService {
   private resultListeners: Set<ResultListener> = new Set();
   private cooldownsListeners: Set<CooldownsListener> = new Set();
   private statusListeners: Set<StatusListener> = new Set();
+  private pttListeners: Set<(state: VoicePttState) => void> = new Set();
   private hudToggleHandler: HudToggleHandler | null = null;
   private lastClockTime: number = 0;
   private shouldBeListening: boolean = false;
 
+  private isPttActive: boolean = false;
+  private audioLevel: number = 0;
+  private waveformBars: number[] = [0, 0, 0, 0, 0, 0];
+  private pttHotkey: string = 'Backquote';
+  private activationMode: VoiceActivationMode = 'ptt';
+  private lastPttActiveTime: number = 0;
+  private waveformInterval: any = null;
+  private audioContext: any = null;
+  private analyser: any = null;
+  private mediaStream: any = null;
+  private initializedListeners: boolean = false;
+
   constructor() {
+    this.init();
+  }
+
+  public init() {
+    this.loadSettings();
     this.initRecognition();
+    this.initKeyListeners();
+  }
+
+  public loadSettings() {
+    if (typeof window === 'undefined') return;
+    const settings = audioService.getSettings();
+    if (settings.voiceActivationMode) {
+      this.activationMode = settings.voiceActivationMode;
+    }
+    if (settings.voicePttHotkey) {
+      this.pttHotkey = settings.voicePttHotkey;
+    }
+  }
+
+  public initKeyListeners() {
+    if (this.initializedListeners || typeof window === 'undefined') return;
+    this.initializedListeners = true;
+
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (this.activationMode !== 'ptt' || !audioService.getSettings().voiceCommandEnabled) return;
+      if (e.repeat) return;
+
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        return;
+      }
+
+      if (matchesHotkey(e, this.pttHotkey)) {
+        e.preventDefault();
+        this.startPtt();
+      }
+    });
+
+    window.addEventListener('keyup', (e: KeyboardEvent) => {
+      if (this.activationMode !== 'ptt') return;
+      if (matchesHotkey(e, this.pttHotkey)) {
+        e.preventDefault();
+        this.stopPtt();
+      }
+    });
+
+    if ('__TAURI_INTERNALS__' in window) {
+      import('@tauri-apps/api/event').then(({ listen }) => {
+        listen('ptt-start', () => {
+          if (this.activationMode === 'ptt' && audioService.getSettings().voiceCommandEnabled) {
+            this.startPtt();
+          }
+        }).catch(() => {});
+        listen('ptt-stop', () => {
+          if (this.activationMode === 'ptt') {
+            this.stopPtt();
+          }
+        }).catch(() => {});
+      }).catch(() => {});
+    }
+  }
+
+  public getPttState(): VoicePttState {
+    return {
+      isPttActive: this.isPttActive,
+      audioLevel: this.audioLevel,
+      waveformBars: [...this.waveformBars],
+      activationMode: this.activationMode,
+      pttHotkey: this.pttHotkey,
+    };
+  }
+
+  public subscribePttState(listener: (state: VoicePttState) => void): () => void {
+    this.pttListeners.add(listener);
+    listener(this.getPttState());
+    return () => this.pttListeners.delete(listener);
+  }
+
+  private notifyPttState() {
+    const st = this.getPttState();
+    this.pttListeners.forEach((l) => l(st));
+  }
+
+  public setActivationMode(mode: VoiceActivationMode) {
+    this.activationMode = mode;
+    audioService.updateSettings({ voiceActivationMode: mode });
+    if (mode === 'continuous') {
+      this.startListening();
+    } else {
+      this.stopListening();
+    }
+    this.notifyPttState();
+  }
+
+  public setPttHotkey(hotkey: string) {
+    this.pttHotkey = hotkey;
+    audioService.updateSettings({ voicePttHotkey: hotkey });
+    this.notifyPttState();
+  }
+
+  public getActivationMode(): VoiceActivationMode {
+    return this.activationMode;
+  }
+
+  public getPttHotkey(): string {
+    return this.pttHotkey;
+  }
+
+  public startPtt() {
+    if (this.isPttActive) return;
+    this.isPttActive = true;
+    this.lastPttActiveTime = Date.now();
+    this.setStatus('listening');
+
+    if (this.recognition && this.status !== 'listening') {
+      try {
+        const lang = audioService.getSettings().voiceLanguage;
+        this.recognition.lang = lang;
+        this.recognition.start();
+      } catch {}
+    }
+
+    this.startWaveformAnalysis();
+    this.notifyPttState();
+  }
+
+  public stopPtt() {
+    if (!this.isPttActive) return;
+    this.isPttActive = false;
+    this.lastPttActiveTime = Date.now();
+
+    this.stopWaveformAnalysis();
+    this.waveformBars = [0, 0, 0, 0, 0, 0];
+    this.audioLevel = 0;
+
+    if (this.activationMode === 'ptt') {
+      this.setStatus('disabled');
+      if (this.recognition) {
+        try {
+          this.recognition.stop();
+        } catch {}
+      }
+    }
+    this.notifyPttState();
+  }
+
+  private startWaveformAnalysis() {
+    this.stopWaveformAnalysis();
+
+    if (
+      typeof window !== 'undefined' &&
+      (window.AudioContext || (window as any).webkitAudioContext) &&
+      navigator.mediaDevices?.getUserMedia &&
+      !this.analyser
+    ) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          this.mediaStream = stream;
+          const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+          this.audioContext = new AudioCtx();
+          const source = this.audioContext.createMediaStreamSource(stream);
+          this.analyser = this.audioContext.createAnalyser();
+          this.analyser.fftSize = 64;
+          source.connect(this.analyser);
+        })
+        .catch(() => {});
+    }
+
+    let stepCounter = 0;
+    this.waveformInterval = setInterval(() => {
+      if (!this.isPttActive) return;
+
+      if (this.analyser) {
+        const bufferLength = this.analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        this.analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        const bars: number[] = [];
+        const step = Math.max(1, Math.floor(bufferLength / 6));
+
+        for (let i = 0; i < 6; i++) {
+          const val = dataArray[i * step] || 0;
+          bars.push(Math.min(100, Math.round((val / 255) * 100)));
+          sum += val;
+        }
+
+        const avg = bufferLength > 0 ? (sum / (bufferLength * 255)) * 100 : 0;
+        this.audioLevel = Math.round(avg);
+        this.waveformBars = bars;
+      } else {
+        // Fallback lively simulated waveform pattern
+        stepCounter++;
+        this.waveformBars = [
+          Math.round(35 + 25 * Math.sin(stepCounter * 0.4)),
+          Math.round(55 + 35 * Math.cos(stepCounter * 0.3)),
+          Math.round(70 + 25 * Math.sin(stepCounter * 0.5)),
+          Math.round(80 + 15 * Math.cos(stepCounter * 0.4)),
+          Math.round(60 + 30 * Math.sin(stepCounter * 0.35)),
+          Math.round(40 + 20 * Math.cos(stepCounter * 0.45)),
+        ];
+        this.audioLevel = Math.round(
+          this.waveformBars.reduce((a, b) => a + b, 0) / this.waveformBars.length
+        );
+      }
+      this.notifyPttState();
+    }, 50);
+  }
+
+  private stopWaveformAnalysis() {
+    if (this.waveformInterval) {
+      clearInterval(this.waveformInterval);
+      this.waveformInterval = null;
+    }
+    if (this.mediaStream) {
+      try {
+        this.mediaStream.getTracks().forEach((t: any) => t.stop());
+      } catch {}
+      this.mediaStream = null;
+    }
   }
 
   public registerHudToggleHandler(handler: HudToggleHandler) {
@@ -231,7 +518,7 @@ class VoiceCommandService {
         const lastIndex = event.results.length - 1;
         const transcript = event.results[lastIndex][0]?.transcript || '';
         const confidence = event.results[lastIndex][0]?.confidence || 0.9;
-        this.processTranscript(transcript, confidence, this.lastClockTime);
+        this.processTranscript(transcript, confidence, this.lastClockTime, { fromMic: true });
       };
 
       this.recognition.onerror = (event: any) => {
@@ -319,7 +606,7 @@ class VoiceCommandService {
   }
 
   /**
-   * Matches transcript against configured rules
+   * Matches transcript against configured rules, picking the longest phrase match
    */
   public matchCommand(
     rawText: string,
@@ -328,27 +615,39 @@ class VoiceCommandService {
     const text = rawText.toLowerCase().trim().replace(/[,.!?]/g, '');
     if (!text) return null;
 
+    let bestMatch: { rule: VoiceCommandRule; phrase: string; length: number } | null = null;
+
     // Check language-specific phrases first
     for (const rule of COMMAND_RULES) {
       const phrases = lang === 'th-TH' ? rule.phrasesTh : rule.phrasesEn;
       for (const phrase of phrases) {
-        if (text.includes(phrase.toLowerCase())) {
-          return { rule, phrase };
+        const normPhrase = phrase.toLowerCase();
+        if (text.includes(normPhrase)) {
+          if (!bestMatch || normPhrase.length > bestMatch.length) {
+            bestMatch = { rule, phrase, length: normPhrase.length };
+          }
         }
       }
+    }
+
+    if (bestMatch) {
+      return { rule: bestMatch.rule, phrase: bestMatch.phrase };
     }
 
     // Fallback cross-language check (user might speak English while in Thai mode or vice versa)
     for (const rule of COMMAND_RULES) {
       const alternatePhrases = lang === 'th-TH' ? rule.phrasesEn : rule.phrasesTh;
       for (const phrase of alternatePhrases) {
-        if (text.includes(phrase.toLowerCase())) {
-          return { rule, phrase };
+        const normPhrase = phrase.toLowerCase();
+        if (text.includes(normPhrase)) {
+          if (!bestMatch || normPhrase.length > bestMatch.length) {
+            bestMatch = { rule, phrase, length: normPhrase.length };
+          }
         }
       }
     }
 
-    return null;
+    return bestMatch ? { rule: bestMatch.rule, phrase: bestMatch.phrase } : null;
   }
 
   /**
@@ -362,9 +661,34 @@ class VoiceCommandService {
       coachState?: TacticalCoachState | null;
       popularItems?: PopularItem[];
       alerts?: TimingEventAlert[];
+      fromMic?: boolean;
     }
   ): VoiceRecognitionResult {
     const lang = audioService.getSettings().voiceLanguage;
+
+    // In Push-to-Talk (PTT) mode, if the transcript originated from the microphone,
+    // verify that PTT is actively pressed or was pressed within the last 2.5 seconds.
+    // Discard microphone speech that arrived while PTT was inactive (e.g. Discord or team voice chat).
+    if (context?.fromMic && this.activationMode === 'ptt') {
+      const timeSincePtt = Date.now() - this.lastPttActiveTime;
+      const isPttValid = this.isPttActive || (this.lastPttActiveTime > 0 && timeSincePtt < 2500);
+      if (!isPttValid) {
+        const ignoredResult: VoiceRecognitionResult = {
+          id: `voice_ignored_${Date.now()}`,
+          transcript,
+          intent: null,
+          confidence,
+          timestamp: Date.now(),
+          feedbackText:
+            lang === 'th-TH'
+              ? 'ละเว้นคำสั่ง (ไม่ได้กดปุ่ม PTT)'
+              : 'Ignored (PTT key was not held)',
+          success: false,
+        };
+        return ignoredResult;
+      }
+    }
+
     const match = this.matchCommand(transcript, lang);
 
     if (!match) {
@@ -389,12 +713,42 @@ class VoiceCommandService {
     audioService.playVoiceCommandChime();
 
     switch (rule.intent) {
+      case 'undo_objective': {
+        const undoRes = objectiveTracker.undoLatest();
+        if (undoRes.undone) {
+          feedbackText =
+            lang === 'th-TH'
+              ? undoRes.objective === 'roshan'
+                ? 'ยกเลิกการจับเวลาโรชานแล้ว'
+                : 'ยกเลิกการจับเวลาทอร์เมนเตอร์แล้ว'
+              : undoRes.objective === 'roshan'
+              ? 'Roshan timer canceled'
+              : 'Tormentor timer canceled';
+        } else {
+          feedbackText =
+            lang === 'th-TH'
+              ? 'ไม่มีการจับเวลาที่สามารถยกเลิกได้'
+              : 'No active timer to cancel';
+          audioService.speakVoiceFeedback(feedbackText);
+        }
+        break;
+      }
+
       case 'roshan_death': {
-        timingEngine.recordRoshanDeath(clockTime);
+        objectiveTracker.recordRoshan(clockTime);
         feedbackText =
           lang === 'th-TH'
             ? 'บันทึกเวลาโรชานตายเรียบร้อยแล้ว'
             : 'Roshan death recorded';
+        break;
+      }
+
+      case 'tormentor_death': {
+        objectiveTracker.recordTormentor(clockTime);
+        feedbackText =
+          lang === 'th-TH'
+            ? 'บันทึกเวลาทอร์เมนเตอร์ตายเรียบร้อยแล้ว'
+            : 'Tormentor death recorded';
         break;
       }
 
@@ -616,6 +970,8 @@ class VoiceCommandService {
   }
 
   public reset() {
+    this.stopPtt();
+    this.lastPttActiveTime = 0;
     this.activeCooldowns = [];
     this.lastResult = null;
     this.notifyCooldowns();

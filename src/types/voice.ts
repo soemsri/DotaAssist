@@ -1,5 +1,7 @@
 export type VoiceCommandIntent =
   | 'roshan_death'
+  | 'tormentor_death'
+  | 'undo_objective'
   | 'enemy_bkb'
   | 'enemy_ultimate'
   | 'ward_placed'
@@ -10,6 +12,16 @@ export type VoiceCommandIntent =
   | 'query_next_item'
   | 'query_buyback'
   | 'query_lotus';
+
+export type VoiceActivationMode = 'ptt' | 'continuous';
+
+export interface VoicePttState {
+  isPttActive: boolean;
+  audioLevel: number; // 0 to 100 for live waveform visualization
+  waveformBars: number[]; // e.g. 6 frequency amplitudes (0-100)
+  activationMode: VoiceActivationMode;
+  pttHotkey: string;
+}
 
 export type VoiceAssistantStatus =
   | 'listening'

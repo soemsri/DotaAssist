@@ -268,6 +268,37 @@ class ObjectiveTrackerService {
     this.notify();
   }
 
+  public isRoshanUndoActive(): boolean {
+    return Date.now() < this.roshanUndoExpiry;
+  }
+
+  public isTormentorUndoActive(): boolean {
+    return Date.now() < this.tormentorUndoExpiry;
+  }
+
+  public undoLatest(): { undone: boolean; objective?: 'roshan' | 'tormentor' } {
+    const now = Date.now();
+    const roshanActive = now < this.roshanUndoExpiry;
+    const tormentorActive = now < this.tormentorUndoExpiry;
+
+    if (roshanActive && tormentorActive) {
+      if (this.roshanUndoExpiry >= this.tormentorUndoExpiry) {
+        this.undoRoshan();
+        return { undone: true, objective: 'roshan' };
+      } else {
+        this.undoTormentor();
+        return { undone: true, objective: 'tormentor' };
+      }
+    } else if (roshanActive) {
+      this.undoRoshan();
+      return { undone: true, objective: 'roshan' };
+    } else if (tormentorActive) {
+      this.undoTormentor();
+      return { undone: true, objective: 'tormentor' };
+    }
+    return { undone: false };
+  }
+
   public setAutoCopyClipboard(enabled: boolean) {
     this.autoCopyClipboard = enabled;
     try {

@@ -8,6 +8,7 @@ import { enemyUltimateService } from './enemyUltimateService';
 import { laningBenchmarkService } from './laningBenchmarkService';
 import { enemyGlyphService } from './enemyGlyphService';
 import { matchTrackerService } from './matchTrackerService';
+import { slarkReflexService } from './slarkReflexService';
 
 import { TIMING_RULES as RULES, NEUTRAL_TIER_TIMINGS } from '../data/timingRules';
 import { alertProfiles, Objective } from './alertProfiles';
@@ -157,6 +158,7 @@ export class TimingEngine {
     laningBenchmarkService.updateFromGSI(payload, clockTime);
     enemyGlyphService.updateFromGSI(payload, clockTime);
     matchTrackerService.processGSI(payload);
+    slarkReflexService.processGSI(payload, clockTime);
   }
 
   public resetAlerts() {
@@ -179,6 +181,7 @@ export class TimingEngine {
     laningBenchmarkService.resetAll();
     enemyGlyphService.resetAll();
     matchTrackerService.resetAll();
+    slarkReflexService.reset();
   }
 
   public checkItemAdvice(clockTime: number, heroName: string, items: PopularItem[]) {

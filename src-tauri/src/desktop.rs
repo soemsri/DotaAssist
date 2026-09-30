@@ -10,6 +10,7 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 const DEFAULT_HOTKEY: &str = "Ctrl+Shift+F10";
 const DEFAULT_ROSHAN_HOTKEY: &str = "Alt+F9";
 const DEFAULT_TORMENTOR_HOTKEY: &str = "Alt+F8";
+const DEFAULT_PTT_HOTKEY: &str = "Alt+V";
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Preferences {
@@ -18,6 +19,8 @@ pub struct Preferences {
     pub roshan_hotkey: String,
     #[serde(default = "default_tormentor_hotkey")]
     pub tormentor_hotkey: String,
+    #[serde(default = "default_ptt_hotkey")]
+    pub ptt_hotkey: String,
     #[serde(default = "default_auto_copy")]
     pub auto_copy_clipboard: bool,
     pub dota_path: Option<String>,
@@ -29,6 +32,9 @@ fn default_roshan_hotkey() -> String {
 fn default_tormentor_hotkey() -> String {
     DEFAULT_TORMENTOR_HOTKEY.into()
 }
+fn default_ptt_hotkey() -> String {
+    DEFAULT_PTT_HOTKEY.into()
+}
 fn default_auto_copy() -> bool {
     true
 }
@@ -39,6 +45,7 @@ impl Default for Preferences {
             hotkey: DEFAULT_HOTKEY.into(),
             roshan_hotkey: DEFAULT_ROSHAN_HOTKEY.into(),
             tormentor_hotkey: DEFAULT_TORMENTOR_HOTKEY.into(),
+            ptt_hotkey: DEFAULT_PTT_HOTKEY.into(),
             auto_copy_clipboard: true,
             dota_path: None,
         }
@@ -60,6 +67,7 @@ pub struct DesktopStatus {
     pub hotkey: String,
     pub roshan_hotkey: String,
     pub tormentor_hotkey: String,
+    pub ptt_hotkey: String,
     pub auto_copy_clipboard: bool,
     pub dota_path: Option<String>,
     pub interactive: bool,
@@ -74,6 +82,7 @@ pub fn desktop_status(app: AppHandle) -> DesktopStatus {
         hotkey: s.preferences.hotkey.clone(),
         roshan_hotkey: s.preferences.roshan_hotkey.clone(),
         tormentor_hotkey: s.preferences.tormentor_hotkey.clone(),
+        ptt_hotkey: s.preferences.ptt_hotkey.clone(),
         auto_copy_clipboard: s.preferences.auto_copy_clipboard,
         dota_path: s.preferences.dota_path.clone(),
         interactive: s.interactive,
@@ -146,6 +155,18 @@ fn register_tormentor_shortcut(app: &AppHandle, shortcut: Shortcut) -> Result<()
         .map_err(|e| e.to_string())
 }
 
+fn register_ptt_shortcut(app: &AppHandle, shortcut: Shortcut) -> Result<(), String> {
+    app.global_shortcut()
+        .on_shortcut(shortcut, |app, _, event| {
+            if event.state == ShortcutState::Pressed {
+                let _ = app.emit("ptt-start", ());
+            } else if event.state == ShortcutState::Released {
+                let _ = app.emit("ptt-stop", ());
+            }
+        })
+        .map_err(|e| e.to_string())
+}
+
 pub fn initialize(app: &AppHandle) {
     let prefs = app
         .path()
@@ -182,6 +203,15 @@ pub fn initialize(app: &AppHandle) {
         .and_then(|s| register_tormentor_shortcut(app, s));
     if let Err(e) = res3 {
         errors.push(format!("Tormentor hotkey error: {e}"));
+    }
+
+    let res4 = prefs
+        .ptt_hotkey
+        .parse::<Shortcut>()
+        .map_err(|e| e.to_string())
+        .and_then(|s| register_ptt_shortcut(app, s));
+    if let Err(e) = res4 {
+        errors.push(format!("PTT hotkey error: {e}"));
     }
 
     let state = app.state::<DesktopState>();
@@ -288,6 +318,40 @@ pub fn set_tormentor_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopSta
     register_tormentor_shortcut(&app, shortcut)?;
     let mut prefs = s.preferences.clone();
     prefs.tormentor_hotkey = hotkey;
+    if let Err(e) = save(&app, &prefs) {
+        let _ = app.global_shortcut().unregister(shortcut);
+        return Err(e);
+    }
+    if let Some(old) = old {
+        let _ = app.global_shortcut().unregister(old);
+    }
+    s.preferences = prefs;
+    drop(s);
+    let status = desktop_status(app.clone());
+    let _ = app.emit("desktop-status", &status);
+    Ok(status)
+}
+
+#[tauri::command]
+pub fn set_ptt_hotkey(app: AppHandle, hotkey: String) -> Result<DesktopStatus, String> {
+    let shortcut = hotkey.parse::<Shortcut>().map_err(|e| e.to_string())?;
+    if shortcut.mods.is_empty() {
+        return Err("Use a modifier such as Ctrl or Alt with the key.".into());
+    }
+    let state = app.state::<DesktopState>();
+    let mut s = state.0.lock().unwrap();
+
+    if hotkey.eq_ignore_ascii_case(&s.preferences.hotkey)
+        || hotkey.eq_ignore_ascii_case(&s.preferences.roshan_hotkey)
+        || hotkey.eq_ignore_ascii_case(&s.preferences.tormentor_hotkey)
+    {
+        return Err("PTT hotkey conflicts with existing hotkeys.".into());
+    }
+
+    let old = s.preferences.ptt_hotkey.parse::<Shortcut>().ok();
+    register_ptt_shortcut(&app, shortcut)?;
+    let mut prefs = s.preferences.clone();
+    prefs.ptt_hotkey = hotkey;
     if let Err(e) = save(&app, &prefs) {
         let _ = app.global_shortcut().unregister(shortcut);
         return Err(e);

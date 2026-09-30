@@ -29,6 +29,8 @@ export interface AudioSettings {
   voiceCommandEnabled: boolean;
   unreliableGoldAlertEnabled?: boolean;
   nextActionPillEnabled?: boolean;
+  voiceActivationMode?: 'ptt' | 'continuous';
+  voicePttHotkey?: string;
 }
 
 const STORAGE_KEY = 'dotaassist_audio_settings';
@@ -66,6 +68,8 @@ interface VoicePhrases {
   wardExpired: string;
   unreliableGoldRisk: string;
   voiceRoshanRecorded: string;
+  voiceTormentorRecorded: string;
+  voiceUndoRecorded: string;
   voiceBkbRecorded: string;
   voiceUltimateRecorded: (name: string) => string;
   voiceWardRecorded: string;
@@ -131,6 +135,8 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     wardExpired: 'Observer ward has expired',
     unreliableGoldRisk: 'Warning: High unreliable gold, spend before dying',
     voiceRoshanRecorded: 'Roshan death recorded',
+    voiceTormentorRecorded: 'Tormentor death recorded',
+    voiceUndoRecorded: 'Objective timer canceled',
     voiceBkbRecorded: 'Enemy BKB tracker started, ninety seconds',
     voiceUltimateRecorded: (name) => `Enemy ${name} tracker started`,
     voiceWardRecorded: 'Ward placement logged',
@@ -207,6 +213,8 @@ export const PHRASES: Record<'en-US' | 'th-TH', VoicePhrases> = {
     wardExpired: 'วอร์ดหมดอายุแล้ว',
     unreliableGoldRisk: 'ระวังเงินหล่น รีบใช้เงินซื้อไอเทมก่อนตาย',
     voiceRoshanRecorded: 'บันทึกเวลาโรชานตายเรียบร้อยแล้ว',
+    voiceTormentorRecorded: 'บันทึกเวลาทอร์เมนเตอร์ตายเรียบร้อยแล้ว',
+    voiceUndoRecorded: 'ยกเลิกการจับเวลาเป้าหมายแล้ว',
     voiceBkbRecorded: 'เริ่มจับเวลาไอเทม BKB ศัตรู 90 วินาที',
     voiceUltimateRecorded: (name) => `เริ่มจับเวลาสกิล ${name} ของศัตรู`,
     voiceWardRecorded: 'บันทึกการปักวอร์ดแล้ว',
@@ -349,6 +357,8 @@ class AudioNotificationService {
     voiceCommandEnabled: true,
     unreliableGoldAlertEnabled: true,
     nextActionPillEnabled: true,
+    voiceActivationMode: 'ptt',
+    voicePttHotkey: 'Backquote',
     ...loadStoredSettings(),
   };
   private isUnlocked: boolean = false;
@@ -1315,6 +1325,82 @@ class AudioNotificationService {
   public speakVoiceFeedback(text: string) {
     if (!this.settings.voiceEnabled) return;
     this.speak(text);
+  }
+
+  /**
+   * Emergency Reflex Audio Channel:
+   * Immediately interrupts/cancels any ongoing macro speech reminders (runes, etc.),
+   * plays an instant Web Audio snap chime or critical siren tone,
+   * and speaks the single-syllable hotkey letter (e.g. "F!" or "R!") with high rate.
+   * Completely bypasses VoiceQueue to guarantee zero delay reflex callouts.
+   */
+  public triggerEmergencyReflex(hotkey: string, type: 'cleanse' | 'shadow_dance' = 'cleanse') {
+    if (!this.settings.voiceEnabled && !this.settings.sfxEnabled) return;
+
+    // 1. Immediately cancel any currently playing background/macro voice
+    this.stopCurrentVoice();
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+
+    // 2. Instant Web Audio tone
+    if (this.settings.sfxEnabled && this.ctx) {
+      const now = this.ctx.currentTime;
+      if (type === 'cleanse') {
+        // High-pitched snap ping (880Hz -> 1320Hz)
+        this.playTone(880, now, 0.04, 'sine');
+        this.playTone(1320, now + 0.03, 0.06, 'triangle');
+      } else {
+        // Critical emergency siren tone (587Hz -> 880Hz -> 1174Hz)
+        this.playTone(587, now, 0.05, 'sawtooth');
+        this.playTone(880, now + 0.04, 0.05, 'triangle');
+        this.playTone(1174, now + 0.08, 0.08, 'sine');
+      }
+    }
+
+    // 3. Immediate single-syllable voice callout
+    if (this.settings.voiceEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const key = hotkey.trim().toUpperCase();
+      let spokenText = key;
+      const isThai = this.settings.voiceLanguage.startsWith('th');
+
+      if (isThai) {
+        // Phonetic single-syllable Thai pronunciation for common Dota hotkeys
+        const thaiKeyMap: Record<string, string> = {
+          'F': 'เอฟ',
+          'R': 'อาร์',
+          'Q': 'คิว',
+          'W': 'ดับเบิลยู',
+          'E': 'อี',
+          'D': 'ดี',
+          'C': 'ซี',
+          'V': 'วี',
+          'SPACE': 'สเปซ',
+          '1': 'หนึ่ง',
+          '2': 'สอง',
+          '3': 'สาม',
+          '4': 'สี่',
+        };
+        spokenText = thaiKeyMap[key] || key;
+      }
+
+      try {
+        const utterance = new SpeechSynthesisUtterance(spokenText);
+        utterance.volume = this.settings.masterVolume;
+        utterance.rate = 1.35; // Fast and snappy
+        utterance.pitch = type === 'cleanse' ? 1.2 : 1.3;
+        utterance.lang = this.settings.voiceLanguage;
+
+        const voices = window.speechSynthesis.getVoices();
+        const targetPrefix = this.settings.voiceLanguage.toLowerCase().split('-')[0];
+        const voice = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith(targetPrefix));
+        if (voice) utterance.voice = voice;
+
+        window.speechSynthesis.speak(utterance);
+      } catch {}
+    }
   }
 
   public playPostMatchDebrief(spokenSummary: string) {
